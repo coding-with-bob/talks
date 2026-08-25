@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iteration Without Drift — s20-why-physical-breakdown-added</title>
+<style>
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+
+/* ==========================================================================
+   deck/theme/tokens.css — design tokens distilled from talk #1
+   ("From Prompts to Convergence", Craft 2026 deck in HTML)
+   Source precedent: pairflow_slide_01_title_v4_original_style.html (dark
+   family), pairflow_slide_17 / _41 (light family, kicker/accent-line/card
+   grammar). Tokens only — no component rules here.
+   ========================================================================== */
+
+:root {
+  /* ---- dark navy canvas family (primary for this deck) ---------------- */
+  --navy-0: #050814;            /* gradient start (135deg)                 */
+  --navy-1: #07142c;            /* gradient mid — also the chart surface   */
+  --navy-2: #050711;            /* gradient end                            */
+  --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
+
+  /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
+  --blue: #2f67ff;
+  --blue2: #3d7cff;
+  --cyan: #66e6ef;
+  --white: #f7fbff;
+  --muted: rgba(247, 251, 255, 0.86);
+  --muted-2: rgba(247, 251, 255, 0.60);
+  --muted-3: rgba(247, 251, 255, 0.38);
+
+  /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
+  --coral: #ef6a5a;
+
+  /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
+     Base accents visually sink for SMALL UI on dark canvases. Small text
+     (kickers, tag chips, footer labels) uses these brighter variants;
+     headlines and large marks keep the base tokens. On light slides these
+     resolve back to the base accents (see .slide--light override). */
+  --blue-on-dark: #7aa4ff;
+  --cyan-on-dark: #8ff0f7;
+  --cyan-decor: #66e6ef;        /* decor-gradient cyan (light overrides it)  */
+
+  /* ---- glows & hairlines ----------------------------------------------- */
+  --glow-blue: rgba(47, 103, 255, 0.46);
+  --glow-cyan: rgba(102, 230, 239, 0.30);
+  --hairline: rgba(247, 251, 255, 0.14);
+  --hairline-blue: rgba(61, 124, 255, 0.32);
+  --card-bg: rgba(247, 251, 255, 0.045);
+  --card-bg-strong: rgba(247, 251, 255, 0.08);
+
+  /* ---- chart series (validated: OKLCH band + CVD, on --navy-1) --------- */
+  /* dataviz validator: all PASS on surface #07142c, dark mode             */
+  --series-healthy: #0a99aa;    /* teal   — healthy decaying curve         */
+  --series-panel: #3d7cff;      /* blue   — the ch8 panel curve            */
+  --series-flat: #e2543f;       /* coral  — the L3 non-convergent pathology*/
+  --series-recreation: #9b7bf0; /* violet — the post-cure recreation curve */
+  --chart-grid: rgba(247, 251, 255, 0.10);
+  --chart-axis: rgba(247, 251, 255, 0.55);
+
+  /* ---- epistemic tag chips --------------------------------------------- */
+  --tag-measured: #66e6ef;
+  --tag-deducible: #9b7bf0;
+  --tag-experienced: rgba(247, 251, 255, 0.62);
+
+  /* ---- typography ------------------------------------------------------
+     "Inter" is bundled (deck/assets/fonts/InterVariable.woff2, @font-face
+     emitted by build.mjs) — calibration 2026-07-18 showed talk #1's DELIVERED
+     slides render in Inter, while this machine has no Inter installed and
+     silently fell back to a cramped Helvetica-ish default. */
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* type scale — recalibrated 2026-07-18 against the DELIVERED talk-1 PNGs
+     (raw/talk/slides). Content slides match the HTML sources rendered in
+     Inter (h1 58px / -0.045em / 850 — verified on slide-17: h1 bbox 520x54
+     @1600 => Inter ~56-58px). The TITLE slide's delivered version was larger
+     and looser than the v4 HTML: hero cap ~87px => Inter ~120px, tracking
+     ~-0.02em, weight ~800; subtitle ~50px, ~w700. */
+  --fs-hero: 118px;             /* title-slide h1 (delivered, not v4 HTML) */
+  --fs-h1: 58px;                /* content-slide h1                        */
+  --fs-quote: 52px;             /* black-slide quotes                      */
+  --fs-subtitle: 48px;          /* title-slide subtitle (delivered)        */
+  --fs-body: 24px;
+  --fs-kicker: 23px;
+  --fs-caption: 19px;
+  --fs-small: 16px;
+  --fs-micro: 14px;
+
+  --lh-tight: 1.02;
+  --lh-body: 1.3;
+  --ls-hero: -0.022em;
+  --ls-h1: -0.045em;
+  --ls-kicker: 0.06em;
+  --fw-hero: 800;               /* hero weight (delivered title look)      */
+  --fw-h1: 850;                 /* content h1 weight (talk-1 sources)      */
+
+  /* ---- slide chrome ---------------------------------------------------- */
+  --slide-max-w: 1600px;        /* 16:9 canvas, talk-1 convention          */
+  --slide-pad: 72px;
+  --radius-card: 28px;
+  --radius-chip: 999px;
+  --accent-w: 112px;            /* title accent bar                        */
+  --accent-w-sm: 70px;          /* content accent bar                      */
+  --accent-h: 5px;
+
+  --stage-bg: #111827;          /* page behind the slide (talk-1)          */
+}
+
+/* ---- optional light variant (talk-1 content-slide family) --------------
+   Talk #1 used light canvases for most content slides. Add class
+   slide--light on a <section class="slide"> to opt in. The deck default
+   is the dark family. */
+.slide--light {
+  --navy-0: #ffffff;
+  --navy-1: #f8fbff;
+  --navy-2: #eef7ff;
+  --blue: #1265ff;
+  --blue2: #1265ff;
+  /* readable teal for cyan ACCENTS on light (the raw #19d7ff is a decor-only
+     color in talk #1's light slides — as text it fails contrast). #0a99aa is
+     the validated series teal, 3.2:1 on #f8fbff => large/bold text only. */
+  --cyan: #0a99aa;
+  --cyan-decor: #19d7ff;        /* talk-1 light flow-bg gradient stop        */
+  --white: #07152f;
+  --muted: #20304c;
+  --muted-2: #63718a;
+  --muted-3: rgba(7, 21, 47, 0.35);
+  --hairline: rgba(7, 21, 47, 0.14);
+  --hairline-blue: rgba(18, 101, 255, 0.22);
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-bg-strong: rgba(231, 242, 255, 0.84);
+  --glow-blue: rgba(18, 101, 255, 0.22);
+  --glow-cyan: rgba(10, 153, 170, 0.24);
+  --chart-grid: rgba(7, 21, 47, 0.10);
+  --chart-axis: rgba(7, 21, 47, 0.55);
+  --tag-measured: #0a99aa;
+  --tag-deducible: #7b5cd6;
+  --tag-experienced: rgba(7, 21, 47, 0.62);
+  /* on-dark variants map to light-readable inks. --cyan-on-dark is SMALL
+     chip text on light => needs 4.5:1 — darker than the accent teal. */
+  --blue-on-dark: var(--blue);
+  --cyan-on-dark: #087580;
+}
+
+/* ==========================================================================
+   MEETUP-DECK ADDITION — lane tokens (story vs theory color coding)
+   The Miro board's own visual language carried over: warm amber = the
+   personal story, the deck's cyan family = the theoretical framing.
+   ========================================================================== */
+:root {
+  --story: #f5a94a;             /* amber — large marks, edge stripe (dark)  */
+  --story-on-dark: #ffc06e;     /* small UI (kickers, chips) on navy        */
+  --theory: var(--cyan);        /* theory reuses the cyan family            */
+  --theory-on-dark: var(--cyan-on-dark);
+}
+
+.slide--light {
+  --story: #d9821f;             /* amber readable on light, large/bold      */
+  --story-on-dark: #a05e10;     /* small chip text on light needs 4.5:1     */
+  --theory: var(--cyan);
+  --theory-on-dark: var(--cyan-on-dark);
+}
+
+/* ==========================================================================
+   deck/theme/components.css — composable slide primitives
+   Vocabulary shared by every fragment in deck/src/. Fragments compose these
+   classes plus free HTML/SVG; they never declare hex colors (check.mjs
+   enforces this — use the tokens).
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+/* ---- the 16:9 canvas ---------------------------------------------------- */
+.slide {
+  position: relative;
+  /* Fixed design canvas: layout ALWAYS happens at --slide-max-w × 16:9.
+     Typography is fixed-px, so a viewport-dependent width changes line
+     wrapping and spills content under the bottom bars (owner-reported,
+     2026-07-19). The shell fits the canvas to the viewport with
+     transform: scale(var(--deck-scale)) — never by shrinking the layout. */
+  width: var(--slide-max-w);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  flex: none;
+  background:
+    radial-gradient(circle at 78% 56%, rgba(47, 103, 255, 0.25), transparent 21%),
+    radial-gradient(circle at 76% 57%, rgba(102, 230, 239, 0.18), transparent 15%),
+    linear-gradient(135deg, var(--navy-0) 0%, var(--navy-1) 48%, var(--navy-2) 100%);
+  color: var(--white);
+  font-family: var(--font-sans);
+  padding: var(--slide-pad);
+  display: flex;
+  flex-direction: column;
+}
+
+.slide--light {
+  background: linear-gradient(135deg, var(--navy-0) 0%, var(--navy-1) 48%, var(--navy-2) 100%);
+  border: 1px solid var(--hairline-blue);
+}
+
+/* full-bleed decoration layer (inline SVG fields, background art) */
+.slide .decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.slide > *:not(.decor) { position: relative; z-index: 2; }
+
+/* ---- title block --------------------------------------------------------- */
+.title-block { margin: 0 0 28px; }
+
+.kicker {
+  /* small uppercase text: on-dark accent variant, never the base blue */
+  color: var(--blue-on-dark);
+  font-weight: 850;
+  letter-spacing: var(--ls-kicker);
+  text-transform: uppercase;
+  font-size: var(--fs-kicker);
+  margin-bottom: 14px;
+}
+
+.title-block h1,
+h1.hero {
+  margin: 0;
+  font-weight: var(--fw-h1);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-h1);
+  max-width: 1180px;
+}
+
+h1.hero {
+  font-weight: var(--fw-hero);
+  font-size: var(--fs-hero);
+  letter-spacing: var(--ls-hero);
+  text-shadow: 0 20px 52px rgba(0, 0, 0, 0.36);
+}
+
+.accent { color: var(--blue2); }
+.accent-cyan { color: var(--cyan); }
+
+.accent-line {
+  width: var(--accent-w-sm);
+  height: var(--accent-h);
+  border-radius: var(--radius-chip);
+  background: var(--blue);
+  box-shadow: 0 0 18px var(--glow-blue);
+  margin-top: 22px;
+}
+.accent-line--wide { width: var(--accent-w); margin-top: 42px; }
+
+.subtitle {
+  margin-top: 30px;
+  color: var(--white);
+  font-size: var(--fs-subtitle);
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  font-weight: 680;
+  max-width: 1050px;
+  text-wrap: balance;
+}
+
+/* ---- layout -------------------------------------------------------------- */
+.two-col {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+.two-col--wide-left { grid-template-columns: 1.25fr 0.75fr; }
+.two-col--wide-right { grid-template-columns: 0.75fr 1.25fr; }
+
+.fill { flex: 1; min-height: 0; }
+
+/* ---- cards ---------------------------------------------------------------- */
+.card {
+  border-radius: var(--radius-card);
+  background: var(--card-bg);
+  border: 1px solid var(--hairline);
+  padding: 26px 28px;
+}
+.card--strong {
+  background: var(--card-bg-strong);
+  border-color: var(--hairline-blue);
+}
+.card--dashed {
+  background: transparent;
+  border: 2px dashed var(--hairline-blue);
+}
+
+/* ---- quote block (black-slide grammar) ------------------------------------ */
+.quote-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1240px;
+}
+.quote-block blockquote {
+  margin: 0;
+  font-size: var(--fs-quote);
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  font-weight: 720;
+  color: var(--white);
+}
+.quote-block blockquote::before { content: "\201C"; color: var(--blue2); }
+.quote-block blockquote::after { content: "\201D"; color: var(--blue2); }
+.quote-block figcaption {
+  margin-top: 26px;
+  font-size: var(--fs-caption);
+  color: var(--muted-2);
+  font-weight: 600;
+}
+
+/* ---- epistemic tag chips --------------------------------------------------- */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: var(--radius-chip);
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  border: 1px solid var(--hairline);
+  color: var(--muted);
+  background: var(--card-bg);
+}
+.tag-chip::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted-2);
+}
+.tag-chip--measured { color: var(--cyan-on-dark); border-color: rgba(102, 230, 239, 0.35); }
+.tag-chip--measured::before { background: var(--tag-measured); box-shadow: 0 0 10px var(--glow-cyan); }
+.tag-chip--deducible { color: var(--tag-deducible); border-color: rgba(155, 123, 240, 0.40); }
+.tag-chip--deducible::before { background: var(--tag-deducible); }
+.slide--light .tag-chip--measured { border-color: rgba(10, 153, 170, 0.45); }
+.slide--light .tag-chip--deducible { border-color: rgba(123, 92, 214, 0.45); }
+.tag-chip--experienced { color: var(--tag-experienced); }
+.tag-chip--experienced::before { background: var(--tag-experienced); }
+
+/* ---- the standing humility bar ---------------------------------------------
+   Required on every [measured] chart slide (check.mjs rule c). Text pattern:
+   "n=1 process, k packets — direction, not proof". Sits bottom-right. */
+.slide .humility {
+  position: absolute;
+  width: max-content;
+  right: var(--slide-pad);
+  bottom: calc(var(--slide-pad) - 26px);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--hairline);
+  background: var(--card-bg);
+  color: var(--muted-2);
+  font-size: var(--fs-micro);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+.humility::before {
+  content: "\26A0";
+  font-size: 13px;
+  color: var(--muted-3);
+}
+
+/* ---- evidence footer ---------------------------------------------------------
+   Bottom strip of provenance pointers. Content mirrors data-evidence. */
+.evidence-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--hairline);
+  min-height: 0;
+}
+.evidence-footer .evidence-label {
+  font-size: var(--fs-micro);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-3);
+}
+.evidence-footer code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--muted-2);
+  background: var(--card-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* ---- chart embed --------------------------------------------------------------
+   Wrapper for {{chart:ID}} injections. The generated SVG scales to fit. */
+.chart-embed {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chart-embed svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* ---- misc ----------------------------------------------------------------------- */
+.footnote {
+  font-size: var(--fs-caption);
+  color: var(--muted-2);
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.mono { font-family: var(--font-mono); }
+
+/* ---- signature motion: fadeUp (1337 notes, idea 3) -------------------------
+   ONE deck-wide keyframe: 14px rise, 0.45s, ease-out. The shell JS assigns
+   animation-delay = index * 0.08s to each .fade-up within a slide (stagger)
+   and adds a CUMULATIVE .seen class on first entry (IntersectionObserver) —
+   .seen is never removed, so motion never re-triggers on scrollback.
+   Without JS (.js absent on body) elements stay fully visible. */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* MEETUP-DECK OVERRIDE (owner call, 2026-08-25): entry animation OFF.
+   The keyframe, the .fade-up markup, and the shell JS (stagger + .seen)
+   are kept intact so a future multi-step in-slide reveal can reuse them;
+   to re-enable, restore: opacity: 0 on the first rule and
+   `animation: fadeUp 0.45s ease-out forwards` on the second. */
+.js .fade-up { opacity: 1; }
+.js .slide.seen .fade-up { animation: none; }
+@media print {
+  .fade-up { opacity: 1 !important; animation: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .fade-up { opacity: 1; }
+  .js .slide.seen .fade-up { animation: none; }
+}
+
+/* ==========================================================================
+   MEETUP-DECK ADDITION — lane system (story vs theory)
+   data-lane="story" | "theory" on a <section class="slide"> activates:
+     1. a left edge stripe in the lane color (projector-robust)
+     2. the kicker in the lane color, with a small square lane marker
+     3. the accent-line under the h1 in the lane color
+     4. on LIGHT story slides only: a warm paper background tint
+        (theory keeps the existing cool whites — the light default is
+        already the cool family, so only one new background is needed)
+   Background tint is reinforcement only — the stripe + kicker carry the
+   meaning on dark slides and washed-out projectors.
+   ========================================================================== */
+.slide[data-lane="story"]  { --lane: var(--story);  --lane-ui: var(--story-on-dark); }
+.slide[data-lane="theory"] { --lane: var(--theory); --lane-ui: var(--theory-on-dark); }
+
+.slide[data-lane]::after {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+  background: var(--lane);
+  opacity: 0.9;
+}
+
+.slide[data-lane] .kicker { color: var(--lane-ui); }
+.slide[data-lane] .kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--lane);
+  vertical-align: baseline;
+}
+.slide[data-lane] .accent-line { background: var(--lane); }
+
+/* warm paper tint for light story slides (bg tokens re-pointed locally) */
+.slide--light[data-lane="story"] {
+  --navy-0: #fffefb;
+  --navy-1: #fdf7ec;
+  --navy-2: #f8efdc;
+}
+
+
+html, body { margin: 0; }
+body { background: var(--stage-bg); min-height: 100vh; }
+.deck-counter {
+  position: fixed; bottom: 14px; right: 20px; z-index: 50;
+  color: rgba(247,251,255,0.45);
+  font: 650 14px/1 Inter, sans-serif; letter-spacing: 0.06em;
+}
+/* shell chrome reacts to the active slide's data-theme (1337 notes, idea 2) */
+body[data-active-theme="light"] { background: #dfe7f2; }
+body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
+@media screen {
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  .deck .slide { display: none; }
+  .deck .slide.active { display: flex; }
+  /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
+     and is scaled — not reflowed — to the viewport. --deck-scale is set by the
+     fit script on load + resize. Centering via the fixed left/top 50% +
+     translate(-50%,-50%) pattern — grid place-items center misplaces an
+     item larger than the viewport (Opus visual check, 2026-07-19). */
+  .deck .slide.active,
+  body.single-mode .slide {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(var(--deck-scale, 1));
+    transform-origin: center center;
+  }
+  body.single-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+}
+@media print {
+  body { background: none; }
+  .deck .slide {
+    display: flex !important;
+    width: 1600px; height: 900px; aspect-ratio: auto;
+    transform: none !important;
+    page-break-after: always; break-after: page;
+  }
+  .deck-counter { display: none; }
+  @page { size: 1600px 900px; margin: 0; }
+}
+
+/* ---- in-slide step reveal (2026-08-26) --------------------------------------
+   An element marked class="step" starts hidden in the combined deck and is
+   revealed one per next-key press by the nav script below; only when the
+   active slide has no hidden steps left does the key advance the slide.
+   Hidden via opacity + visibility, never display:none, so the slide lays out
+   identically whether a step is shown or not: nothing shifts on reveal, and
+   tools/overflowcheck.mjs still measures the element normally.
+   Scope notes:
+     - body.js.deck-mode only. Standalone single-slide pages (body.single-mode)
+       carry no step sequencer, so their steps simply render visible.
+     - no JS (no .js on body) means visible too.
+     - print shows every step.
+   This is the one place the deck-wide fadeUp keyframe still runs: the slide
+   entry animation stays disabled in components.css, untouched. */
+@media screen {
+  body.js.deck-mode .slide .step:not(.revealed) { opacity: 0; visibility: hidden; }
+  body.js.deck-mode .slide .step.revealed { animation: fadeUp 0.45s ease-out; }
+}
+@media print {
+  .step { opacity: 1 !important; visibility: visible !important; animation: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.js.deck-mode .slide .step.revealed { animation: none; }
+}
+
+</style>
+</head>
+<body class="single-mode">
+<section class="slide slide--light" data-lane="theory" id="s20" data-act="act6" data-owner="draft" data-minutes="1.25"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was two cards plus two bullets):
+
+  THE PAYOFF SLIDE of act 6. s18 shattered the monolith, s19 showed one
+  mechanism (pseudocode units). This one names what the physical breakdown
+  bought, over a picture of the corpus as a knowledge graph.
+
+  Spoken beats (VERBATIM: these are the four texts the slide used to print
+  as "Mechanical side" / "Semantic side" cards and two bullets, now spoken
+  over the graph):
+    - "An LLM usually can't do a logical transformation in one pass; it
+       works far better on smaller, focused contexts."
+    - "The structure itself is information: the pieces are not just the
+       same text. A knowledge graph with metadata and purpose-dependent
+       traversals."
+    - "It manages the dynamic nature of the corpus: an invalidated
+       assumption tells you exactly what depends on it."
+    - "It enables refactoring the structure itself, and a real CI/CD on
+       the design model."
+
+  BOARD TODO RESOLVED (2026-08-26): the board flagged the word "mechanical"
+  as possibly wrong. Resolved by DROPPING both labels. The pair
+  "Mechanical side" / "Semantic side" is gone; the four cards now each name
+  their own payoff, so no umbrella word has to carry the split. Do not
+  reintroduce the labels.
+
+  HOW TO WALK THE PICTURE: name the shapes once, fast, off the legend at
+  the bottom (units, invariants, domain terms, golden traces: the same
+  addressable entities from the previous slide, now with edges between
+  them). Then show the two traversals, one at a time, and stress that both
+  read the SAME graph, just for different purposes:
+    1. TEAL region: pick one unit, take its direct dependencies, and that
+       is the whole context an LLM gets for that edit. Small, bounded,
+       and generated, not curated by hand.
+    2. AMBER spread: mark one invariant changed, and the graph tells you
+       which units and which golden trace go stale. Nobody has to remember.
+  The line to land: "same corpus, two different questions, two different
+  slices. That is what having a structure means."
+
+  VOCABULARY GUARD: the word "assumption" is deliberately NOT printed on
+  this slide. In siphra this same invalidation pattern returns as the
+  assumption register, and that is where the word gets introduced. Do not
+  preview it here, not even verbally: say "invariant" on this slide.
+
+  IF SHORT ON TIME: cut the amber traversal narration to one sentence and
+  keep the teal one, then read cards 2 and 4 straight off the slide.
+  -->
+
+  <style>
+    #s20 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+    #s20 .main {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 55fr 45fr; gap: 26px;
+      align-items: stretch;
+    }
+    #s20 .main > * { min-width: 0; min-height: 0; }
+
+    /* ==== LEFT: the corpus as a knowledge graph ========================== */
+    #s20 .graph { display: block; width: 100%; height: 100%; }
+
+    /* ---- node shapes carry the ENTITY TYPE (see the legend strip) ------- */
+    #s20 .n {
+      fill: var(--navy-0); stroke: var(--muted-2); stroke-width: 1.7;
+    }
+    #s20 .n-label {
+      font-size: 16px; font-weight: 760; fill: var(--white);
+      letter-spacing: -0.01em;
+    }
+    #s20 .n-label--sm { font-size: 15px; font-weight: 720; }
+
+    /* ---- traversal A: the teal context slice ---------------------------
+       A soft region enclosing one unit and its direct dependencies. The
+       region itself is the halo; member nodes take the teal stroke so
+       membership is unambiguous where an outside edge crosses in. */
+    #s20 .slice {
+      fill: var(--theory); fill-opacity: 0.09;
+      stroke: var(--theory); stroke-width: 2; stroke-dasharray: 9 8;
+      stroke-opacity: 0.55;
+    }
+    #s20 .n--slice { stroke: var(--theory); stroke-width: 2.4; }
+
+    /* ---- traversal B: the amber invalidation spread ---------------------
+       No region here: a glow that travels. Each lit node gets a wide,
+       low-opacity amber ring drawn behind it. */
+    #s20 .n--lit { stroke: var(--story); stroke-width: 2.6; }
+    #s20 .glow {
+      fill: none; stroke: var(--story); stroke-width: 12; opacity: 0.16;
+    }
+
+    /* ---- typed edges ---------------------------------------------------- */
+    #s20 .e {
+      fill: none; stroke: var(--muted-2); stroke-width: 1.7; opacity: 0.75;
+    }
+    #s20 .e--ref { stroke-dasharray: 6 6; }
+    #s20 .e--lit {
+      stroke: var(--story); stroke-width: 3.2; opacity: 1;
+    }
+    #s20 .ah { fill: var(--muted-2); }
+    #s20 .ah--lit { fill: var(--story); }
+    #s20 .dh { fill: var(--navy-0); stroke: var(--muted-2); stroke-width: 1.6; }
+
+    /* ---- the changed badge ----------------------------------------------- */
+    #s20 .badge { fill: var(--story); }
+    #s20 .badge-text {
+      font-size: 14px; font-weight: 900; fill: var(--navy-0);
+      letter-spacing: 0.06em;
+    }
+    #s20 .stub { stroke: var(--story); stroke-width: 2.6; stroke-linecap: round; }
+
+    /* ---- the two traversal captions --------------------------------------- */
+    #s20 .cap { font-size: 17px; font-weight: 850; letter-spacing: -0.005em; }
+    #s20 .cap--theory { fill: var(--theory-on-dark); }
+    #s20 .cap--story { fill: var(--story-on-dark); }
+    #s20 .swatch-theory { fill: var(--theory); }
+    #s20 .swatch-story { fill: var(--story); }
+
+    /* ---- legend strip ------------------------------------------------------ */
+    #s20 .leg-rule { stroke: var(--hairline); stroke-width: 1.4; }
+    #s20 .leg-shape { fill: var(--navy-0); stroke: var(--muted-2); stroke-width: 1.5; }
+    #s20 .leg-text { font-size: 14.5px; font-weight: 720; fill: var(--muted-2); }
+
+    /* ==== RIGHT: four payoffs ============================================= */
+    #s20 .cards {
+      display: flex; flex-direction: column; gap: 18px; justify-content: center;
+    }
+    #s20 .card {
+      position: relative;
+      padding: 20px 24px 22px;
+      border-radius: 18px;
+    }
+    #s20 .card h3 {
+      margin: 0 0 8px; padding-left: 28px;
+      font-size: 20px; font-weight: 820; line-height: 1.25;
+      color: var(--white); letter-spacing: -0.015em;
+    }
+    #s20 .card h3 b { color: var(--white); font-weight: 900; }
+    #s20 .card p {
+      margin: 0; padding-left: 28px;
+      font-size: 17px; font-weight: 620; line-height: 1.4; color: var(--muted-2);
+    }
+    #s20 .key {
+      position: absolute; left: 24px; top: 25px;
+      width: 14px; height: 14px; border-radius: 4px;
+    }
+    #s20 .key--theory { background: var(--theory); }
+    #s20 .key--story { background: var(--story); }
+    #s20 .card--theory-tint { background: color-mix(in srgb, var(--theory) 10%, var(--card-bg)); }
+    #s20 .card--story-tint { background: color-mix(in srgb, var(--story) 10%, var(--card-bg)); }
+  </style>
+
+  <div class="title-block">
+    <h1>What the physical breakdown added</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+    <div class="main">
+
+      <!-- ============ LEFT: the knowledge graph ========================== -->
+      <div class="graph-col fade-up">
+        <svg class="graph" viewBox="0 0 786 642" preserveAspectRatio="xMidYMid meet" role="img"
+          aria-label="The corpus drawn as a knowledge graph of fourteen nodes. Four shapes carry four entity types: rounded rectangles are pseudocode units, pointed plates are invariants, small pills are domain terms, and receipt shaped slips are golden traces. Solid arrows mean depends on and dashed lines ending in a small circle mean references. Two traversals are laid over the same graph in two different colours. In the upper left, a soft teal region encloses the unit called gate check together with its three direct dependencies, the domain term bubble, the invariant no silent skip and the unit state machine; the region is captioned context for one edit. In the lower right, the invariant called run never lost carries an amber badge reading changed, and thick amber arrows spread outward from it to the units retry ladder and bubble close and to the golden trace approve flow, all three of which are ringed in an amber glow; that spread is captioned a changed invariant lights up its dependents. The rest of the graph stays neutral grey, so the two traversals never blur together.">
+
+          <defs>
+            <marker id="s20-arrow" viewBox="0 0 12 12" refX="11" refY="6"
+              markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+              <path class="ah" d="M0 0 L12 6 L0 12 Z" />
+            </marker>
+            <marker id="s20-arrow-lit" viewBox="0 0 12 12" refX="11" refY="6"
+              markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="15" orient="auto-start-reverse">
+              <path class="ah ah--lit" d="M0 0 L12 6 L0 12 Z" />
+            </marker>
+            <marker id="s20-dot" viewBox="0 0 12 12" refX="6" refY="6"
+              markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12">
+              <circle class="dh" cx="6" cy="6" r="3.6" />
+            </marker>
+          </defs>
+
+          <!-- ---------- traversal A region, drawn first, behind all ------- -->
+          <rect class="slice" x="40" y="42" width="372" height="254" rx="44" />
+
+          <!-- ---------- amber glow rings, behind the lit nodes ------------ -->
+          <path class="glow" d="M414 308 L434 286 H608 L628 308 L608 330 H434 Z" />
+          <rect class="glow" x="612" y="206" width="164" height="42" rx="11" />
+          <rect class="glow" x="372" y="418" width="162" height="42" rx="11" />
+          <path class="glow"
+            d="M596 406 q0 -10 10 -10 H742 q10 0 10 10 V444 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 Z" />
+
+          <!-- ---------- edges: neutral graph ------------------------------ -->
+          <!-- gate check references the domain term bubble -->
+          <path class="e e--ref" d="M150 148 L122 100" marker-end="url(#s20-dot)" />
+          <!-- gate check depends on the invariant, and on a lower unit -->
+          <path class="e" d="M222 148 L252 100" marker-end="url(#s20-arrow)" />
+          <path class="e" d="M172 190 L152 226" marker-end="url(#s20-arrow)" />
+          <!-- an outside unit depends on the same invariant: the slice is a
+               cut of a bigger graph, not the whole of it -->
+          <path class="e" d="M440 77 L390 76" marker-end="url(#s20-arrow)" />
+          <path class="e e--ref" d="M596 77 L644 77" marker-end="url(#s20-dot)" />
+          <path class="e" d="M528 98 L540 144" marker-end="url(#s20-arrow)" />
+          <path class="e e--ref" d="M700 206 L700 98" marker-end="url(#s20-dot)" />
+          <path class="e" d="M142 356 L142 280" marker-end="url(#s20-arrow)" />
+          <path class="e e--ref" d="M226 380 L243 385" marker-end="url(#s20-dot)" />
+          <path class="e" d="M148 452 L144 404" marker-end="url(#s20-arrow)" />
+          <path class="e" d="M234 470 L366 446" marker-end="url(#s20-arrow)" />
+          <path class="e e--ref" d="M396 418 L364 393" marker-end="url(#s20-dot)" />
+
+          <!-- ---------- edges: traversal B, the amber spread -------------- -->
+          <path class="e e--lit" d="M566 286 L648 254" marker-end="url(#s20-arrow-lit)" />
+          <path class="e e--lit" d="M472 330 L458 412" marker-end="url(#s20-arrow-lit)" />
+          <path class="e e--lit" d="M596 330 L648 390" marker-end="url(#s20-arrow-lit)" />
+
+          <!-- ---------- traversal A nodes: one unit + its direct deps ----- -->
+          <rect class="n n--slice" x="64" y="64" width="94" height="30" rx="15" />
+          <text class="n-label n-label--sm" x="111" y="84" text-anchor="middle">bubble</text>
+
+          <path class="n n--slice" d="M186 76 L206 56 H362 L382 76 L362 96 H206 Z" />
+          <text class="n-label" x="284" y="82" text-anchor="middle">no silent skip</text>
+
+          <rect class="n n--slice" x="112" y="148" width="150" height="42" rx="11" />
+          <text class="n-label" x="187" y="175" text-anchor="middle">gate check</text>
+
+          <rect class="n n--slice" x="58" y="232" width="168" height="42" rx="11" />
+          <text class="n-label" x="142" y="259" text-anchor="middle">state machine</text>
+
+          <!-- ---------- neutral nodes ------------------------------------- -->
+          <rect class="n" x="440" y="56" width="156" height="42" rx="11" />
+          <text class="n-label" x="518" y="83" text-anchor="middle">layer merge</text>
+
+          <rect class="n" x="650" y="62" width="104" height="30" rx="15" />
+          <text class="n-label n-label--sm" x="702" y="82" text-anchor="middle">packet</text>
+
+          <path class="n" d="M452 170 L472 150 H628 L648 170 L628 190 H472 Z" />
+          <text class="n-label" x="550" y="176" text-anchor="middle">one owner</text>
+
+          <rect class="n" x="60" y="356" width="164" height="42" rx="11" />
+          <text class="n-label" x="142" y="383" text-anchor="middle">ledger build</text>
+
+          <rect class="n" x="250" y="372" width="108" height="30" rx="15" />
+          <text class="n-label n-label--sm" x="304" y="392" text-anchor="middle">override</text>
+
+          <path class="n"
+            d="M76 462 q0 -10 10 -10 H222 q10 0 10 10 V500 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 Z" />
+          <text class="n-label n-label--sm" x="154" y="482" text-anchor="middle">start to close</text>
+
+          <!-- ---------- traversal B nodes: the changed invariant + deps --- -->
+          <path class="n n--lit" d="M414 308 L434 286 H608 L628 308 L608 330 H434 Z" />
+          <text class="n-label" x="521" y="314" text-anchor="middle">run never lost</text>
+
+          <path class="stub" d="M488 278 V288" />
+          <rect class="badge" x="436" y="248" width="104" height="30" rx="15" />
+          <text class="badge-text" x="488" y="268" text-anchor="middle">CHANGED</text>
+
+          <rect class="n n--lit" x="612" y="206" width="164" height="42" rx="11" />
+          <text class="n-label" x="694" y="233" text-anchor="middle">retry ladder</text>
+
+          <rect class="n n--lit" x="372" y="418" width="162" height="42" rx="11" />
+          <text class="n-label" x="453" y="445" text-anchor="middle">bubble close</text>
+
+          <path class="n n--lit"
+            d="M596 406 q0 -10 10 -10 H742 q10 0 10 10 V444 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 l -13 8 l -13 -8 Z" />
+          <text class="n-label n-label--sm" x="674" y="426" text-anchor="middle">approve flow</text>
+
+          <!-- ---------- the two traversal captions ------------------------ -->
+          <rect class="swatch-theory" x="44" y="309" width="13" height="13" rx="3" />
+          <text class="cap cap--theory" x="66" y="321">context for one edit</text>
+
+          <rect class="swatch-story" x="372" y="478" width="13" height="13" rx="3" />
+          <text class="cap cap--story" x="394" y="490">a changed invariant lights up its dependents</text>
+
+          <!-- ---------- legend: what the shapes and the edges mean -------- -->
+          <line class="leg-rule" x1="40" y1="548" x2="746" y2="548" />
+
+          <rect class="leg-shape" x="44" y="564" width="34" height="19" rx="5" />
+          <text class="leg-text" x="88" y="578">unit</text>
+
+          <path class="leg-shape" d="M230 573.5 L237 565 H259 L266 573.5 L259 582 H237 Z" />
+          <text class="leg-text" x="276" y="578">invariant</text>
+
+          <rect class="leg-shape" x="416" y="567" width="28" height="14" rx="7" />
+          <text class="leg-text" x="454" y="578">domain term</text>
+
+          <path class="leg-shape"
+            d="M600 567 q0 -4 4 -4 H622 q4 0 4 4 V575 l -6.5 5 l -6.5 -5 l -6.5 5 l -6.5 -5 Z" />
+          <text class="leg-text" x="636" y="578">golden trace</text>
+
+          <path class="e" d="M44 607 H84" marker-end="url(#s20-arrow)" />
+          <text class="leg-text" x="96" y="612">depends on</text>
+
+          <path class="e e--ref" d="M230 607 H266" marker-end="url(#s20-dot)" />
+          <text class="leg-text" x="284" y="612">references</text>
+        </svg>
+      </div>
+
+      <!-- ============ RIGHT: the four payoffs ============================= -->
+      <div class="cards">
+
+        <div class="card fade-up">
+          <h3>The structure itself IS <b>information</b>.</h3>
+          <p>The pieces are not just the same text: a knowledge graph with
+            metadata and purpose-dependent traversals.</p>
+        </div>
+
+        <div class="card card--theory-tint fade-up">
+          <span class="key key--theory" aria-hidden="true"></span>
+          <h3>Small, focused contexts for the LLM.</h3>
+          <p>An LLM works far better on a bounded slice than on one giant context.</p>
+        </div>
+
+        <div class="card card--story-tint fade-up">
+          <span class="key key--story" aria-hidden="true"></span>
+          <h3>Change becomes traceable.</h3>
+          <p>E.g. change an invariant and you see exactly what depends on it.</p>
+        </div>
+
+        <div class="card fade-up">
+          <h3>Refactorable structure, real <b>CI/CD on the design model</b>.</h3>
+          <p>The structure ITSELF can be iterated: enables innovation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(() => {
+  document.body.classList.add("js");
+
+  const fit = () => {
+    const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
+    const h = (w * 9) / 16;
+    document.documentElement.style.setProperty(
+      "--deck-scale",
+      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+    );
+  };
+  fit();
+  addEventListener("resize", fit);
+
+  const slide = document.querySelector(".slide");
+  slide.querySelectorAll(".fade-up").forEach((el, j) => {
+    el.style.animationDelay = (j * 0.08).toFixed(2) + "s";
+  });
+  document.body.dataset.activeTheme = slide.dataset.theme || "dark";
+  requestAnimationFrame(() => slide.classList.add("seen"));
+})();
+</script>
+</body>
+</html>

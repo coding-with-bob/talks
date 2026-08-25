@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iteration Without Drift — s13-why-prose-fails</title>
+<style>
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+
+/* ==========================================================================
+   deck/theme/tokens.css — design tokens distilled from talk #1
+   ("From Prompts to Convergence", Craft 2026 deck in HTML)
+   Source precedent: pairflow_slide_01_title_v4_original_style.html (dark
+   family), pairflow_slide_17 / _41 (light family, kicker/accent-line/card
+   grammar). Tokens only — no component rules here.
+   ========================================================================== */
+
+:root {
+  /* ---- dark navy canvas family (primary for this deck) ---------------- */
+  --navy-0: #050814;            /* gradient start (135deg)                 */
+  --navy-1: #07142c;            /* gradient mid — also the chart surface   */
+  --navy-2: #050711;            /* gradient end                            */
+  --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
+
+  /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
+  --blue: #2f67ff;
+  --blue2: #3d7cff;
+  --cyan: #66e6ef;
+  --white: #f7fbff;
+  --muted: rgba(247, 251, 255, 0.86);
+  --muted-2: rgba(247, 251, 255, 0.60);
+  --muted-3: rgba(247, 251, 255, 0.38);
+
+  /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
+  --coral: #ef6a5a;
+
+  /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
+     Base accents visually sink for SMALL UI on dark canvases. Small text
+     (kickers, tag chips, footer labels) uses these brighter variants;
+     headlines and large marks keep the base tokens. On light slides these
+     resolve back to the base accents (see .slide--light override). */
+  --blue-on-dark: #7aa4ff;
+  --cyan-on-dark: #8ff0f7;
+  --cyan-decor: #66e6ef;        /* decor-gradient cyan (light overrides it)  */
+
+  /* ---- glows & hairlines ----------------------------------------------- */
+  --glow-blue: rgba(47, 103, 255, 0.46);
+  --glow-cyan: rgba(102, 230, 239, 0.30);
+  --hairline: rgba(247, 251, 255, 0.14);
+  --hairline-blue: rgba(61, 124, 255, 0.32);
+  --card-bg: rgba(247, 251, 255, 0.045);
+  --card-bg-strong: rgba(247, 251, 255, 0.08);
+
+  /* ---- chart series (validated: OKLCH band + CVD, on --navy-1) --------- */
+  /* dataviz validator: all PASS on surface #07142c, dark mode             */
+  --series-healthy: #0a99aa;    /* teal   — healthy decaying curve         */
+  --series-panel: #3d7cff;      /* blue   — the ch8 panel curve            */
+  --series-flat: #e2543f;       /* coral  — the L3 non-convergent pathology*/
+  --series-recreation: #9b7bf0; /* violet — the post-cure recreation curve */
+  --chart-grid: rgba(247, 251, 255, 0.10);
+  --chart-axis: rgba(247, 251, 255, 0.55);
+
+  /* ---- epistemic tag chips --------------------------------------------- */
+  --tag-measured: #66e6ef;
+  --tag-deducible: #9b7bf0;
+  --tag-experienced: rgba(247, 251, 255, 0.62);
+
+  /* ---- typography ------------------------------------------------------
+     "Inter" is bundled (deck/assets/fonts/InterVariable.woff2, @font-face
+     emitted by build.mjs) — calibration 2026-07-18 showed talk #1's DELIVERED
+     slides render in Inter, while this machine has no Inter installed and
+     silently fell back to a cramped Helvetica-ish default. */
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* type scale — recalibrated 2026-07-18 against the DELIVERED talk-1 PNGs
+     (raw/talk/slides). Content slides match the HTML sources rendered in
+     Inter (h1 58px / -0.045em / 850 — verified on slide-17: h1 bbox 520x54
+     @1600 => Inter ~56-58px). The TITLE slide's delivered version was larger
+     and looser than the v4 HTML: hero cap ~87px => Inter ~120px, tracking
+     ~-0.02em, weight ~800; subtitle ~50px, ~w700. */
+  --fs-hero: 118px;             /* title-slide h1 (delivered, not v4 HTML) */
+  --fs-h1: 58px;                /* content-slide h1                        */
+  --fs-quote: 52px;             /* black-slide quotes                      */
+  --fs-subtitle: 48px;          /* title-slide subtitle (delivered)        */
+  --fs-body: 24px;
+  --fs-kicker: 23px;
+  --fs-caption: 19px;
+  --fs-small: 16px;
+  --fs-micro: 14px;
+
+  --lh-tight: 1.02;
+  --lh-body: 1.3;
+  --ls-hero: -0.022em;
+  --ls-h1: -0.045em;
+  --ls-kicker: 0.06em;
+  --fw-hero: 800;               /* hero weight (delivered title look)      */
+  --fw-h1: 850;                 /* content h1 weight (talk-1 sources)      */
+
+  /* ---- slide chrome ---------------------------------------------------- */
+  --slide-max-w: 1600px;        /* 16:9 canvas, talk-1 convention          */
+  --slide-pad: 72px;
+  --radius-card: 28px;
+  --radius-chip: 999px;
+  --accent-w: 112px;            /* title accent bar                        */
+  --accent-w-sm: 70px;          /* content accent bar                      */
+  --accent-h: 5px;
+
+  --stage-bg: #111827;          /* page behind the slide (talk-1)          */
+}
+
+/* ---- optional light variant (talk-1 content-slide family) --------------
+   Talk #1 used light canvases for most content slides. Add class
+   slide--light on a <section class="slide"> to opt in. The deck default
+   is the dark family. */
+.slide--light {
+  --navy-0: #ffffff;
+  --navy-1: #f8fbff;
+  --navy-2: #eef7ff;
+  --blue: #1265ff;
+  --blue2: #1265ff;
+  /* readable teal for cyan ACCENTS on light (the raw #19d7ff is a decor-only
+     color in talk #1's light slides — as text it fails contrast). #0a99aa is
+     the validated series teal, 3.2:1 on #f8fbff => large/bold text only. */
+  --cyan: #0a99aa;
+  --cyan-decor: #19d7ff;        /* talk-1 light flow-bg gradient stop        */
+  --white: #07152f;
+  --muted: #20304c;
+  --muted-2: #63718a;
+  --muted-3: rgba(7, 21, 47, 0.35);
+  --hairline: rgba(7, 21, 47, 0.14);
+  --hairline-blue: rgba(18, 101, 255, 0.22);
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-bg-strong: rgba(231, 242, 255, 0.84);
+  --glow-blue: rgba(18, 101, 255, 0.22);
+  --glow-cyan: rgba(10, 153, 170, 0.24);
+  --chart-grid: rgba(7, 21, 47, 0.10);
+  --chart-axis: rgba(7, 21, 47, 0.55);
+  --tag-measured: #0a99aa;
+  --tag-deducible: #7b5cd6;
+  --tag-experienced: rgba(7, 21, 47, 0.62);
+  /* on-dark variants map to light-readable inks. --cyan-on-dark is SMALL
+     chip text on light => needs 4.5:1 — darker than the accent teal. */
+  --blue-on-dark: var(--blue);
+  --cyan-on-dark: #087580;
+}
+
+/* ==========================================================================
+   MEETUP-DECK ADDITION — lane tokens (story vs theory color coding)
+   The Miro board's own visual language carried over: warm amber = the
+   personal story, the deck's cyan family = the theoretical framing.
+   ========================================================================== */
+:root {
+  --story: #f5a94a;             /* amber — large marks, edge stripe (dark)  */
+  --story-on-dark: #ffc06e;     /* small UI (kickers, chips) on navy        */
+  --theory: var(--cyan);        /* theory reuses the cyan family            */
+  --theory-on-dark: var(--cyan-on-dark);
+}
+
+.slide--light {
+  --story: #d9821f;             /* amber readable on light, large/bold      */
+  --story-on-dark: #a05e10;     /* small chip text on light needs 4.5:1     */
+  --theory: var(--cyan);
+  --theory-on-dark: var(--cyan-on-dark);
+}
+
+/* ==========================================================================
+   deck/theme/components.css — composable slide primitives
+   Vocabulary shared by every fragment in deck/src/. Fragments compose these
+   classes plus free HTML/SVG; they never declare hex colors (check.mjs
+   enforces this — use the tokens).
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+/* ---- the 16:9 canvas ---------------------------------------------------- */
+.slide {
+  position: relative;
+  /* Fixed design canvas: layout ALWAYS happens at --slide-max-w × 16:9.
+     Typography is fixed-px, so a viewport-dependent width changes line
+     wrapping and spills content under the bottom bars (owner-reported,
+     2026-07-19). The shell fits the canvas to the viewport with
+     transform: scale(var(--deck-scale)) — never by shrinking the layout. */
+  width: var(--slide-max-w);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  flex: none;
+  background:
+    radial-gradient(circle at 78% 56%, rgba(47, 103, 255, 0.25), transparent 21%),
+    radial-gradient(circle at 76% 57%, rgba(102, 230, 239, 0.18), transparent 15%),
+    linear-gradient(135deg, var(--navy-0) 0%, var(--navy-1) 48%, var(--navy-2) 100%);
+  color: var(--white);
+  font-family: var(--font-sans);
+  padding: var(--slide-pad);
+  display: flex;
+  flex-direction: column;
+}
+
+.slide--light {
+  background: linear-gradient(135deg, var(--navy-0) 0%, var(--navy-1) 48%, var(--navy-2) 100%);
+  border: 1px solid var(--hairline-blue);
+}
+
+/* full-bleed decoration layer (inline SVG fields, background art) */
+.slide .decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.slide > *:not(.decor) { position: relative; z-index: 2; }
+
+/* ---- title block --------------------------------------------------------- */
+.title-block { margin: 0 0 28px; }
+
+.kicker {
+  /* small uppercase text: on-dark accent variant, never the base blue */
+  color: var(--blue-on-dark);
+  font-weight: 850;
+  letter-spacing: var(--ls-kicker);
+  text-transform: uppercase;
+  font-size: var(--fs-kicker);
+  margin-bottom: 14px;
+}
+
+.title-block h1,
+h1.hero {
+  margin: 0;
+  font-weight: var(--fw-h1);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-h1);
+  max-width: 1180px;
+}
+
+h1.hero {
+  font-weight: var(--fw-hero);
+  font-size: var(--fs-hero);
+  letter-spacing: var(--ls-hero);
+  text-shadow: 0 20px 52px rgba(0, 0, 0, 0.36);
+}
+
+.accent { color: var(--blue2); }
+.accent-cyan { color: var(--cyan); }
+
+.accent-line {
+  width: var(--accent-w-sm);
+  height: var(--accent-h);
+  border-radius: var(--radius-chip);
+  background: var(--blue);
+  box-shadow: 0 0 18px var(--glow-blue);
+  margin-top: 22px;
+}
+.accent-line--wide { width: var(--accent-w); margin-top: 42px; }
+
+.subtitle {
+  margin-top: 30px;
+  color: var(--white);
+  font-size: var(--fs-subtitle);
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  font-weight: 680;
+  max-width: 1050px;
+  text-wrap: balance;
+}
+
+/* ---- layout -------------------------------------------------------------- */
+.two-col {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+.two-col--wide-left { grid-template-columns: 1.25fr 0.75fr; }
+.two-col--wide-right { grid-template-columns: 0.75fr 1.25fr; }
+
+.fill { flex: 1; min-height: 0; }
+
+/* ---- cards ---------------------------------------------------------------- */
+.card {
+  border-radius: var(--radius-card);
+  background: var(--card-bg);
+  border: 1px solid var(--hairline);
+  padding: 26px 28px;
+}
+.card--strong {
+  background: var(--card-bg-strong);
+  border-color: var(--hairline-blue);
+}
+.card--dashed {
+  background: transparent;
+  border: 2px dashed var(--hairline-blue);
+}
+
+/* ---- quote block (black-slide grammar) ------------------------------------ */
+.quote-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1240px;
+}
+.quote-block blockquote {
+  margin: 0;
+  font-size: var(--fs-quote);
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  font-weight: 720;
+  color: var(--white);
+}
+.quote-block blockquote::before { content: "\201C"; color: var(--blue2); }
+.quote-block blockquote::after { content: "\201D"; color: var(--blue2); }
+.quote-block figcaption {
+  margin-top: 26px;
+  font-size: var(--fs-caption);
+  color: var(--muted-2);
+  font-weight: 600;
+}
+
+/* ---- epistemic tag chips --------------------------------------------------- */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: var(--radius-chip);
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  border: 1px solid var(--hairline);
+  color: var(--muted);
+  background: var(--card-bg);
+}
+.tag-chip::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted-2);
+}
+.tag-chip--measured { color: var(--cyan-on-dark); border-color: rgba(102, 230, 239, 0.35); }
+.tag-chip--measured::before { background: var(--tag-measured); box-shadow: 0 0 10px var(--glow-cyan); }
+.tag-chip--deducible { color: var(--tag-deducible); border-color: rgba(155, 123, 240, 0.40); }
+.tag-chip--deducible::before { background: var(--tag-deducible); }
+.slide--light .tag-chip--measured { border-color: rgba(10, 153, 170, 0.45); }
+.slide--light .tag-chip--deducible { border-color: rgba(123, 92, 214, 0.45); }
+.tag-chip--experienced { color: var(--tag-experienced); }
+.tag-chip--experienced::before { background: var(--tag-experienced); }
+
+/* ---- the standing humility bar ---------------------------------------------
+   Required on every [measured] chart slide (check.mjs rule c). Text pattern:
+   "n=1 process, k packets — direction, not proof". Sits bottom-right. */
+.slide .humility {
+  position: absolute;
+  width: max-content;
+  right: var(--slide-pad);
+  bottom: calc(var(--slide-pad) - 26px);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--hairline);
+  background: var(--card-bg);
+  color: var(--muted-2);
+  font-size: var(--fs-micro);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+.humility::before {
+  content: "\26A0";
+  font-size: 13px;
+  color: var(--muted-3);
+}
+
+/* ---- evidence footer ---------------------------------------------------------
+   Bottom strip of provenance pointers. Content mirrors data-evidence. */
+.evidence-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--hairline);
+  min-height: 0;
+}
+.evidence-footer .evidence-label {
+  font-size: var(--fs-micro);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-3);
+}
+.evidence-footer code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--muted-2);
+  background: var(--card-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* ---- chart embed --------------------------------------------------------------
+   Wrapper for {{chart:ID}} injections. The generated SVG scales to fit. */
+.chart-embed {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chart-embed svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* ---- misc ----------------------------------------------------------------------- */
+.footnote {
+  font-size: var(--fs-caption);
+  color: var(--muted-2);
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.mono { font-family: var(--font-mono); }
+
+/* ---- signature motion: fadeUp (1337 notes, idea 3) -------------------------
+   ONE deck-wide keyframe: 14px rise, 0.45s, ease-out. The shell JS assigns
+   animation-delay = index * 0.08s to each .fade-up within a slide (stagger)
+   and adds a CUMULATIVE .seen class on first entry (IntersectionObserver) —
+   .seen is never removed, so motion never re-triggers on scrollback.
+   Without JS (.js absent on body) elements stay fully visible. */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* MEETUP-DECK OVERRIDE (owner call, 2026-08-25): entry animation OFF.
+   The keyframe, the .fade-up markup, and the shell JS (stagger + .seen)
+   are kept intact so a future multi-step in-slide reveal can reuse them;
+   to re-enable, restore: opacity: 0 on the first rule and
+   `animation: fadeUp 0.45s ease-out forwards` on the second. */
+.js .fade-up { opacity: 1; }
+.js .slide.seen .fade-up { animation: none; }
+@media print {
+  .fade-up { opacity: 1 !important; animation: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .fade-up { opacity: 1; }
+  .js .slide.seen .fade-up { animation: none; }
+}
+
+/* ==========================================================================
+   MEETUP-DECK ADDITION — lane system (story vs theory)
+   data-lane="story" | "theory" on a <section class="slide"> activates:
+     1. a left edge stripe in the lane color (projector-robust)
+     2. the kicker in the lane color, with a small square lane marker
+     3. the accent-line under the h1 in the lane color
+     4. on LIGHT story slides only: a warm paper background tint
+        (theory keeps the existing cool whites — the light default is
+        already the cool family, so only one new background is needed)
+   Background tint is reinforcement only — the stripe + kicker carry the
+   meaning on dark slides and washed-out projectors.
+   ========================================================================== */
+.slide[data-lane="story"]  { --lane: var(--story);  --lane-ui: var(--story-on-dark); }
+.slide[data-lane="theory"] { --lane: var(--theory); --lane-ui: var(--theory-on-dark); }
+
+.slide[data-lane]::after {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+  background: var(--lane);
+  opacity: 0.9;
+}
+
+.slide[data-lane] .kicker { color: var(--lane-ui); }
+.slide[data-lane] .kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--lane);
+  vertical-align: baseline;
+}
+.slide[data-lane] .accent-line { background: var(--lane); }
+
+/* warm paper tint for light story slides (bg tokens re-pointed locally) */
+.slide--light[data-lane="story"] {
+  --navy-0: #fffefb;
+  --navy-1: #fdf7ec;
+  --navy-2: #f8efdc;
+}
+
+
+html, body { margin: 0; }
+body { background: var(--stage-bg); min-height: 100vh; }
+.deck-counter {
+  position: fixed; bottom: 14px; right: 20px; z-index: 50;
+  color: rgba(247,251,255,0.45);
+  font: 650 14px/1 Inter, sans-serif; letter-spacing: 0.06em;
+}
+/* shell chrome reacts to the active slide's data-theme (1337 notes, idea 2) */
+body[data-active-theme="light"] { background: #dfe7f2; }
+body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
+@media screen {
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  .deck .slide { display: none; }
+  .deck .slide.active { display: flex; }
+  /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
+     and is scaled — not reflowed — to the viewport. --deck-scale is set by the
+     fit script on load + resize. Centering via the fixed left/top 50% +
+     translate(-50%,-50%) pattern — grid place-items center misplaces an
+     item larger than the viewport (Opus visual check, 2026-07-19). */
+  .deck .slide.active,
+  body.single-mode .slide {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(var(--deck-scale, 1));
+    transform-origin: center center;
+  }
+  body.single-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+}
+@media print {
+  body { background: none; }
+  .deck .slide {
+    display: flex !important;
+    width: 1600px; height: 900px; aspect-ratio: auto;
+    transform: none !important;
+    page-break-after: always; break-after: page;
+  }
+  .deck-counter { display: none; }
+  @page { size: 1600px 900px; margin: 0; }
+}
+
+/* ---- in-slide step reveal (2026-08-26) --------------------------------------
+   An element marked class="step" starts hidden in the combined deck and is
+   revealed one per next-key press by the nav script below; only when the
+   active slide has no hidden steps left does the key advance the slide.
+   Hidden via opacity + visibility, never display:none, so the slide lays out
+   identically whether a step is shown or not: nothing shifts on reveal, and
+   tools/overflowcheck.mjs still measures the element normally.
+   Scope notes:
+     - body.js.deck-mode only. Standalone single-slide pages (body.single-mode)
+       carry no step sequencer, so their steps simply render visible.
+     - no JS (no .js on body) means visible too.
+     - print shows every step.
+   This is the one place the deck-wide fadeUp keyframe still runs: the slide
+   entry animation stays disabled in components.css, untouched. */
+@media screen {
+  body.js.deck-mode .slide .step:not(.revealed) { opacity: 0; visibility: hidden; }
+  body.js.deck-mode .slide .step.revealed { animation: fadeUp 0.45s ease-out; }
+}
+@media print {
+  .step { opacity: 1 !important; visibility: visible !important; animation: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.js.deck-mode .slide .step.revealed { animation: none; }
+}
+
+</style>
+</head>
+<body class="single-mode">
+<section class="slide slide--light" data-lane="theory" id="s13" data-act="act3" data-owner="draft" data-minutes="1.5"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- SPEAKER-NOTE (draft, from the Miro board):
+  Seven board categories, regrouped into FOUR failure modes. Grouping approved
+  by the owner on 2026-08-25.
+
+  VISUAL (2026-08-25, fourth pass): left is one tall mock prose page carrying
+  FOUR injuries, top to bottom, each marked by a NUMBERED pin in the gutter.
+  Two further blank sheets are stacked behind the page, offset down-and-left:
+  the spec is many such big chunks of prose, not one page.
+  Right is a 2x2 grid of the four groups (short cards, board category names as
+  pills) with the closing band directly underneath it. The cards carry no
+  badges: the numbers map by the cards' reading order, left to right and top
+  to bottom, so pin n on the page is card n in the grid.
+
+  Delivery: land the page first ("this is what a prose spec looks like"), then
+  walk the four groups. One beat per group, the detail lines below are the
+  board's own sticky texts, verbatim.
+
+  1 . Harder to understand
+      "Hard to understand - concepts overlap and blend (Comprehension)"
+      "Some decisions are not explicit but are lost among the lines
+       (Implicit decisions)"
+      "Harder to keep only the relevant information in context
+       (Context economy)"
+      "Harder for an LLM to deal with a big chunk of text (Context economy)"
+      NOTE: this group mirrors the s07 "both minds are bounded" beat. The
+      first two lines are the human side, the last two are the LLM side, and
+      the card text says "both minds" on purpose. Call the callback out loud.
+      On the page, pin 1 covers the whole first paragraph and carries two
+      cues. First, one teal bar and one amber bar run into each other and the
+      stretch where they overlap turns into a third muddy tone: two concepts,
+      and where they meet the reader cannot tell which is which. Second, on
+      that paragraph's last line a run of text is blurred out, with the
+      watermark "HIDDEN DECISION" beside it: the decision is in there, it is
+      simply not readable as a decision.
+
+  2 . Harder to change
+      "Hard to iterate on (Iteration &amp; coherence)"
+      "It is harder for an LLM to keep unstructured data coherent
+       (Iteration &amp; coherence)"
+      "Hard to manage dependencies (Dependencies &amp; change)"
+      "Hard to manage dynamic changes of the landscape
+       (Dependencies &amp; change)"
+      On the page: faint bracket ticks and indented bars in the second
+      paragraph show sections that the prose never declares ("implicit
+      structure"), and a dashed arrow leaves that paragraph for another one
+      further down, carrying a link nothing in the text names ("hidden
+      dependencies").
+
+  3 . Harder to address
+      "Hard to address specific concepts (Addressability &amp; views)"
+      "Hard to generate different views (different parts/granularity) for
+       different stakeholders (Addressability &amp; views)"
+      "Harder to answer questions about the structural aspects of the corpus
+       (Addressability &amp; views)"
+      On the page: mid paragraph, inline among the text bars, one framed box
+      holds a single "specific concept" and a magnifier rests on its left
+      edge. The paragraph keeps the page's normal line pitch; the plate only
+      bulges gently past its own line. The concept is in the flow like
+      everything else. You can only get at it by hunting for it.
+
+  4 . Harder to verify
+      "Hard to verify (economical asymmetry) (Verification)"
+      On the page, at the very bottom, a checklist line the document cannot
+      answer: "CORRECT: Yes [ ] No [ ]", both boxes unticked, with a red
+      question mark after them.
+
+  The two faint page watermarks ("implicit structure", "hidden dependencies")
+  and the "HIDDEN DECISION" mark are there so the page names its own
+  properties. Do not read them out, they are for the eye.
+
+  Close on the band, not on any single group: none of these is a writing
+  problem. They are all substrate problems.
+  -->
+
+  <style>
+    #s13 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+
+    #s13 .main {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 45fr 55fr; gap: 26px;
+      align-items: stretch;
+    }
+
+    /* ---- LEFT: the injured document ------------------------------------- */
+    #s13 .doc-col { min-width: 0; min-height: 0; }
+    #s13 .doc { display: block; width: 100%; height: 100%; }
+
+    #s13 .page { fill: var(--navy-0); stroke: var(--muted-3); stroke-width: 1.6; }
+    /* the sheets stacked behind the page: many more such chunks exist */
+    #s13 .sheet { fill: var(--navy-0); stroke: var(--hairline); stroke-width: 1.2; }
+    #s13 .page-title { fill: var(--muted-2); }
+    #s13 .page-rule { stroke: var(--hairline); stroke-width: 1.4; }
+    #s13 .line { fill: var(--muted-3); }
+
+    /* injury 1a: two concepts running into one another inside the prose.
+       The overlap is opacity stacking of the two lane accents, so the
+       shared stretch reads as a third tone belonging to neither. */
+    #s13 .blend-a { fill: var(--theory); opacity: 0.62; }
+    #s13 .blend-b { fill: var(--story); opacity: 0.62; }
+    #s13 .blend-x { fill: var(--theory); opacity: 0.5; }
+
+    /* injury 1b: the decision that is on the page but not readable as one */
+    #s13 .blur-bar { fill: var(--muted-2); opacity: 0.85; }
+
+    /* injury 2: structure the prose never declares, plus the dependency
+       that leaves the paragraph without being named */
+    #s13 .bracket {
+      fill: none; stroke: var(--muted-3); stroke-width: 1.6;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s13 .dep {
+      fill: none; stroke: var(--theory); stroke-width: 2.2;
+      stroke-dasharray: 7 6; stroke-linecap: round;
+    }
+    #s13 .dep-head { fill: var(--theory); }
+
+    /* injury 3: the magnifier over one addressable concept, inline in the
+       paragraph flow rather than parked below it */
+    #s13 .plate { fill: var(--navy-0); stroke: var(--theory); stroke-width: 1.6; }
+    #s13 .lens { fill: var(--navy-0); stroke: var(--theory); stroke-width: 2.4; }
+    #s13 .lens-line { fill: var(--muted-2); }
+    #s13 .handle {
+      fill: none; stroke: var(--theory); stroke-width: 3.6; stroke-linecap: round;
+    }
+    #s13 .hint {
+      font-size: 15px; font-weight: 760; fill: var(--theory-on-dark);
+      letter-spacing: 0.004em;
+    }
+
+    /* injury 4: the checklist line the document cannot answer */
+    #s13 .check-rule { stroke: var(--hairline); stroke-width: 1.4; }
+    #s13 .check-t {
+      font-family: var(--font-mono);
+      font-size: 15px; font-weight: 700; fill: var(--muted-2);
+      letter-spacing: 0.12em;
+    }
+    #s13 .check-box { fill: none; stroke: var(--muted-3); stroke-width: 1.7; }
+    #s13 .check-q {
+      font-size: 24px; font-weight: 900; fill: var(--series-flat);
+      letter-spacing: 0.01em;
+    }
+
+    /* numbered reading-order pins in the gutter */
+    #s13 .leader { stroke: var(--muted-3); stroke-width: 1.4; fill: none; }
+    #s13 .badge { fill: var(--theory); }
+    #s13 .badge-t {
+      font-size: 16px; font-weight: 900; fill: var(--navy-0);
+      letter-spacing: 0.01em;
+    }
+
+    /* watermark micro labels printed onto the page itself */
+    #s13 .wm {
+      font-size: 13px; font-weight: 800; fill: var(--muted-3);
+      letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.62;
+    }
+
+    /* ---- RIGHT: the four groups, then the closing band ------------------ */
+    #s13 .right-col {
+      min-width: 0; min-height: 0;
+      display: flex; flex-direction: column; justify-content: center; gap: 20px;
+    }
+    #s13 .grid {
+      flex: none; min-width: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+      align-content: start;
+    }
+    #s13 .gcard {
+      padding: 19px 22px 20px; min-width: 0;
+      display: flex; flex-direction: column;
+    }
+    #s13 .gcard h3 {
+      margin: 0 0 8px; font-size: 22px; font-weight: 850; letter-spacing: -0.02em;
+      line-height: 1.14; color: var(--white);
+    }
+    #s13 .gcard p {
+      margin: 0; font-size: 17px; font-weight: 620; line-height: 1.38;
+      color: var(--muted-2);
+    }
+    /* ---- closing band (s11 / s12 pattern), now inside the right column --- */
+    #s13 .band { flex: none; padding: 16px 24px; text-align: center; }
+    #s13 .band p {
+      margin: 0; font-size: 20px; font-weight: 640;
+      line-height: 1.4; color: var(--muted-2);
+    }
+    #s13 .band p b { font-weight: 850; color: var(--white); }
+  </style>
+
+  <div class="title-block">
+    <div class="kicker">Coherency load strikes</div>
+    <h1>Prose alone fails as a substrate</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+
+    <div class="main">
+
+      <!-- ============ LEFT: one page, four numbered injuries ============= -->
+      <div class="doc-col fade-up">
+        <svg class="doc" viewBox="0 0 643 646" preserveAspectRatio="xMidYMid meet" role="img"
+          aria-label="A tall mock prose document drawn as a white page of gray paragraph bars, with two further blank pages stacked behind it, offset down and to the right, hinting at many more such pages. The front page carries four injuries, each marked by a small numbered pin in the left gutter. One, the first paragraph: inside the text a teal bar and an amber bar overlap and the overlapping stretch turns into a third muddy tone, so the two concepts cannot be told apart where they meet; on that paragraph's last line a run of text is blurred out, labelled hidden decision. Two, the second paragraph: faint bracket ticks and indented bars mark sections the prose never declares, labelled implicit structure, and a dashed arrow leaves that paragraph for another one further down, labelled hidden dependencies. Three, mid page: inline among the evenly spaced text bars a small framed box holds the words specific concept, with a magnifier resting on its left edge. Four, at the foot of the page: a checklist line reading correct, yes, empty box, no, empty box, followed by a red question mark.">
+
+          <defs>
+            <filter id="s13-blur" x="-25%" y="-250%" width="150%" height="600%">
+              <feGaussianBlur stdDeviation="2.6" />
+            </filter>
+          </defs>
+
+          <!-- ---------- the page, on top of a stack of further pages ---- -->
+          <rect class="sheet" x="92" y="22" width="496" height="618" rx="16" />
+          <rect class="sheet" x="84" y="14" width="496" height="618" rx="16" />
+          <rect class="page" x="76" y="6" width="496" height="618" rx="16" />
+          <rect class="page-title" x="112" y="40" width="210" height="17" rx="6" />
+          <line class="page-rule" x1="112" y1="72" x2="536" y2="72" />
+
+          <!-- ---------- paragraph A = injury 1 -------------------------- -->
+          <rect class="line" x="112" y="92" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="110" width="386" height="10" rx="5" />
+
+          <!-- 1a: two concepts, one muddy overlap -->
+          <rect class="blend-a" x="112" y="126" width="268" height="12" rx="6" />
+          <rect class="blend-b" x="304" y="126" width="232" height="12" rx="6" />
+          <rect class="blend-x" x="304" y="126" width="76" height="12" />
+
+          <!-- 1b: the last line, with the decision blurred out of reach -->
+          <rect class="line" x="112" y="150" width="120" height="10" rx="5" />
+          <g filter="url(#s13-blur)">
+            <rect class="blur-bar" x="244" y="150" width="64" height="10" rx="5" />
+            <rect class="blur-bar" x="314" y="150" width="42" height="10" rx="5" />
+          </g>
+          <text class="wm" x="374" y="159">hidden decision</text>
+
+          <!-- ---------- paragraph B = injury 2 -------------------------- -->
+          <!-- 2a: structure the prose never declares -->
+          <path class="bracket" d="M 106 194 L 98 194 L 98 248 L 106 248" />
+          <rect class="line" x="112" y="198" width="424" height="10" rx="5" />
+          <rect class="line" x="130" y="216" width="374" height="10" rx="5" />
+          <rect class="line" x="130" y="234" width="306" height="10" rx="5" />
+
+          <path class="bracket" d="M 106 258 L 98 258 L 98 294 L 106 294" />
+          <rect class="line" x="112" y="262" width="424" height="10" rx="5" />
+          <rect class="line" x="130" y="280" width="170" height="10" rx="5" />
+          <text class="wm" x="316" y="290">implicit structure</text>
+
+          <!-- 2b: the unnamed dependency -->
+          <path class="dep" d="M 516 304 C 498 326, 396 338, 238 344" />
+          <path class="dep-head" transform="translate(236,344) rotate(178)"
+            d="M0 0 L-12 -5 L-12 5 Z" />
+          <text class="wm" x="112" y="328">hidden dependencies</text>
+
+          <!-- paragraph C: where that dependency lands -->
+          <rect class="line" x="112" y="354" width="414" height="10" rx="5" />
+          <rect class="line" x="112" y="372" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="390" width="306" height="10" rx="5" />
+
+          <!-- ---------- paragraph D = injury 3 -------------------------- -->
+          <rect class="line" x="112" y="424" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="442" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="460" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="478" width="286" height="10" rx="5" />
+
+          <!-- the addressable concept, inline in the middle of the flow:
+               the second text line runs the full column; the plate is a
+               white knockout on that line and the lens rests on top of the
+               plate's left edge, so lens, plate and bar read as one unit.
+               The whole assembly is ONE group in local coordinates, drawn
+               after the row bars, so its parts cannot drift apart. -->
+          <g class="mag" transform="translate(169,435)">
+            <path class="handle" d="M -6 25 L 8 39" />
+            <rect class="plate" x="0" y="0" width="176" height="24" rx="6" />
+            <text class="hint" x="15" y="17">specific concept</text>
+            <circle class="lens" cx="-19" cy="12" r="16" />
+            <rect class="lens-line" x="-30" y="5" width="22" height="5" rx="2.5" />
+            <rect class="lens-line" x="-30" y="14" width="15" height="5" rx="2.5" />
+          </g>
+
+          <!-- paragraph E -->
+          <rect class="line" x="112" y="510" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="528" width="406" height="10" rx="5" />
+          <rect class="line" x="112" y="546" width="424" height="10" rx="5" />
+          <rect class="line" x="112" y="564" width="300" height="10" rx="5" />
+
+          <!-- ---------- injury 4: the check the page cannot answer ------ -->
+          <line class="check-rule" x1="112" y1="584" x2="536" y2="584" />
+          <text class="check-t" x="112" y="604">CORRECT:</text>
+          <text class="check-t" x="222" y="604">Yes</text>
+          <rect class="check-box" x="264" y="592" width="15" height="15" rx="3" />
+          <text class="check-t" x="298" y="604">No</text>
+          <rect class="check-box" x="330" y="592" width="15" height="15" rx="3" />
+          <text class="check-q" x="366" y="606">?</text>
+
+          <!-- ---------- numbered gutter pins, one per injury ------------ -->
+          <line class="leader" x1="50" y1="142" x2="70" y2="142" />
+          <circle class="badge" cx="32" cy="142" r="14" />
+          <text class="badge-t" x="32" y="148" text-anchor="middle">1</text>
+
+          <line class="leader" x1="50" y1="288" x2="70" y2="288" />
+          <circle class="badge" cx="32" cy="288" r="14" />
+          <text class="badge-t" x="32" y="294" text-anchor="middle">2</text>
+
+          <line class="leader" x1="50" y1="447" x2="70" y2="447" />
+          <circle class="badge" cx="32" cy="447" r="14" />
+          <text class="badge-t" x="32" y="453" text-anchor="middle">3</text>
+
+          <line class="leader" x1="50" y1="599" x2="70" y2="599" />
+          <circle class="badge" cx="32" cy="599" r="14" />
+          <text class="badge-t" x="32" y="605" text-anchor="middle">4</text>
+        </svg>
+      </div>
+
+      <!-- ============ RIGHT: the four groups, then the band ============== -->
+      <div class="right-col">
+
+        <div class="grid">
+
+          <div class="card gcard fade-up">
+            <h3>Harder to understand</h3>
+            <p>Concepts blend, decisions hide, big chunks overwhelm both minds.</p>
+          </div>
+
+          <div class="card gcard fade-up">
+            <h3>Harder to change</h3>
+            <p>Iteration, dependencies, a shifting landscape: unstructured data is
+              hard to keep coherent.</p>
+          </div>
+
+          <div class="card gcard fade-up">
+            <h3>Harder to address</h3>
+            <p>Specific concepts, stakeholder views, structural questions: prose
+              is one linearization.</p>
+          </div>
+
+          <div class="card gcard fade-up">
+            <h3>Harder to verify</h3>
+            <p>An economical asymmetry: generation became nearly free,
+              verification did not.</p>
+          </div>
+        </div>
+
+        <div class="card band fade-up">
+          <p>Prose can describe the design.
+            <br><b>Changing it coherently is where the pain starts.</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(() => {
+  document.body.classList.add("js");
+
+  const fit = () => {
+    const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
+    const h = (w * 9) / 16;
+    document.documentElement.style.setProperty(
+      "--deck-scale",
+      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+    );
+  };
+  fit();
+  addEventListener("resize", fit);
+
+  const slide = document.querySelector(".slide");
+  slide.querySelectorAll(".fade-up").forEach((el, j) => {
+    el.style.animationDelay = (j * 0.08).toFixed(2) + "s";
+  });
+  document.body.dataset.activeTheme = slide.dataset.theme || "dark";
+  requestAnimationFrame(() => slide.classList.add("seen"));
+})();
+</script>
+</body>
+</html>
