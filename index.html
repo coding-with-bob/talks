@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talks by felho</title>
+<meta name="description" content="Talks by felho, published as self-contained web decks.">
+<style>
+  :root {
+    --bg: #0e1013;
+    --panel: #161a1f;
+    --line: #262c34;
+    --ink: #e8ecf1;
+    --ink-dim: #9aa4b1;
+    --accent: #7fb2ff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+  }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 1.75rem; }
+  h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    font-weight: 650;
+  }
+  .lede { margin: 0; color: var(--ink-dim); max-width: 34rem; }
+  h2 {
+    margin: 3rem 0 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  ul.talks { list-style: none; margin: 0; padding: 0; }
+  li.talk { margin: 0 0 1rem; }
+  a.card {
+    display: block;
+    padding: 1.25rem 1.4rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  a.card:hover, a.card:focus-visible {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .talk-title { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.35rem; }
+  .talk-sub { margin: 0 0 0.6rem; color: var(--ink-dim); font-size: 0.95rem; }
+  .talk-meta {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-size: 0.9rem;
+  }
+  footer p { margin: 0 0 0.6rem; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Talks by felho</h1>
+    <p class="lede">Slides published as self-contained web decks. Plain HTML, no
+      framework, nothing fetched at view time. Arrow keys or space to navigate,
+      print for a PDF.</p>
+  </header>
+
+  <h2>Talks</h2>
+  <ul class="talks">
+    <li class="talk">
+      <a class="card" href="from-prompts-to-convergence/">
+        <p class="talk-title">From Prompts to Convergence</p>
+        <p class="talk-sub">My Journey Building Reliable Agentic Workflows. From
+          one-shot prompting to agentic workflows that converge: bounded work,
+          review roles, a deterministic workflow around a nondeterministic core,
+          and fitness functions instead of impressions.</p>
+        <p class="talk-meta">Craft Conference 2026 &middot; 47 slides</p>
+      </a>
+    </li>
+  </ul>
+
+  <footer>
+    <p>Decks are generated upstream and synced here, so the files in this repo
+      are build output.</p>
+    <p>Fonts: Inter, under the SIL Open Font License 1.1.</p>
+    <p><a href="https://github.com/coding-with-bob/talks">github.com/coding-with-bob/talks</a></p>
+  </footer>
+</div>
+</body>
+</html>
