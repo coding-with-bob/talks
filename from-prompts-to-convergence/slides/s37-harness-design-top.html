@@ -214,12 +214,13 @@
   /* ======================================================================
      TYPOGRAPHY
 
-     "PinnedSF" is the flavor's pinned font file (see tools/flavors.mjs),
-     emitted as @font-face by build.mjs.
+     "PinnedSF" is the deck's pinned font file (see tools/tracking.mjs),
+     emitted as @font-face by build.mjs. The name is HISTORICAL — the family
+     once pinned Apple's San Francisco and now pins Inter calibrated to it.
      The delivered talk-1 slides named `Inter` first, but Inter is not
      installed on the authoring machine, so the stack resolved through
      BlinkMacSystemFont to the macOS system font — that is what was actually
-     projected. Pinning the system font file, plus the theme/tracking.json
+     projected. Pinning a font file, plus the theme/tracking-inter.json
      correction table, reproduces it on any machine. Keep "PinnedSF" FIRST:
      tools/tracking.mjs only corrects elements whose computed stack names it,
      which is how the monospace blocks stay untouched.
