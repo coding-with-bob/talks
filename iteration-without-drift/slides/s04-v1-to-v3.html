@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -579,31 +590,265 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   THE HOOK LANDS HERE: I had to design v3, and at first I had no idea
   how to even start. That helplessness is what kicked off the whole
   innovation direction this talk is about. Deliver it as the hook.
+
+  Spoken beats, moved here verbatim from the old bullet list (the bold
+  words carried the emphasis):
+    - "The v3 idea: any workflow should be configurable."
+      (the emphasis sat on "any")
+    - "v1 and v3 become just configuration files."
+      (the emphasis sat on "configuration files")
+    - "A working v1 existed: 'I just need to design the config.'"
+
+  The diagram replaces those bullets. Both boxes sit on one horizontal
+  axis, so the eye travels straight across. Walk it left to right:
+    1. v1 is a machine with the workflow welded into it. Four fixed steps,
+       hard-wired, no seams to change.
+    2. Generalize: pull the workflow out of the code (the amber arrow).
+    3. On the right, one engine with a config slot on top, and two files
+       dropping into that slot. The old v1 workflow does not disappear,
+       it becomes just a file that plugs in. So does anything else I have
+       not thought of yet.
+  Then land the quote as the punchline, deadpan. The whole talk is the
+  story of how wrong that sentence turned out to be.
   -->
 
   <style>
-    #s04 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-    #s04 .bullets { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 12px; }
-    #s04 .bullets li { font-size: 23px; font-weight: 600; color: var(--muted); line-height: 1.4; }
-    #s04 .bullets li b { color: var(--white); font-weight: 780; }
-    #s04 .cards { display: grid; gap: 16px; }
-    #s04 .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; }
-    #s04 .card p { margin: 0; font-size: 16px; font-weight: 600; color: var(--muted-2); line-height: 1.4; }
+    #s04 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 44px; justify-content: center;
+    }
 
+    /* ---- the generalization diagram --------------------------------------
+       One shared horizontal axis carries the v1 machine and the v3 engine:
+       --axis is the distance from the top of .viz to that axis, and every
+       column is pushed down so its BOX centre lands on it. The right column
+       (configs -> feeders -> engine) starts at the top, so the axis is fixed
+       by where the engine's own centre falls inside it:
+         configs 108 + feeders (8 + 72) + engine 210/2 = 293. */
+    #s04 .viz {
+      --axis: 293px;
+      flex: none; height: 442px;
+      display: flex; align-items: flex-start; justify-content: center; gap: 24px;
+      transform: translate(-15px, -15px);
+    }
+    #s04 .lbl {
+      margin-top: 16px; height: 28px;
+      font-size: 20px; font-weight: 740; line-height: 1.35;
+      color: var(--muted-2); text-align: center;
+    }
+    #s04 .lbl b { color: var(--white); font-weight: 840; }
+
+    /* ---- left: v1 as a hard-wired machine -------------------------------- */
+    #s04 .v1col {
+      width: 394px; flex: none;
+      /* machine is 160 tall: half of it above the axis */
+      margin-top: calc(var(--axis) - 80px);
+    }
+    #s04 .machine {
+      width: 394px; height: 160px;
+      border: 2px solid var(--hairline); border-radius: 22px;
+      background: var(--card-bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* both columns are 442 tall, so the two captions share a baseline:
+       160 machine + 41 + 28 caption == 108 + 80 + 210 + 16 + 28 */
+    #s04 .v1col .lbl { margin-top: 6px; }
+    #s04 .cog {
+      width: 76px; height: 76px; flex: none;
+      border-radius: 14px;
+      border: 1px solid var(--hairline); background: var(--card-bg-strong);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 19px; font-weight: 800;
+      color: var(--muted-2);
+    }
+    #s04 .wire {
+      width: 20px; height: 3px; flex: none;
+      border-radius: 2px; background: var(--muted-3);
+    }
+
+    /* ---- middle: the generalize arrow ------------------------------------ */
+    #s04 .gen {
+      width: 120px; flex: none;
+      /* label 22 + gap 10 + half of the 34-tall arrow = 49 above the axis */
+      margin-top: calc(var(--axis) - 49px);
+    }
+    #s04 .gen-lbl {
+      height: 22px;
+      font-size: 17px; font-weight: 820; line-height: 22px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--story-on-dark); text-align: center;
+      margin-bottom: 10px;
+    }
+    #s04 .gen svg { display: block; }
+    #s04 .gen-line {
+      fill: none; stroke: var(--story); stroke-width: 4; stroke-linecap: round;
+    }
+    #s04 .gen-head { fill: var(--story); }
+
+    /* ---- right: config cards feeding the engine slot ---------------------
+       The column is exactly as wide as the engine, and the two cards are
+       centred over it, so the cluster reads as one unit. */
+    #s04 .v3col { width: 520px; flex: none; }
+
+    #s04 .configs {
+      height: 108px;
+      display: flex; gap: 28px; justify-content: center;
+    }
+    #s04 .cfg {
+      width: 240px; flex: none;
+      border-radius: 18px; border: 1px solid var(--hairline);
+      background: var(--card-bg); padding: 16px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    #s04 .cfg-name {
+      font-family: var(--font-mono); font-size: 19px; font-weight: 800;
+      letter-spacing: -0.01em; color: var(--white); line-height: 1.2;
+    }
+    #s04 .cfg-sub {
+      font-size: 14px; font-weight: 650; line-height: 1.35;
+      color: var(--muted-2); text-wrap: balance;
+    }
+    #s04 .cfg--hot {
+      border: 2px solid var(--story); background: var(--card-bg-strong);
+    }
+    #s04 .cfg--hot .cfg-name { color: var(--story-on-dark); }
+    #s04 .cfg--hot .cfg-sub { color: var(--muted); }
+    #s04 .cfg--any { border-style: dashed; }
+
+    #s04 .feeders { height: 72px; margin-top: 8px; }
+    #s04 .feeders svg { display: block; }
+    #s04 .feed {
+      fill: none; stroke: var(--muted-3); stroke-width: 3; stroke-linecap: round;
+    }
+    #s04 .feed--hot { stroke: var(--story); stroke-width: 4; }
+    #s04 .feed-head { fill: var(--muted-2); }
+
+    #s04 .engine {
+      position: relative;
+      width: 520px; height: 210px;
+      border: 2px solid var(--hairline-blue); border-radius: var(--radius-card);
+      background: var(--card-bg-strong);
+      display: flex; align-items: center; gap: 26px; padding: 0 36px;
+    }
+    #s04 .slot {
+      position: absolute; top: -10px; left: 50%; margin-left: -84px;
+      width: 168px; height: 20px; border-radius: 10px;
+      background: var(--muted); border: 1px solid var(--hairline);
+    }
+    #s04 .gear { flex: none; }
+    #s04 .gear-fill { fill: var(--muted-2); }
+    #s04 .engine-h {
+      font-size: 28px; font-weight: 850; letter-spacing: -0.02em;
+      color: var(--white); line-height: 1.15;
+    }
+    #s04 .engine-p {
+      margin-top: 8px; font-size: 17px; font-weight: 640; line-height: 1.35;
+      color: var(--muted-2);
+    }
+
+    /* ---- the punchline band ---------------------------------------------- */
+    #s04 .band {
+      flex: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    }
+    #s04 .band .q {
+      margin: 0; font-size: 32px; font-weight: 730; letter-spacing: -0.02em;
+      line-height: 1.2; color: var(--white); font-style: italic;
+    }
+    #s04 .band .qm { color: var(--story-on-dark); font-weight: 850; }
+    #s04 .band .tag {
+      font-size: 16px; font-weight: 650; letter-spacing: 0.01em;
+      color: var(--muted-3);
+    }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Setup</div>
-    <h1>v1 &rarr; v3</h1>
+    <div class="kicker">Our story starts here</div>
+    <h1>Moving from v1 to v3</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <ul class="bullets fade-up">
-      <li>The v3 idea: <b>any</b> workflow should be configurable.</li>
-      <li>v1 and v3 become just <b>configuration files</b>.</li>
-      <li>A working v1 existed: &ldquo;I just need to design the config.&rdquo;</li>
-    </ul>
+
+    <div class="viz fade-up">
+
+      <div class="v1col">
+        <div class="machine">
+          <span class="cog">1</span>
+          <span class="wire"></span>
+          <span class="cog">2</span>
+          <span class="wire"></span>
+          <span class="cog">3</span>
+          <span class="wire"></span>
+          <span class="cog">4</span>
+        </div>
+        <div class="lbl"><b>v1:</b> one hard-wired workflow</div>
+      </div>
+
+      <div class="gen">
+        <div class="gen-lbl">generalize</div>
+        <svg width="120" height="34" viewBox="0 0 120 34" role="img"
+          aria-label="A thick arrow points from the hard-wired v1 machine to the v3 engine.">
+          <path class="gen-line" d="M 4 17 L 96 17" />
+          <path class="gen-head" d="M 92 4 L 118 17 L 92 30 Z" />
+        </svg>
+      </div>
+
+      <div class="v3col">
+
+        <div class="configs">
+          <div class="cfg cfg--hot">
+            <span class="cfg-name">config/v1.yaml</span>
+            <span class="cfg-sub">the old workflow, now just a file</span>
+          </div>
+          <div class="cfg cfg--any">
+            <span class="cfg-name">config/&hellip;.yaml</span>
+            <span class="cfg-sub">any workflow</span>
+          </div>
+        </div>
+
+        <div class="feeders">
+          <svg width="520" height="72" viewBox="0 0 520 72" role="img"
+            aria-label="Two lines drop from the config cards onto a shared bus and down into the slot on top of the engine.">
+            <path class="feed" d="M 394 0 L 394 16 Q 394 26, 384 26 L 260 26" />
+            <path class="feed feed--hot" d="M 126 0 L 126 16 Q 126 26, 136 26 L 260 26" />
+            <path class="feed" d="M 260 26 L 260 46" />
+            <path class="feed-head" d="M 248 44 L 260 62 L 272 44 Z" />
+          </svg>
+        </div>
+
+        <div class="engine">
+          <div class="slot"></div>
+          <svg class="gear" width="96" height="96" viewBox="-50 -50 100 100" role="img"
+            aria-label="A gear, standing for the engine that runs whichever config is plugged in.">
+            <g class="gear-fill">
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(45)" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(90)" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(135)" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(180)" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(225)" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(270)" />
+              <rect x="-7.5" y="-47" width="15" height="17" rx="3" transform="rotate(315)" />
+              <path fill-rule="evenodd"
+                d="M -34 0 A 34 34 0 1 0 34 0 A 34 34 0 1 0 -34 0 Z
+                   M -14 0 A 14 14 0 1 1 14 0 A 14 14 0 1 1 -14 0 Z" />
+            </g>
+          </svg>
+          <div class="engine-txt">
+            <div class="engine-h">one engine</div>
+            <div class="engine-p">the workflow logic, written once</div>
+          </div>
+        </div>
+
+        <div class="lbl"><b>v3:</b> one engine, any config</div>
+      </div>
+    </div>
+
+    <div class="band fade-up">
+      <p class="q"><span class="qm">&ldquo;</span>I just need to design the config.<span class="qm">&rdquo;</span></p>
+      <span class="tag">(famous last words)</span>
+    </div>
   </div>
 </section>
 <script>

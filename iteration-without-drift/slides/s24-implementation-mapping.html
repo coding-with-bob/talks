@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -575,36 +586,273 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s24" data-act="act8" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
+  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a six-bullet list):
   Slide-design notes: avoid 'kernel'; one spoken parenthetical for ADR.
+
+  THE CLAIM: nothing in the implementation is invented next to the design
+  corpus. Every block on the left already has its address on the right, so
+  the corpus is not documentation that runs alongside the code, it is the
+  thing the code is generated from.
+
+  Spoken beats (VERBATIM: these are the six bullets the slide used to
+  print, now spoken over the mapping):
+    - "Ledger slice -> the task spec itself (projection, not invention)."
+    - "DDD-lite terms -> the domain types, with drift measured against the
+       registry."
+    - "Golden traces -> executable tests."
+    - "Invariants -> behaviour-preservation rails."
+    - "Absent list -> ADR-gated non-goals." (say the parenthetical out loud
+       once, here: "ADR, Architecture Decision Record")
+    - "A realization ledger + the implementation pinned to a model git
+       hash: the model cannot silently change underneath; CI enforces
+       both."
+
+  HOW TO WALK THE PICTURE: read the five pairs left to right, one line
+  each, fast. Only three arrows carry a qualifier and those are the three
+  places where the mapping is doing real work: the spec is a projection,
+  the types are checked for drift, the traces actually execute. The two
+  bare arrows need no commentary.
+
+  THEN LAND THE BOTTOM STRIP, slower: the two hashes are the whole point
+  of the slide. Design and implementation are pinned to each other, and
+  the pin is enforced by the build, not by discipline.
+
+  IF SHORT ON TIME: read the five rows off the slide without comment and
+  spend the remaining seconds on the bottom strip.
   -->
 
   <style>
-    #s24 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-    #s24 .bullets { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 12px; }
-    #s24 .bullets li { font-size: 23px; font-weight: 600; color: var(--muted); line-height: 1.4; }
-    #s24 .bullets li b { color: var(--white); font-weight: 780; }
-    #s24 .cards { display: grid; gap: 16px; }
-    #s24 .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; }
-    #s24 .card p { margin: 0; font-size: 16px; font-weight: 600; color: var(--muted-2); line-height: 1.4; }
+    #s24 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 20px; justify-content: center;
+      transform: translateY(-10px);
+    }
 
+    /* ==== the mapping diagram =========================================== */
+    #s24 .map { flex: none; height: 400px; transform: translateY(-20px); }
+    #s24 .map svg { width: 100%; height: 100%; display: block; }
+
+    /* ---- column headers -------------------------------------------------- */
+    #s24 .col-h {
+      font-size: 15.5px; font-weight: 850; letter-spacing: 0.12em;
+      fill: var(--muted-2);
+    }
+    #s24 .col-h--story { fill: var(--story-on-dark); }
+    #s24 .col-rule { stroke: var(--hairline); stroke-width: 1.5; }
+
+    /* ---- the paired rows -------------------------------------------------- */
+    #s24 .row-box {
+      fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.4;
+    }
+    #s24 .row-t {
+      font-size: 19px; font-weight: 780; fill: var(--white); letter-spacing: -0.01em;
+    }
+
+    /* ---- LEFT glyphs: the design entities, story accent ------------------- */
+    #s24 .g-bar { fill: var(--story); }
+    #s24 .g-bar--off { fill: var(--muted-3); }
+    #s24 .g-plate {
+      fill: none; stroke: var(--story); stroke-width: 2;
+      stroke-linejoin: round;
+    }
+    #s24 .g-strike { stroke: var(--muted-2); stroke-width: 1.8; }
+
+    /* ---- RIGHT glyphs: the implementation, neutral ink -------------------- */
+    #s24 .i-plate {
+      fill: none; stroke: var(--muted-2); stroke-width: 1.9;
+      stroke-linejoin: round;
+    }
+    #s24 .i-mark {
+      fill: none; stroke: var(--muted-2); stroke-width: 2.2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s24 .i-rule { stroke: var(--muted-3); stroke-width: 1.6; }
+    #s24 .i-tick {
+      fill: none; stroke: var(--story); stroke-width: 2.4;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ---- the one-to-one arrows ------------------------------------------- */
+    #s24 .arw {
+      fill: none; stroke: var(--story); stroke-width: 2.2; opacity: 0.85;
+    }
+    #s24 .ah { fill: var(--story); opacity: 0.85; }
+    #s24 .qual {
+      font-size: 14.5px; font-weight: 820; fill: var(--story-on-dark);
+      letter-spacing: -0.004em;
+    }
+
+    /* ==== the bottom strip: two pinned hashes ============================= */
+    #s24 .chain {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      display: flex; align-items: center; gap: 22px;
+      padding: 15px 44px 16px;
+      border-radius: 20px;
+      background: color-mix(in srgb, var(--story) 12%, var(--card-bg));
+      border: 1px solid var(--hairline-blue);
+    }
+    #s24 .pins { display: flex; align-items: center; gap: 10px; flex: none; }
+    #s24 .hash {
+      font-family: var(--font-mono); font-size: 17px; font-weight: 750;
+      color: var(--white);
+      padding: 8px 16px; border-radius: var(--radius-chip);
+      background: var(--navy-0); border: 1px solid var(--hairline);
+      white-space: nowrap;
+    }
+    #s24 .link { width: 46px; height: 24px; flex: none; display: block; }
+    #s24 .link path {
+      fill: none; stroke: var(--story); stroke-width: 2.2; stroke-linecap: round;
+    }
+    #s24 .vrule { flex: none; width: 1px; height: 44px; background: var(--hairline); }
+    #s24 .shield { width: 40px; height: 44px; flex: none; display: block; }
+    #s24 .shield .sh {
+      fill: none; stroke: var(--story); stroke-width: 2; stroke-linejoin: round;
+    }
+    #s24 .shield .sh-t {
+      font-size: 13px; font-weight: 900; fill: var(--story-on-dark);
+      letter-spacing: 0.04em;
+    }
+    #s24 .chain-txt { min-width: 0; }
+    #s24 .chain-txt p {
+      margin: 0; font-size: 20px; font-weight: 640; line-height: 1.3;
+      color: var(--muted);
+    }
+    #s24 .chain-txt p b { color: var(--white); font-weight: 880; }
+    #s24 .chain-txt .sub {
+      margin-top: 5px;
+      font-size: 14px; font-weight: 800; letter-spacing: 0.09em;
+      text-transform: uppercase; color: var(--muted-2);
+    }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Applied</div>
-    <h1>The blocks map onto the implementation, one to one</h1>
+    <div class="kicker">One structure to rule them all</div>
+    <h1>The blocks map onto the implementation</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <ul class="bullets fade-up">
-      <li>Ledger slice &rarr; the task spec itself (<b>projection, not invention</b>).</li>
-      <li>DDD-lite terms &rarr; the domain types, with drift <b>measured</b> against the registry.</li>
-      <li>Golden traces &rarr; executable tests.</li>
-      <li>Invariants &rarr; behaviour-preservation rails.</li>
-      <li>Absent list &rarr; ADR-gated non-goals.</li>
-      <li>A realization ledger + the implementation pinned to a model git hash: the model cannot silently change underneath; CI enforces both.</li>
-    </ul>
+
+    <!-- ============ five pairs, five arrows ============================== -->
+    <div class="map fade-up">
+      <svg viewBox="0 0 1456 400" preserveAspectRatio="xMidYMid meet" role="img"
+        aria-label="Two columns of five rows each, joined by five arrows running left to right. The left column is headed design corpus and lists, from top to bottom, ledger slice drawn as three stacked bars with the middle one highlighted, DDD-lite terms drawn as a rounded pill, golden traces drawn as a receipt slip with a torn bottom edge, invariants drawn as a pointed plate, and absent list drawn as two struck-out bars. The right column is headed implementation and lists the matching rows: the task spec drawn as a document page with a folded corner, domain types drawn as a pair of code chevrons, executable tests drawn as a ticked circle, behaviour-preservation rails drawn as two parallel rails with ties, and ADR-gated non-goals drawn as a hatched barrier. Three of the five arrows carry a short label above them: projection, not invention on the ledger arrow, drift measured against the registry on the terms arrow, and run on every build on the traces arrow. The invariants and absent-list arrows are bare.">
+
+        <defs>
+          <marker id="s24-arrow" viewBox="0 0 12 12" refX="11" refY="6"
+            markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+            <path class="ah" d="M0 0 L12 6 L0 12 Z" />
+          </marker>
+        </defs>
+
+        <!-- ---------- column headers ---------------------------------- -->
+        <text class="col-h col-h--story" x="228" y="22">DESIGN CORPUS</text>
+        <line class="col-rule" x1="224" y1="34" x2="564" y2="34" />
+        <text class="col-h" x="888" y="22">IMPLEMENTATION</text>
+        <line class="col-rule" x1="884" y1="34" x2="1232" y2="34" />
+
+        <!-- ========== row 1: ledger slice -> the task spec ============= -->
+        <rect class="row-box" x="224" y="50" width="340" height="48" rx="12" />
+        <rect class="g-bar g-bar--off" x="250" y="60" width="28" height="7" rx="3.5" />
+        <rect class="g-bar" x="250" y="70.5" width="28" height="7" rx="3.5" />
+        <rect class="g-bar g-bar--off" x="250" y="81" width="28" height="7" rx="3.5" />
+        <text class="row-t" x="296" y="81">ledger slice</text>
+
+        <text class="qual" x="724" y="58" text-anchor="middle">projection, not invention</text>
+        <path class="arw" d="M576 74 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="50" width="348" height="48" rx="12" />
+        <path class="i-plate" d="M912 59 H930 L938 67 V89 H912 Z" />
+        <path class="i-plate" d="M930 59 V67 H938" />
+        <line class="i-rule" x1="917" y1="75" x2="933" y2="75" />
+        <line class="i-rule" x1="917" y1="81" x2="929" y2="81" />
+        <text class="row-t" x="956" y="81">the task spec</text>
+
+        <!-- ========== row 2: DDD-lite terms -> domain types ============ -->
+        <rect class="row-box" x="224" y="122" width="340" height="48" rx="12" />
+        <rect class="g-plate" x="246" y="135" width="36" height="22" rx="11" />
+        <text class="row-t" x="296" y="153">DDD-lite terms</text>
+
+        <text class="qual" x="724" y="130" text-anchor="middle">drift measured against the registry</text>
+        <path class="arw" d="M576 146 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="122" width="348" height="48" rx="12" />
+        <path class="i-mark" d="M918 137 L910 146 L918 155" />
+        <path class="i-mark" d="M930 137 L938 146 L930 155" />
+        <path class="i-rule" d="M928 136 L920 156" />
+        <text class="row-t" x="956" y="153">domain types</text>
+
+        <!-- ========== row 3: golden traces -> executable tests ========= -->
+        <rect class="row-box" x="224" y="194" width="340" height="48" rx="12" />
+        <path class="g-plate" d="M250 209 q0 -4 4 -4 H274 q4 0 4 4 V222 l -7 5 l -7 -5 l -7 5 l -7 -5 Z" />
+        <text class="row-t" x="296" y="225">golden traces</text>
+
+        <text class="qual" x="724" y="202" text-anchor="middle">run on every build</text>
+        <path class="arw" d="M576 218 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="194" width="348" height="48" rx="12" />
+        <circle class="i-plate" cx="924" cy="218" r="12" />
+        <path class="i-tick" d="M918 218 L922 223 L931 212" />
+        <text class="row-t" x="956" y="225">executable tests</text>
+
+        <!-- ========== row 4: invariants -> behaviour rails ============= -->
+        <rect class="row-box" x="224" y="266" width="340" height="48" rx="12" />
+        <path class="g-plate" d="M248 290 L257 278 H271 L280 290 L271 302 H257 Z" />
+        <text class="row-t" x="296" y="297">invariants</text>
+
+        <path class="arw" d="M576 290 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="266" width="348" height="48" rx="12" />
+        <line class="i-mark" x1="908" y1="283" x2="940" y2="283" />
+        <line class="i-mark" x1="908" y1="297" x2="940" y2="297" />
+        <line class="i-rule" x1="914" y1="283" x2="914" y2="297" />
+        <line class="i-rule" x1="924" y1="283" x2="924" y2="297" />
+        <line class="i-rule" x1="934" y1="283" x2="934" y2="297" />
+        <text class="row-t" x="956" y="297">behaviour-preservation rails</text>
+
+        <!-- ========== row 5: absent list -> ADR-gated non-goals ======== -->
+        <rect class="row-box" x="224" y="338" width="340" height="48" rx="12" />
+        <rect class="g-bar g-bar--off" x="250" y="351" width="28" height="6" rx="3" />
+        <line class="g-strike" x1="247" y1="354" x2="281" y2="354" />
+        <rect class="g-bar g-bar--off" x="250" y="365" width="20" height="6" rx="3" />
+        <line class="g-strike" x1="247" y1="368" x2="273" y2="368" />
+        <text class="row-t" x="296" y="369">absent list</text>
+
+        <path class="arw" d="M576 362 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="338" width="348" height="48" rx="12" />
+        <rect class="i-plate" x="908" y="356" width="34" height="13" rx="3" />
+        <path class="i-mark" d="M916 369 L922 356" />
+        <path class="i-mark" d="M928 369 L934 356" />
+        <text class="row-t" x="956" y="369">ADR-gated non-goals</text>
+      </svg>
+    </div>
+
+    <!-- ============ the pin: two hashes, one build ======================= -->
+    <div class="chain fade-up">
+      <div class="pins">
+        <span class="hash">model @ a1b2c3</span>
+        <svg class="link" viewBox="0 0 46 24" aria-hidden="true">
+          <path d="M21 6 H13 a6 6 0 0 0 0 12 H21" />
+          <path d="M25 6 H33 a6 6 0 0 1 0 12 H25" />
+          <path d="M17 12 H29" />
+        </svg>
+        <span class="hash">impl @ d4e5f6</span>
+      </div>
+
+      <span class="vrule" aria-hidden="true"></span>
+
+      <svg class="shield" viewBox="0 0 40 44" role="img" aria-label="CI badge">
+        <path class="sh" d="M20 3 L35 9 V21 c0 10 -7 16 -15 20 c-8 -4 -15 -10 -15 -20 V9 Z" />
+        <text class="sh-t" x="20" y="26" text-anchor="middle">CI</text>
+      </svg>
+
+      <div class="chain-txt">
+        <p>The model cannot silently change underneath: <b>CI enforces both</b>.</p>
+        <div class="sub">realization ledger + pinned hashes</div>
+      </div>
+    </div>
   </div>
 </section>
 <script>

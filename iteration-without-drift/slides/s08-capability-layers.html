@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -616,14 +627,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
 
     /* ---- the visual row: transformation (left) + the test (right) -------- */
+    /* fixed px split (was 1.28fr/0.72fr with 28px gap, ~914/514 at the
+       1600px canvas): the right column is 70px narrower, its left edge
+       (the transform column's width) unchanged, gap absorbing the freed
+       space so both edges land clean. */
     #s08 .viz {
       height: 396px; flex: none;
-      display: grid; grid-template-columns: 1.28fr 0.72fr; gap: 28px;
+      display: grid; grid-template-columns: 914px 444px; gap: 98px;
       align-items: stretch;
     }
     #s08 .viz > * { min-width: 0; min-height: 0; }
     #s08 svg { width: 100%; height: 100%; display: block; }
-    #s08 .transform { display: flex; align-items: center; justify-content: center; }
+    #s08 .transform {
+      display: flex; align-items: center; justify-content: center;
+      /* whole composition (knot, arrow, layer stack, captions, bracket)
+         nudged up 22px per owner feedback */
+      transform: translateY(-22px);
+    }
 
     /* the v1 tangle */
     #s08 .knot-dot { fill: var(--muted-3); }
@@ -656,12 +676,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
 
     /* ---- right card: the criterion, drawn ------------------------------- */
-    #s08 .test { display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; height: 369px; }
+    #s08 .test {
+      display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; height: 369px;
+      /* left border moved right so the left inset (up-arrow to border) matches
+         the right inset (X to border, see .test-svg crop below), then the
+         whole card shifted 110px left (70px, plus 40px more to balance the
+         wider transform diagram on the left); the grid gap absorbs it. Also
+         nudged up 5px per owner feedback. */
+      width: 403.66px; justify-self: end; transform: translate(-110px, -5px);
+    }
     #s08 .test-head {
       font-size: var(--fs-micro); font-weight: 850; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--muted-3); flex: none;
     }
-    #s08 .test-svg { flex: 1; min-height: 0; }
+    /* the diagram itself keeps its original size (content untouched); the
+       narrower card just crops its left margin so the two insets match. */
+    #s08 .test-svg { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: flex-end; }
+    #s08 .test-svg svg { width: 394px; flex: none; }
 
     #s08 .m-layer { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.5; }
     #s08 .m-new { fill: none; stroke: var(--cyan); stroke-width: 2.4; stroke-dasharray: 8 7; }
@@ -680,21 +711,21 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s08 .steps {
       flex: none; display: grid; grid-auto-flow: column; grid-auto-columns: auto;
       justify-content: center; align-items: center; gap: 18px;
-      margin-top: 34px;
+      margin-top: 4px;
     }
-    #s08 .step {
+    #s08 .pstep {
       display: inline-flex; align-items: center; gap: 14px; white-space: nowrap;
       padding: 13px 24px 13px 14px; border-radius: var(--radius-chip);
       background: var(--card-bg); border: 1px solid var(--hairline);
     }
-    #s08 .step .num {
+    #s08 .pstep .num {
       flex: none; width: 28px; height: 28px; border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--story); color: var(--navy-0);
       font-size: 16px; font-weight: 900; line-height: 1;
     }
-    #s08 .step .txt { font-size: 19px; font-weight: 640; color: var(--muted-2); }
-    #s08 .step .txt b { font-weight: 850; color: var(--white); }
+    #s08 .pstep .txt { font-size: 19px; font-weight: 640; color: var(--muted-2); }
+    #s08 .pstep .txt b { font-weight: 850; color: var(--white); }
     #s08 .steps-arrow { font-size: 22px; font-weight: 800; color: var(--muted-3); }
   </style>
 
@@ -708,11 +739,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     <div class="viz">
 
       <div class="transform fade-up">
-        <svg viewBox="0 0 900 380" preserveAspectRatio="xMidYMid meet" role="img"
+        <svg viewBox="0 0 930 380" preserveAspectRatio="xMidYMid meet" role="img"
           aria-label="A tangle of loose dots and strokes turns, via an arrow, into a clean stack of four capability layers: L0 core execution, L1 workflows, L2 review loops, L3 orchestration. A bracket on the L1 layer is annotated: one layer equals one working set.">
 
           <!-- the v1 tangle: features, wired together, no shape -->
-          <g>
+          <!-- knot group (with its "v1: code" caption) shifted 20px left per
+               owner feedback, reverting part of the earlier +20px rightward
+               move -->
+          <g transform="translate(90 0)">
             <path class="knot-line" d="M26 196 C30 142, 96 126, 122 158 C148 190, 128 232, 90 238
               C52 244, 32 214, 58 190 C84 166, 132 178, 140 208" />
             <path class="knot-line" d="M44 152 C82 200, 66 244, 116 226 C158 210, 148 156, 104 148
@@ -729,36 +763,41 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <circle class="knot-dot" cx="34" cy="224" r="5" />
             <circle class="knot-dot" cx="136" cy="182" r="5" />
           </g>
-          <!-- the move -->
-          <line class="flow" x1="182" y1="190" x2="236" y2="190" />
-          <path class="flow-head" d="M236 177 L262 190 L236 203 Z" />
+          <text class="cap" x="173" y="271" text-anchor="middle">v1: code</text>
+          <!-- the move: re-centered in the wider knot-to-stack gap (widened
+               by the v3 cluster's extra 50px shift below), shaft lengthened
+               to bridge it, arrowhead left a few px clear of the stack -->
+          <line class="flow" x1="252" y1="190" x2="313" y2="190" />
+          <path class="flow-head" d="M313 177 L339 190 L313 203 Z" />
 
           <!-- the clean stack, bottom to top -->
-          <text class="cap" x="462" y="40" text-anchor="middle">&#8230; and 14 more, up to L4</text>
+          <!-- v3 cluster (stack + captions + bracket) shifted an additional
+               50px right, widening the gap after the knot -->
+          <text class="cap" x="532" y="40" text-anchor="middle">&#8230; and 14 more, up to L4</text>
 
-          <rect class="layer" x="282" y="56" width="360" height="58" rx="10" />
-          <text class="layer-code" x="306" y="93">L0d</text>
-          <text class="layer-name" x="360" y="93">lifecycle + activation</text>
+          <rect class="layer" x="352" y="56" width="360" height="58" rx="10" />
+          <text class="layer-code" x="376" y="93">L0d</text>
+          <text class="layer-name" x="430" y="93">lifecycle + activation</text>
 
-          <rect class="layer" x="282" y="126" width="360" height="58" rx="10" />
-          <text class="layer-code" x="306" y="163">L0c</text>
-          <text class="layer-name" x="360" y="163">agent run config</text>
+          <rect class="layer" x="352" y="126" width="360" height="58" rx="10" />
+          <text class="layer-code" x="376" y="163">L0c</text>
+          <text class="layer-name" x="430" y="163">agent run config</text>
 
-          <rect class="layer layer--marked" x="282" y="196" width="360" height="58" rx="10" />
-          <text class="layer-code" x="306" y="233">L0b</text>
-          <text class="layer-name" x="360" y="233">actor + context</text>
+          <rect class="layer layer--marked" x="352" y="196" width="360" height="58" rx="10" />
+          <text class="layer-code" x="376" y="233">L0b</text>
+          <text class="layer-name" x="430" y="233">actor + context</text>
 
-          <rect class="layer" x="282" y="266" width="360" height="58" rx="10" />
-          <text class="layer-code" x="306" y="303">L0a</text>
-          <text class="layer-name" x="360" y="303">kernel skeleton</text>
+          <rect class="layer" x="352" y="266" width="360" height="58" rx="10" />
+          <text class="layer-code" x="376" y="303">L0a</text>
+          <text class="layer-name" x="430" y="303">kernel skeleton</text>
 
-          <text class="cap" x="462" y="352" text-anchor="middle">v3: capability layers</text>
+          <text class="cap" x="532" y="352" text-anchor="middle">v3: capability layers</text>
 
           <!-- the working-set bracket on one layer -->
-          <path class="bracket" d="M654 196 H666 V254 H654" />
-          <path class="bracket" d="M666 225 H676" />
-          <text class="bracket-note" x="686" y="219">one layer =</text>
-          <text class="bracket-note" x="686" y="245">one working set</text>
+          <path class="bracket" d="M724 196 H736 V254 H724" />
+          <path class="bracket" d="M736 225 H746" />
+          <text class="bracket-note" x="756" y="219">one layer =</text>
+          <text class="bracket-note" x="756" y="245">one working set</text>
         </svg>
       </div>
 
@@ -793,17 +832,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     </div>
 
     <div class="steps fade-up">
-      <div class="step">
+      <div class="pstep">
         <span class="num" aria-hidden="true">1</span>
         <span class="txt"><b>Small spec:</b> agree the layer&rsquo;s contract first</span>
       </div>
       <span class="steps-arrow" aria-hidden="true">&#8594;</span>
-      <div class="step">
+      <div class="pstep">
         <span class="num" aria-hidden="true">2</span>
         <span class="txt"><b>v1 reality check:</b> read v1 code, confirm the layer carries it</span>
       </div>
       <span class="steps-arrow" aria-hidden="true">&#8594;</span>
-      <div class="step">
+      <div class="pstep">
         <span class="num" aria-hidden="true">3</span>
         <span class="txt"><b>Draft</b></span>
       </div>

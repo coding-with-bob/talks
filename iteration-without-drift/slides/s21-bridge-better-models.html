@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -572,38 +583,375 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide" data-lane="theory" id="s21" data-act="act7" data-owner="draft" data-minutes="2.0"
-  data-theme="dark" data-exhibits="" data-tags="" data-evidence="">
+<section class="slide slide--light" data-lane="theory" id="s21" data-act="act7" data-owner="draft" data-minutes="2.0"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Steelman first: practices DID age out before. Then the razor.
+  Steelman first: practices DID age out before. Then the balance question.
   Supporting: maintenance gets cheaper; more ambition = more coherency load.
+
+  DELIVERING THE QUESTION (point at the plate riding above the fulcrum). For
+  every piece of structure you are about to build, ask one question out loud:
+  "could a better model infer this?" That single question does the sorting.
+  Yes goes left and ages out. No goes right and gets MORE valuable as the
+  models improve, because that structure is the only place the information
+  exists. Note the beam: it is already tipping right, and it keeps tipping
+  that way as the models get better.
+
+  The two ORIGINAL card paragraphs, kept verbatim as spoken beats now that
+  the cards were replaced by the sorting visual:
+    1. Compensational structures: "Work around current LLM behaviour. These
+       WILL age out, so don't over-invest here."
+    2. Information-carrying structures: "Clarification, intent delivery,
+       decisions and assumptions. Better models cannot infer the
+       UNDERDETERMINED, and will leverage this space even more effectively."
+
+  How to read the visual out loud: unlabelled structure candidates fall in
+  from the top, the question plate rides above the fulcrum, and each
+  candidate comes out on exactly one pan. Nothing lands in the middle.
+
+  WHY THESE CHIPS (only if asked, or if time allows):
+    - "grinding review rounds" is on the LEFT for a precise reason: the round
+      COUNT is the compensational part, not review itself. Designed review
+      lenses stay valuable and get a full slide later (see s26, "Lenses, not
+      redundancy"). What ages out is grinding the same lens over and over
+      because the model missed it the first three times.
+    - "structural verification" (left) and "semantic verification" (right)
+      are a deliberate mirror pair. The machine is taking over structural
+      checking: shape, references, completeness, consistency. Semantic
+      verification stays with whoever holds the intent, because only they
+      know what the corpus was supposed to mean.
+    - "the structure itself" belongs on the right: the decomposition is a
+      decision about where the seams are, and no model can infer seams that
+      were never expressed.
+    - "dynamic intake" is the live channel: a new learning, a new decision,
+      a new requirement has to land somewhere, and the only place it can
+      land is structure you own.
+
+  THE TWO TRENDS (the parenthetical explanations, kept out of the slide):
+    - "cost of structure" falls: better models increasingly maintain the
+      structure for you, so the price of building and keeping it drops.
+    - "coherency load on the model" grows: the better the models get, the
+      more ambition you hand them and the more you delegate, so the amount
+      of coherence they have to hold at once keeps rising. That is exactly
+      why the right-hand pile gets MORE valuable, not less.
   -->
 
   <style>
-    #s21 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-    #s21 .bullets { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 12px; }
-    #s21 .bullets li { font-size: 23px; font-weight: 600; color: var(--muted); line-height: 1.4; }
-    #s21 .bullets li b { color: var(--white); font-weight: 780; }
-    #s21 .cards { display: grid; gap: 16px; }
-    #s21 .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; }
-    #s21 .card p { margin: 0; font-size: 16px; font-weight: 600; color: var(--muted-2); line-height: 1.4; }
+    #s21 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 14px; justify-content: center;
+    }
 
+    /* ---- the sorting stage: the centred composition, trend pair below --- */
+    #s21 .stage {
+      position: relative; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px;
+    }
+
+    /* ---- the unsorted cluster arriving from the top ---------------------- */
+    /* label on its own line, the candidate pills directly under it, so the
+       whole intake reads as one narrow column above the scale */
+    #s21 .feed {
+      flex: none; display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+    }
+    #s21 .feed-label {
+      font-size: 15px; font-weight: 800; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--muted-2);
+    }
+    #s21 .pills { display: flex; align-items: center; gap: 9px; }
+    #s21 .pills span {
+      height: 13px; border-radius: var(--radius-chip);
+      background: var(--muted-3);
+    }
+    #s21 .pills span:nth-child(1) { width: 50px; }
+    #s21 .pills span:nth-child(2) { width: 36px; }
+    #s21 .pills span:nth-child(3) { width: 62px; }
+    #s21 .pills span:nth-child(4) { width: 42px; }
+    #s21 .pills span:nth-child(5) { width: 54px; }
+
+    #s21 .feed-arrow {
+      flex: none; width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid var(--muted-3);
+    }
+
+    /* ---- the decision plate, riding above the fulcrum -------------------- */
+    /* kept small enough that the whole intake stack stays inside the corridor
+       between the two zone boxes */
+    #s21 .plate {
+      flex: none; white-space: nowrap;
+      padding: 9px 20px; border-radius: var(--radius-chip);
+      background: var(--navy-0); border: 2px solid var(--theory);
+      box-shadow: 0 10px 26px var(--glow-cyan);
+      font-size: 19px; font-weight: 820; letter-spacing: -0.01em;
+      line-height: 1.2; color: var(--white);
+    }
+
+    /* the three-part group, centred in the content area and sized to its own
+       columns. Symmetric on purpose: the centre column carries the intake
+       stack and the balance, so the question reads as riding on the fulcrum,
+       and the group's horizontal centre lands on the balance because both
+       outer columns are the same width. The wide column gap is what gives
+       the scale its breathing room. */
+    /* the group grows into the free vertical space so the two boxes carry
+       the slide, capped so they never turn into mostly empty frames */
+    #s21 .sort-group {
+      flex: 1; min-height: 0; max-height: 430px;
+      display: grid; grid-template-columns: 310px 380px 310px;
+      column-gap: 44px; align-items: stretch;
+      /* nudge the whole composition up, clear of the title block */
+      transform: translateY(-15px);
+    }
+
+    /* the centre column: the intake stack sits directly on top of the scale
+       with a tight gap, and the pair is centred against the two zone boxes */
+    #s21 .mid {
+      min-width: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+    }
+
+    /* the intake stack: label, pills, arrow, question plate */
+    #s21 .top-cluster {
+      flex: none; max-width: 100%;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      /* extra nudge above the composition's own -15px, so it sits higher
+         above the scale without colliding with the title block */
+      transform: translateY(-20px);
+    }
+
+    /* ---- the balance scale ----------------------------------------------- */
+    #s21 .balance {
+      flex: none; width: 100%; min-width: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #s21 .balance svg { width: 100%; height: auto; max-height: 100%; }
+    #s21 .balance .stroke {
+      fill: none; stroke: var(--theory);
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s21 .balance .beam { stroke-width: 6; }
+    #s21 .balance .post { stroke-width: 5; }
+    #s21 .balance .rig { stroke-width: 2.5; }
+    #s21 .balance .pan { stroke-width: 4; }
+    #s21 .balance .pivot { fill: var(--theory); stroke: none; }
+    /* the high (left) pan is the one being emptied by better models */
+    #s21 .balance .pan--light { opacity: 0.5; }
+
+    /* ---- the two piles ---------------------------------------------------- */
+    #s21 .zone {
+      min-width: 0; padding: 16px 20px 18px;
+      display: flex; flex-direction: column;
+    }
+    #s21 .zone h3 {
+      margin: 0; font-size: 20px; font-weight: 850;
+      letter-spacing: -0.015em; line-height: 1.2;
+    }
+    #s21 .verdict { margin: 5px 0 0; font-size: 15px; font-weight: 700; line-height: 1.3; }
+    /* flex:1 + centering keeps the chip stacks optically centred in whatever
+       height the two equal-height piles end up with */
+    #s21 .chips {
+      flex: 1; min-height: 0; margin-top: 12px;
+      display: flex; flex-direction: column; justify-content: center; gap: 7px;
+    }
+    #s21 .chip {
+      max-width: 100%; padding: 7px 16px; border-radius: var(--radius-chip);
+      font-size: 16px; font-weight: 720; line-height: 1.2; white-space: nowrap;
+    }
+
+    /* LEFT pile: compensational, drifting off the beam and dissolving */
+    #s21 .zone--left { background: transparent; border: 2px dashed var(--hairline); }
+    /* header block right-aligned to match the chips, which already sit
+       toward the box's right edge */
+    #s21 .zone--left h3, #s21 .zone--left .verdict { text-align: right; }
+    #s21 .zone--left h3 { color: var(--muted-2); }
+    #s21 .zone--left .verdict { color: var(--muted-2); }
+    #s21 .zone--left .chips { align-items: flex-end; }
+    /* a touch smaller than the right pile: the drift ladder below shifts each
+       chip further left, and the longest one has to clear the box's left
+       padding edge even at the deepest offset */
+    #s21 .zone--left .chip {
+      color: var(--muted); background: transparent;
+      border: 1.5px dashed var(--muted-3);
+      font-size: 15px; padding: 7px 14px;
+    }
+    #s21 .zone--left .chip:nth-child(1) { opacity: 0.92; margin-right: 0; }
+    #s21 .zone--left .chip:nth-child(2) { opacity: 0.74; margin-right: 12px; }
+    #s21 .zone--left .chip:nth-child(3) { opacity: 0.56; margin-right: 24px; }
+    #s21 .zone--left .chip:nth-child(4) { opacity: 0.40; margin-right: 34px; }
+
+    /* RIGHT pile: information-carrying, solid and stacked */
+    #s21 .zone--right {
+      background: var(--card-bg); border: 2px solid var(--theory);
+      box-shadow: 0 10px 30px var(--glow-cyan);
+    }
+    #s21 .zone--right h3 { color: var(--white); }
+    #s21 .zone--right .verdict { color: var(--theory-on-dark); }
+    #s21 .zone--right .verdict b { font-weight: 880; letter-spacing: 0.02em; }
+    #s21 .zone--right .chips { align-items: flex-start; }
+    #s21 .zone--right .chip {
+      color: var(--white); background: var(--card-bg-strong);
+      border: 1.5px solid var(--hairline-blue);
+    }
+    #s21 .zone--right .chip b { font-weight: 880; color: var(--theory-on-dark); }
+    /* narrower box: the longest chip wraps to two lines instead of
+       overflowing, and drops a size for a tighter fit */
+    #s21 .zone--right .chip--long {
+      font-size: 14px; white-space: normal; text-align: left;
+    }
+
+    /* ---- the trend pair: what falls, what grows, side by side under the
+       whole composition and above the closing band ------------------------ */
+    #s21 .trends {
+      flex: none; align-self: center;
+      display: flex; flex-direction: row; align-items: center;
+      justify-content: center; gap: 26px;
+    }
+    #s21 .trend { display: flex; align-items: center; gap: 11px; }
+    #s21 .trend svg { flex: none; width: 21px; height: 38px; }
+    #s21 .trend .stroke {
+      fill: none; stroke-width: 3;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s21 .trend-label {
+      font-size: 18px; font-weight: 760; line-height: 1.2; white-space: nowrap;
+    }
+    #s21 .trend--down .stroke { stroke: var(--muted-2); }
+    #s21 .trend--down .trend-label { color: var(--muted-2); }
+    #s21 .trend--up .stroke { stroke: var(--theory); }
+    #s21 .trend--up .trend-label { color: var(--white); }
+    /* vertical bar between the two trends, now that they sit side by side */
+    #s21 .trend-sep {
+      flex: none; width: 1.5px; height: 30px;
+      border-radius: var(--radius-chip); background: var(--hairline);
+    }
+
+    /* ---- closing band (s11 / s12 pattern) --------------------------------- */
+    #s21 .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 14px 48px; text-align: center;
+    }
+    #s21 .band p {
+      margin: 0; font-size: 20px; font-weight: 640;
+      line-height: 1.4; color: var(--muted);
+    }
+    #s21 .band p b { font-weight: 860; color: var(--white); }
+    #s21 .band p b.lead { color: var(--theory-on-dark); letter-spacing: 0.01em; }
   </style>
 
   <div class="title-block">
-    <div class="kicker">The objection, said out loud</div>
-    <h1>&ldquo;Better models will fix it&rdquo;</h1>
+    <div class="kicker">Future proof?</div>
+    <h1>🤔 &ldquo;Better models will fix it&rdquo;</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
-      <div class="card fade-up"><h3>Compensational structures</h3><p>Work around current LLM behaviour. These <b>will</b> age out, so don&rsquo;t over-invest here.</p></div>
-      <div class="card fade-up"><h3>Information-carrying structures</h3><p>Clarification, intent delivery, decisions and assumptions. Better models cannot infer the <b>underdetermined</b>, and will leverage this space even more effectively.</p></div>
+
+    <div class="stage fade-up">
+
+      <div class="sort-group">
+
+        <div class="zone zone--left">
+          <h3>Compensational</h3>
+          <p class="verdict">ages out, do not over-invest</p>
+          <div class="chips">
+            <span class="chip">context chunking</span>
+            <span class="chip">grinding review rounds</span>
+            <span class="chip">structural verification</span>
+            <span class="chip">manual workflow steering</span>
+          </div>
+        </div>
+
+        <!-- centre column: the intake stack sitting close above the scale,
+             so it reads as "this is what we weigh, and this is how" -->
+        <div class="mid">
+
+          <!-- unlabelled structure candidates falling in, the question
+               plate riding above the fulcrum -->
+          <div class="top-cluster">
+            <div class="feed">
+              <div class="feed-label">structure candidates</div>
+              <div class="pills" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+            </div>
+            <div class="feed-arrow" aria-hidden="true"></div>
+
+            <!-- the question that does the sorting: the anchor of the slide -->
+            <div class="plate">Could a better model infer this?</div>
+          </div>
+
+          <!-- the balance: beam already tipping toward the pile that stays -->
+          <div class="balance" aria-hidden="true">
+            <!-- viewBox cropped to the drawing itself (no blank band above the
+                 beam), so the question plate can sit right on top of it -->
+            <svg viewBox="0 34 300 142" preserveAspectRatio="xMidYMid meet" role="presentation">
+              <!-- fulcrum: two legs and a foot, apex under the beam pivot -->
+              <path class="stroke post" d="M150 58 L112 168" />
+              <path class="stroke post" d="M150 58 L188 168" />
+              <path class="stroke post" d="M104 170 L196 170" />
+              <!-- the beam, tipped down to the right -->
+              <path class="stroke beam" d="M36 44 L264 72" />
+              <circle class="pivot" cx="150" cy="58" r="5.5" />
+              <!-- LEFT pan, hanging high: the pile that empties out -->
+              <g class="pan--light">
+                <path class="stroke rig" d="M36 44 L10 100 M36 44 L62 100" />
+                <path class="stroke pan" d="M8 100 L64 100" />
+                <path class="stroke pan" d="M10 100 Q36 124 62 100" />
+              </g>
+              <!-- RIGHT pan, hanging low: the pile that keeps gaining weight -->
+              <g>
+                <path class="stroke rig" d="M264 72 L238 128 M264 72 L290 128" />
+                <path class="stroke pan" d="M236 128 L292 128" />
+                <path class="stroke pan" d="M238 128 Q264 152 290 128" />
+              </g>
+            </svg>
+          </div>
+
+        </div>
+
+        <div class="zone zone--right">
+          <h3>Information-carrying</h3>
+          <p class="verdict">better models will leverage it <b>MORE</b></p>
+          <div class="chips">
+            <span class="chip">decisions &amp; intent</span>
+            <span class="chip">what we are <b>NOT</b> building</span>
+            <span class="chip">semantic verification</span>
+            <span class="chip">the structure itself</span>
+            <span class="chip chip--long">dynamic intake: new learning, new decision, new requirement</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- what falls and what grows as the models improve, read as a pair
+           under the whole composition -->
+      <div class="trends">
+        <div class="trend trend--down">
+          <svg viewBox="0 0 24 44" aria-hidden="true" role="presentation">
+            <path class="stroke" d="M12 5 L12 33" />
+            <path class="stroke" d="M4 26 L12 37 L20 26" />
+          </svg>
+          <span class="trend-label">cost of structure</span>
+        </div>
+        <span class="trend-sep" aria-hidden="true"></span>
+        <div class="trend trend--up">
+          <svg viewBox="0 0 24 44" aria-hidden="true" role="presentation">
+            <path class="stroke" d="M12 39 L12 11" />
+            <path class="stroke" d="M4 18 L12 7 L20 18" />
+          </svg>
+          <span class="trend-label">coherency load on the model</span>
+        </div>
+      </div>
+
     </div>
-    <div class="quote-block fade-up">Rule of thumb: build the structure that encodes
-      <b>decisions and intent</b>; skip what merely works around mechanics.</div>
+
+    <div class="card band fade-up">
+      <p><b class="lead">Rule of thumb:</b> build the structure that encodes
+        <b>decisions and intent</b>; skip what merely works around mechanics.</p>
+    </div>
   </div>
 </section>
 <script>

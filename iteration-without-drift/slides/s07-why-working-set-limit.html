@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -596,9 +607,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   <style>
     #s07 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
 
-    /* two-box pattern (talk #1, s04 "Last time / this time") */
-    #s07 .bounds { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: stretch; }
-    #s07 .bounds .card { display: flex; flex-direction: column; gap: 12px; padding: 30px 32px; }
+    /* two-box pattern (talk #1, s04 "Last time / this time")
+       Cards narrowed by 220px each (owner request, 2026-08-26): fixed
+       column widths instead of 1fr so the pair reads as a centered group
+       with room to spare on both sides, rather than stretching edge to
+       edge. Widened by 70px each (owner request, 2026-08-26) so the human
+       headline "Working memory: 7+/-2 items." fits on one line. Pair
+       nudged up 20px (owner: "up a bit"). */
+    #s07 .bounds {
+      flex: none; align-self: center;
+      display: grid; grid-template-columns: 565px 565px; gap: 32px; align-items: stretch;
+      transform: translateY(-20px);
+    }
+    #s07 .bounds .card { display: flex; flex-direction: column; gap: 12px; padding: 28px 26px; }
     #s07 .bounds .card .label {
       font-size: var(--fs-kicker); font-weight: 850; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--blue-on-dark);
@@ -620,22 +641,29 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       color: var(--theory-on-dark); vertical-align: super; line-height: 0;
     }
 
-    /* the experiment: full width, quieter than the two bounds above it */
-    #s07 .experiment { padding: 20px 28px; }
-    #s07 .experiment p {
+    /* the experiment: closing band (s13 / s18 / s22 pattern), re-centered
+       under the narrower pair and split into two lines. */
+    #s07 .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 20px 48px; text-align: center;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #s07 .band p {
       margin: 0; font-size: 21px; font-weight: 620;
       line-height: 1.4; color: var(--muted-2);
     }
-    #s07 .experiment p .lead {
+    #s07 .band p .lead {
       font-weight: 850; color: var(--theory-on-dark);
       letter-spacing: 0.02em;
     }
-    #s07 .experiment p .result { font-weight: 800; color: var(--white); }
+    #s07 .band p.result { font-weight: 800; color: var(--white); }
 
     #s07 .footnote {
       margin-top: 18px; padding-top: 14px;
       border-top: 1px solid var(--hairline);
       font-size: var(--fs-small); color: var(--muted-3);
+      font-style: italic;
     }
     #s07 .footnote .ref { font-weight: 850; color: var(--theory-on-dark); }
   </style>
@@ -651,7 +679,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <div class="card fade-up">
         <div class="label">Human</div>
         <div class="claim">Working memory: <span class="accent">7&plusmn;2</span> items.</div>
-        <div class="sub">Comprehension is limited. Nobody truly reviews a 50-page design document.</div>
+        <div class="sub">Comprehension is limited.<br>Nobody truly reviews a 50-page design document.</div>
       </div>
       <div class="card card--strong fade-up">
         <div class="label">LLM</div>
@@ -661,9 +689,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       </div>
     </div>
 
-    <div class="card experiment fade-up">
+    <div class="card band fade-up">
       <p><span class="lead">Try it:</span> review with 1 agent and 10 perspectives, then with a
-        subagent per perspective. <span class="result">The second is far more comprehensive.</span></p>
+        subagent per perspective.</p>
+      <p class="result">The second is far more comprehensive.</p>
     </div>
   </div>
 

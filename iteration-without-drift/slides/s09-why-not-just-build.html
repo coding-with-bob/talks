@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -627,9 +638,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       display: flex; align-items: center; justify-content: center;
     }
 
+    /* Composition geometry (owner rework, 2026-08-26). Content column is
+       1454px wide. The row is 410 + 200 + 400 = 1010, so flex centering
+       leaves 222px on each side. The cards lost 230px off their LEFT edge
+       (640 to 410); the loop cluster moved left with them. The target box is
+       sized to HUG the loop (400 = 2 x rx 198 + stroke), so the box edges are
+       the visual edges and plain centering yields a symmetric composition:
+       content edge to card border = 222, loop stroke to content edge = 222.3. */
+
     /* left: the three input streams */
     #s09 .sources {
-      width: 640px; height: 100%;
+      width: 410px; height: 100%;
       display: flex; flex-direction: column; gap: 20px;
     }
     #s09 .sources .card {
@@ -658,17 +677,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
     /* right: the v3 plan node, wrapped in the iterate loop */
     #s09 .target {
-      width: 460px; flex: none;
+      width: 400px; flex: none;
       display: flex; flex-direction: column; align-items: center; gap: 6px;
     }
-    #s09 .node-block { position: relative; width: 460px; height: 300px; }
+    #s09 .node-block { position: relative; width: 400px; height: 300px; }
     #s09 .node-block svg { position: absolute; inset: 0; }
     #s09 .loop {
       fill: none; stroke: var(--story); stroke-width: 3.4; stroke-linecap: round;
     }
     #s09 .loop-head { fill: var(--story); }
     #s09 .node {
-      position: absolute; left: 80px; top: 90px; width: 300px; height: 120px;
+      position: absolute; left: 50px; top: 90px; width: 300px; height: 120px;
       display: flex; align-items: center; justify-content: center;
       border-radius: var(--radius-card);
       background: var(--card-bg-strong); border: 1px solid var(--hairline-blue);
@@ -710,19 +729,27 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <div class="converge">
         <svg width="200" height="420" viewBox="0 0 200 420" role="img"
           aria-label="Three arrows, one from each source, converge into a single arrowhead pointing at the plan node.">
-          <path class="feed" d="M 4 63 C 88 63, 110 210, 182 210" />
-          <path class="feed" d="M 4 210 L 182 210" />
-          <path class="feed" d="M 4 357 C 88 357, 110 210, 182 210" />
-          <path class="feed-head" d="M 180 199 L 200 210 L 180 221 Z" />
+          <!-- Card centres sit at y 63 / 210 / 357 (three flex:1 cards, 20px
+               gaps, 420px column) - unchanged by the narrowing. The three
+               curves merge at x 158 and the single head tips at x 176, which
+               leaves a 24px gap before the loop's left edge. -->
+          <path class="feed" d="M 4 63 C 77 63, 96 210, 158 210" />
+          <path class="feed" d="M 4 210 L 158 210" />
+          <path class="feed" d="M 4 357 C 77 357, 96 210, 158 210" />
+          <path class="feed-head" d="M 156 199 L 176 210 L 156 221 Z" />
         </svg>
       </div>
 
       <div class="target">
         <div class="node-block">
-          <svg width="460" height="300" viewBox="0 0 460 300" role="img"
+          <svg width="400" height="300" viewBox="0 0 400 300" role="img"
             aria-label="A near-complete circular arrow loops around the plan node, its head closing back on itself.">
-            <path class="loop" d="M 213 38 A 190 112 0 1 1 165 45" />
-            <path class="loop-head" d="M 179 42 L 165 53 L 161 37 Z" />
+            <!-- Ellipse centred at (200, 150), rx 198, ry 112: it spans x 2 to
+                 398, so with the 3.4px stroke the loop fills the 400px box
+                 edge to edge. 345 degrees of it are drawn; the gap at the top
+                 is closed by the head pointing back at the start. -->
+            <path class="loop" d="M 177.9 38.7 A 198 112 0 1 1 127.9 45.7" />
+            <path class="loop-head" d="M 143.5 42.2 L 129.6 53.5 L 126.1 37.9 Z" />
           </svg>
           <div class="node">the v3 plan</div>
         </div>

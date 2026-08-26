@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -576,18 +587,62 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Close with the pointer; triangle visual to be placed at slide design.
+  Close with the pointer.
+  The centerpiece is a real screenshot of the companion site's cross-map view
+  (assets/img/companion-triangle.png, provided by the owner 2026-08-26): the
+  three projects sit at the corners, each dot is one building block, and the
+  overlap lobes carry the counts.
+  Closing spoken beat, the one number to say out loud: 23 building blocks
+  recur in ALL THREE projects. That is the recurrence claim of the whole talk,
+  standing on the site anyone can open and check.
   -->
 
   <style>
-    #s29 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-    #s29 .bullets { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 12px; }
-    #s29 .bullets li { font-size: 23px; font-weight: 600; color: var(--muted); line-height: 1.4; }
-    #s29 .bullets li b { color: var(--white); font-weight: 780; }
-    #s29 .cards { display: grid; gap: 16px; }
-    #s29 .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; }
-    #s29 .card p { margin: 0; font-size: 16px; font-weight: 600; color: var(--muted-2); line-height: 1.4; }
+    #s29 .content {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: 700px 1fr; gap: 40px;
+      align-items: center;
+    }
 
+    /* ---- browser-chrome frame (deck browser-mock vocabulary, s14/s15) ---- */
+    #s29 .shot-col { display: flex; flex-direction: column; gap: 12px; }
+    #s29 .frame {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--hairline);
+      background: var(--navy-ink);
+      box-shadow: 0 18px 44px var(--glow-blue);
+    }
+    #s29 .frame-bar {
+      height: 40px; display: flex; align-items: center; gap: 8px;
+      padding: 0 14px;
+      background: var(--card-bg-strong);
+      border-bottom: 1px solid var(--hairline);
+    }
+    #s29 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted-3); }
+    #s29 .dot:first-child { margin-left: 2px; }
+    #s29 .url-pill {
+      margin-left: 12px; flex: 1;
+      padding: 4px 12px; border-radius: var(--radius-chip);
+      background: var(--navy-0); border: 1px solid var(--hairline);
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      color: var(--muted-2); letter-spacing: -0.01em;
+    }
+    /* The screenshot is dark on a light slide by design: the contrast is what
+       makes it read as a screenshot rather than as slide artwork. Sized to the
+       frame body exactly (source is 1840x1380, so 4:3) to avoid letterboxing. */
+    #s29 .shot { display: block; width: 698px; height: 523px; }
+
+    /* ---- link cards -------------------------------------------------------
+       Four compact cards stacked beside the screenshot (patterns, the
+       SelfReport skill, this deck, the previous talk). The stack alternates
+       card--strong / plain so the rhythm reads as deliberate. */
+    #s29 .cards { display: flex; flex-direction: column; gap: 12px; }
+    #s29 .card { padding: 15px 20px; border-radius: 16px; }
+    #s29 .card h3 { margin: 0 0 6px; font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+    #s29 .card h3 a {
+      color: var(--white); text-decoration: underline; text-underline-offset: 4px;
+    }
+    #s29 .card p { margin: 0; font-size: 14px; font-weight: 600; color: var(--muted-2); line-height: 1.35; }
   </style>
 
   <div class="title-block">
@@ -597,17 +652,35 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </div>
 
   <div class="content">
+    <div class="shot-col fade-up">
+      <div class="frame">
+        <div class="frame-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="url-pill">coding-with-bob.github.io/patterns</span>
+        </div>
+        <img class="shot" src="../assets/img/companion-triangle.png"
+          alt="A screenshot from the companion site: three projects, pairflow, project-s and confpipeline, sit at the corners of a triangle. Each project holds a crescent of colored dots for the building blocks found only there: 27, 22 and 23. Between every pair sits an overlap lobe, pairflow plus project-s with 4 blocks marked the thin edge, pairflow plus confpipeline with 16 blocks, project-s plus confpipeline with 11 blocks. In the middle of the triangle a dashed circle holds the shared core, labelled in all three, 23 blocks.">
+      </div>
+    </div>
+
     <div class="cards">
       <div class="card card--strong fade-up">
-        <h3 class="mono">coding-with-bob.github.io/patterns</h3>
+        <h3 class="mono"><a href="https://coding-with-bob.github.io/patterns" target="_blank" rel="noopener">coding-with-bob.github.io/patterns</a></h3>
         <p>The cross-mapped ledger of building blocks distilled from three real projects.</p>
       </div>
       <div class="card fade-up">
-        <h3 class="mono">coding-with-bob.github.io/talks/iteration-without-drift</h3>
+        <h3 class="mono"><a href="https://github.com/coding-with-bob/patterns/tree/main/.claude/skills/SelfReport" target="_blank" rel="noopener">SelfReport skill in the patterns repo</a></h3>
+        <p>Use this skill to create the same HTML report for your own project: make your process building blocks visible, for the good or the bad.</p>
+      </div>
+      <div class="card card--strong fade-up">
+        <h3 class="mono"><a href="https://coding-with-bob.github.io/talks/iteration-without-drift" target="_blank" rel="noopener">coding-with-bob.github.io/talks/iteration-without-drift</a></h3>
         <p>These slides, published as a self-contained web deck.</p>
       </div>
+      <div class="card fade-up">
+        <h3 class="mono"><a href="https://coding-with-bob.github.io/talks/from-prompts-to-convergence" target="_blank" rel="noopener">coding-with-bob.github.io/talks/from-prompts-to-convergence</a></h3>
+        <p>My previous talk, the precursor of this one.</p>
+      </div>
     </div>
-    <div class="footnote fade-up">Visual: the triangle image, the three projects cross-mapped.</div>
   </div>
 </section>
 <script>

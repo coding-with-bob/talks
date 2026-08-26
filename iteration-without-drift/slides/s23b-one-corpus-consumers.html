@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — s2b-legend</title>
+<title>Iteration Without Drift — s23b-one-corpus-consumers</title>
 <style>
 
 @font-face {
@@ -583,60 +583,301 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" id="s2b" data-act="act0" data-owner="draft" data-minutes="0.25"
+<section class="slide slide--light" data-lane="story" id="s23b" data-act="act8" data-owner="draft" data-minutes="0.75"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft):
-  15-20 seconds. Establish the two-lane visual language once; from here the
-  color code re-teaches itself on every slide.
+  <!-- SPEAKER-NOTE (draft, 2026-08-26):
+  Beat 1, the two renders. The architecture document was the corpus rendered
+  for the people building the thing. Handed to the business stakeholder it
+  simply did not land: right content, wrong shape. The fix was NOT a new
+  document written from scratch, and NOT a summary maintained on the side.
+  It was a second render of the same corpus: a guided tour. Same source, two
+  outputs, no divergence to maintain. Say the phrase out loud: "one corpus,
+  many consumers".
+
+  Beat 1b, the tour is a USER JOURNEY, not a summary. The page on screen is
+  "tour/02-a-morning-with-the-product.html" and its first line reads "John
+  opens the dashboard (#S01)". That "#S01" is the morning-briefing row from the
+  scenario ledger on the PREVIOUS slide, so the callback is live on stage:
+  the tour walks a scenario from the ledger, page by page, and the corpus
+  content shows up inside that walk. Worth one sentence, not more: "the tour
+  is not a shorter architecture doc, it is a day in the life of the user,
+  and every page is one scenario from the ledger."
+
+  Beat 2, the table at the bottom of every tour page. Walk the three columns
+  left to right, once, slowly:
+    1 . the assertion itself, with an ID, so it can be referenced and tracked
+        like any other addressable entity in the corpus.
+    2 . the source category, which is the epistemic status: did this come
+        from an interview, from research, or is it a plain assumption we
+        made up. The amber chip is the one that matters: "assumption" means
+        nobody has confirmed this yet.
+    3 . who to validate it with. Not a team, a person or a role. This is the
+        column that turns a document into an action list.
+
+  Beat 3, the payoff line on the band: the register is not paperwork, it is
+  the list of conversations still to be had. The business stakeholder reads
+  the tour, hits the table, and knows exactly which of their colleagues has
+  to be pulled into the room next.
+
+  CORRECT NOT EXACT: the three rows on screen are invented. The shape,
+  the column set and the ID scheme are real; the assertions are not the
+  project's actual ones. Say this if anyone squints at the content.
+
+  If time is short: drop beat 2's per-column walk and just point at the
+  amber chip.
+
+  Spoken beat (removed side-note card): The architecture doc failed here.
+  The fix was a second render, not a new document.
   -->
 
   <style>
-    #s2b { justify-content: center; padding-bottom: calc(var(--slide-pad) + 56px); }
-    #s2b .title-block { margin-bottom: 64px; }
-    #s2b .content { display: flex; flex-direction: column; gap: 26px; }
-    #s2b .lanes { display: flex; justify-content: center; gap: 28px; }
-    #s2b .lane-demo {
-      position: relative; overflow: hidden; min-width: 380px;
-      padding: 30px 58px 30px 68px; border-radius: var(--radius-card);
-      background: var(--card-bg); border: 1px solid var(--hairline);
+    #s23b .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 16px; justify-content: center;
     }
-    #s2b .lane-demo::before {
-      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+    /* The SVG box is 1456x500 at exactly 1:1 with the viewBox, so the
+       composition is already flush against the viewBox top and bottom and
+       cannot be nudged in SVG coordinates without clipping. The 15px lift of
+       the whole composition and the 15px drop of the band are therefore done
+       on the flex boxes: -15 top / +30 bottom on the diagram lifts the SVG by
+       15 and pushes the band down by 15, and the -15 bottom margin on the band
+       keeps the column's total height unchanged so the centering does not
+       drift. */
+    #s23b .diagram { flex: none; height: 500px; margin: -15px 0 30px; }
+    #s23b .diagram svg { width: 100%; height: 100%; display: block; }
+
+    /* ---- mock page / panel chrome (s14 page-anatomy vocabulary) --------- */
+    #s23b .page-bg { fill: var(--navy-0); }
+    #s23b .page-frame { fill: none; stroke: var(--muted-3); stroke-width: 1.6; }
+    #s23b .band-fill { fill: var(--navy-2); }
+    #s23b .page-rule { stroke: var(--hairline); stroke-width: 1.4; }
+    #s23b .dot { fill: var(--muted-3); }
+    #s23b .region { fill: var(--navy-1); stroke: var(--hairline); stroke-width: 1.2; }
+    #s23b .term { fill: var(--card-bg); stroke: var(--story); stroke-width: 1.2; stroke-opacity: 0.6; }
+
+    /* ---- mock text: bars stand in for lines of copy --------------------- */
+    #s23b .h-bar { fill: var(--muted-3); }
+    #s23b .t-line { fill: var(--muted-3); opacity: 0.5; }
+    #s23b .n-line { fill: var(--muted-3); opacity: 0.72; }
+    #s23b .mono-bar { fill: var(--muted-3); opacity: 0.7; }
+    #s23b .inv-bar { fill: var(--muted-3); opacity: 0.55; }
+    #s23b .mock-id { font-family: var(--font-mono); font-size: 12px; font-weight: 700; fill: var(--story-on-dark); }
+    #s23b .mock-url { font-family: var(--font-mono); font-size: 12px; fill: var(--muted-2); }
+
+    /* the tour render speaks louder: bigger headings in the lane accent */
+    #s23b .hi-bar { fill: var(--story); }
+    #s23b .hi-bar--soft { fill: var(--story); opacity: 0.5; }
+
+    /* ---- labels --------------------------------------------------------- */
+    #s23b .token-label { font-size: 17px; font-weight: 850; fill: var(--white); letter-spacing: -0.01em; }
+    #s23b .token-sub { font-size: 14px; font-weight: 650; fill: var(--muted-2); }
+    #s23b .panel-eyebrow {
+      font-size: 15px; font-weight: 850; letter-spacing: 0.1em; fill: var(--story-on-dark);
     }
-    #s2b .lane-demo--story::before  { background: var(--story); }
-    #s2b .lane-demo--theory::before { background: var(--theory); }
-    #s2b .lane-demo .demo-kicker {
-      font-size: var(--fs-small); font-weight: 850; letter-spacing: var(--ls-kicker);
-      text-transform: uppercase; margin-bottom: 10px;
+    #s23b .sublabel { font-size: 15px; font-weight: 700; fill: var(--muted-2); }
+    /* the one tour line that is real copy instead of a gray placeholder bar */
+    #s23b .tour-line { font-family: var(--font-mono); font-size: 12px; font-weight: 640; fill: var(--white); }
+    /* the long tour URL needs a slightly smaller mono than the architect one */
+    #s23b .mock-url--long { font-size: 10.5px; }
+
+    /* ---- the two render arrows ------------------------------------------ */
+    #s23b .flow { fill: none; stroke: var(--story); stroke-width: 2.4; stroke-linecap: round; opacity: 0.85; }
+    #s23b .flow-head { fill: var(--story); }
+
+    /* ---- the mini table on the tour page, and its zoom wedge ------------ */
+    #s23b .mini-tbl { fill: var(--card-bg); stroke: var(--story); stroke-width: 1.6; }
+    #s23b .mini-rule { stroke: var(--story); stroke-width: 1.1; opacity: 0.55; }
+    #s23b .zoom { fill: none; stroke: var(--story); stroke-width: 1.6; opacity: 0.38; }
+
+    /* ---- the exhibit: the domain-assertion table ------------------------ */
+    #s23b .exhibit { fill: var(--card-bg-strong); stroke: var(--story); stroke-width: 2.2; }
+    #s23b .exh-eyebrow {
+      font-size: 14px; font-weight: 850; letter-spacing: 0.1em; fill: var(--story-on-dark);
     }
-    #s2b .lane-demo--story .demo-kicker  { color: var(--story-on-dark); }
-    #s2b .lane-demo--theory .demo-kicker { color: var(--theory-on-dark); }
-    #s2b .lane-demo .demo-kicker::before {
-      content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 10px;
-      border-radius: 3px; vertical-align: baseline;
+    #s23b .th { font-size: 14px; font-weight: 850; letter-spacing: 0.06em; fill: var(--muted-2); }
+    #s23b .rule-line { stroke: var(--muted-3); stroke-width: 1.3; opacity: 0.5; }
+    #s23b .da-id { font-family: var(--font-mono); font-size: 15px; font-weight: 800; fill: var(--story-on-dark); }
+    #s23b .da-t { font-size: 15px; font-weight: 620; fill: var(--white); }
+    #s23b .da-who { font-size: 15px; font-weight: 780; fill: var(--white); }
+    #s23b .chip { fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.4; }
+    #s23b .chip--ev { stroke: var(--cyan); stroke-opacity: 0.6; }
+    #s23b .chip--as { stroke: var(--story); stroke-opacity: 0.8; }
+    #s23b .chip-t { font-size: 14px; font-weight: 800; }
+    #s23b .chip-t--ev { fill: var(--cyan-on-dark); }
+    #s23b .chip-t--as { fill: var(--story-on-dark); }
+
+    /* ---- closing band (s11 / s12 / s21 / s22 pattern) -------------------- */
+    /* The band had only 9px of slack under it, so 6 of the 15px drop is paid
+       for by 3px less vertical padding; its border box then lands flush with
+       the bottom of .content instead of spilling into the slide padding. */
+    #s23b .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 12px 48px; text-align: center; margin-bottom: -9px;
     }
-    #s2b .lane-demo--story .demo-kicker::before  { background: var(--story); }
-    #s2b .lane-demo--theory .demo-kicker::before { background: var(--theory); }
-    #s2b .lane-demo h3 { margin: 0; font-size: 27px; font-weight: 820; color: var(--white); letter-spacing: -0.02em; }
+    #s23b .band p { margin: 0; font-size: 24px; font-weight: 660; line-height: 1.35; color: var(--muted); }
+    #s23b .band p b { font-weight: 870; color: var(--story-on-dark); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">How to read this talk</div>
-    <h1>Two threads, two colors</h1>
+    <div class="kicker">The Swiss Army Corpus</div>
+    <h1>Two renders, many consumers</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="lanes">
-      <div class="lane-demo lane-demo--story fade-up">
-        <div class="demo-kicker">The story</div>
-        <h3>What actually happened</h3>
-      </div>
-      <div class="lane-demo lane-demo--theory fade-up">
-        <div class="demo-kicker">The why</div>
-        <h3>What generalizes</h3>
-      </div>
+    <div class="diagram fade-up">
+      <svg viewBox="0 0 1456 500" preserveAspectRatio="xMidYMid meet" role="img"
+        aria-label="One source corpus on the left, drawn as a small page glyph labelled the S-project corpus, one source. Two amber arrows fan out from it to the right into two mock render panels. The upper panel, Architect render, is dense: two tight columns of small section headings, many short body lines, a mono code block and three invariant rows, with the sublabel full depth, for the builders. The lower panel, Guided tour render, is friendlier: its address reads tour slash 02 a morning with the product dot html, and under one large amber heading bar the first line is real copy, John opens the dashboard, scenario S01, which is the morning briefing row from the scenario ledger on the previous slide. Widely spaced gray narrative lines follow, then a second smaller heading and, along its bottom edge, a small three column table glyph. Its sublabel reads the business stakeholder's view. Two faint amber lines widen from that bottom table glyph to the right, opening it into a large exhibit on the right hand side: a table headed at the bottom of every tour page, with the columns assertion, source and validate with. Row one, DA-012, usage peaks follow the billing cycle, source chip interview, validate with ops lead. Row two, DA-031, partners never share accounts, source chip assumption drawn in amber, validate with partner manager. Row three, DA-047, exports must stay under 10 MB, source chip research, validate with platform team.">
+
+        <!-- ================= the corpus token ============================= -->
+        <rect class="page-bg" x="30" y="160" width="140" height="176" rx="12" />
+        <path class="band-fill" d="M30 172 A12 12 0 0 1 42 160 H158 A12 12 0 0 1 170 172 V182 H30 Z" />
+        <path class="band-fill" d="M30 316 H170 V324 A12 12 0 0 1 158 336 H42 A12 12 0 0 1 30 324 Z" />
+        <rect class="page-frame" x="30" y="160" width="140" height="176" rx="12" />
+        <line class="page-rule" x1="30" y1="182" x2="170" y2="182" />
+        <line class="page-rule" x1="30" y1="316" x2="170" y2="316" />
+
+        <circle class="dot" cx="44" cy="171" r="3" />
+        <circle class="dot" cx="55" cy="171" r="3" />
+        <circle class="dot" cx="66" cy="171" r="3" />
+
+        <rect class="h-bar" x="44" y="194" width="78" height="7" rx="3.5" />
+
+        <rect class="region" x="44" y="210" width="112" height="38" rx="6" />
+        <rect class="mono-bar" x="54" y="219" width="88" height="4" rx="2" />
+        <rect class="mono-bar" x="54" y="228" width="72" height="4" rx="2" />
+        <rect class="mono-bar" x="54" y="237" width="92" height="4" rx="2" />
+
+        <rect class="term" x="44" y="256" width="38" height="15" rx="7.5" />
+        <rect class="term" x="88" y="256" width="30" height="15" rx="7.5" />
+        <rect class="term" x="124" y="256" width="26" height="15" rx="7.5" />
+
+        <rect class="t-line" x="44" y="280" width="104" height="5" rx="2.5" />
+        <rect class="t-line" x="44" y="292" width="88" height="5" rx="2.5" />
+        <rect class="t-line" x="44" y="304" width="98" height="5" rx="2.5" />
+
+        <rect class="inv-bar" x="44" y="322" width="60" height="5" rx="2.5" />
+        <rect class="inv-bar" x="112" y="322" width="44" height="5" rx="2.5" />
+
+        <text class="token-label" x="100" y="364" text-anchor="middle">the S-project corpus</text>
+        <text class="token-sub" x="100" y="386" text-anchor="middle">one source</text>
+
+        <!-- ================= the two render arrows ======================== -->
+        <path class="flow" d="M176 232 C212 232, 210 97, 244 97" />
+        <path class="flow-head" d="M243 90 L255 97 L243 104 Z" />
+        <path class="flow" d="M176 276 C212 276, 210 355, 244 355" />
+        <path class="flow-head" d="M243 348 L255 355 L243 362 Z" />
+
+        <!-- ================= render 1: the architect render =============== -->
+        <rect class="page-bg" x="254" y="4" width="500" height="186" rx="12" />
+        <path class="band-fill" d="M254 16 A12 12 0 0 1 266 4 H742 A12 12 0 0 1 754 16 V34 H254 Z" />
+        <rect class="page-frame" x="254" y="4" width="500" height="186" rx="12" />
+        <line class="page-rule" x1="254" y1="34" x2="754" y2="34" />
+        <text class="panel-eyebrow" x="274" y="25">ARCHITECT RENDER</text>
+        <text class="mock-url" x="734" y="25" text-anchor="end">corpus/architecture.html</text>
+
+        <!-- left column: headings, body lines, a pseudo-code block -->
+        <rect class="h-bar" x="274" y="46" width="88" height="7" rx="3.5" />
+        <rect class="t-line" x="274" y="62" width="224" height="4.5" rx="2.25" />
+        <rect class="t-line" x="274" y="73" width="208" height="4.5" rx="2.25" />
+        <rect class="t-line" x="274" y="84" width="228" height="4.5" rx="2.25" />
+        <rect class="t-line" x="274" y="95" width="182" height="4.5" rx="2.25" />
+
+        <rect class="region" x="274" y="106" width="228" height="40" rx="6" />
+        <rect class="mono-bar" x="286" y="114" width="140" height="4" rx="2" />
+        <rect class="mono-bar" x="286" y="123" width="176" height="4" rx="2" />
+        <rect class="mono-bar" x="286" y="132" width="120" height="4" rx="2" />
+
+        <rect class="h-bar" x="274" y="156" width="64" height="7" rx="3.5" />
+        <rect class="t-line" x="274" y="168" width="220" height="4.5" rx="2.25" />
+        <rect class="t-line" x="274" y="178" width="196" height="4.5" rx="2.25" />
+
+        <!-- right column: more headings, invariant rows, more body -->
+        <rect class="h-bar" x="520" y="46" width="76" height="7" rx="3.5" />
+        <text class="mock-id" x="520" y="68">INV-3</text>
+        <rect class="inv-bar" x="566" y="63" width="140" height="5" rx="2.5" />
+        <text class="mock-id" x="520" y="84">INV-7</text>
+        <rect class="inv-bar" x="566" y="79" width="158" height="5" rx="2.5" />
+        <text class="mock-id" x="520" y="100">INV-9</text>
+        <rect class="inv-bar" x="566" y="95" width="126" height="5" rx="2.5" />
+
+        <rect class="h-bar" x="520" y="114" width="88" height="7" rx="3.5" />
+        <rect class="t-line" x="520" y="130" width="200" height="4.5" rx="2.25" />
+        <rect class="t-line" x="520" y="141" width="186" height="4.5" rx="2.25" />
+        <rect class="t-line" x="520" y="152" width="204" height="4.5" rx="2.25" />
+        <rect class="t-line" x="520" y="163" width="170" height="4.5" rx="2.25" />
+        <rect class="t-line" x="520" y="174" width="192" height="4.5" rx="2.25" />
+
+        <text class="sublabel" x="274" y="210">full depth, for the builders</text>
+
+        <!-- ================= render 2: the guided tour render ============= -->
+        <rect class="page-bg" x="254" y="258" width="500" height="194" rx="12" />
+        <path class="band-fill" d="M254 270 A12 12 0 0 1 266 258 H742 A12 12 0 0 1 754 270 V288 H254 Z" />
+        <rect class="page-frame" x="254" y="258" width="500" height="194" rx="12" />
+        <line class="page-rule" x1="254" y1="288" x2="754" y2="288" />
+        <text class="panel-eyebrow" x="274" y="279">GUIDED TOUR RENDER</text>
+        <text class="mock-url mock-url--long" x="734" y="279" text-anchor="end">tour/02-a-morning-with-the-product.html</text>
+
+        <rect class="hi-bar" x="274" y="302" width="248" height="14" rx="7" />
+        <!-- the one line of real copy: it names scenario S01 from the ledger
+             on the previous fragment, so the tour reads as a user journey -->
+        <text class="tour-line" x="274" y="334">John opens the dashboard (#S01)</text>
+        <rect class="n-line" x="274" y="342" width="452" height="6" rx="3" />
+        <rect class="n-line" x="274" y="356" width="396" height="6" rx="3" />
+
+        <rect class="hi-bar--soft" x="274" y="372" width="168" height="11" rx="5.5" />
+        <rect class="n-line" x="274" y="394" width="428" height="6" rx="3" />
+        <rect class="n-line" x="274" y="406" width="402" height="6" rx="3" />
+
+        <!-- the register, sitting at the bottom of the page -->
+        <rect class="mini-tbl" x="274" y="420" width="460" height="24" rx="4" />
+        <line class="mini-rule" x1="274" y1="428" x2="734" y2="428" />
+        <line class="mini-rule" x1="536" y1="420" x2="536" y2="444" />
+        <line class="mini-rule" x1="640" y1="420" x2="640" y2="444" />
+
+        <text class="sublabel" x="274" y="472">the business stakeholder&rsquo;s view</text>
+
+        <!-- ================= zoom wedge into the exhibit ================== -->
+        <path class="zoom" d="M754 420 L800 200" />
+        <path class="zoom" d="M754 444 L800 500" />
+
+        <!-- ================= the domain-assertion table =================== -->
+        <rect class="exhibit" x="800" y="200" width="652" height="300" rx="14" />
+        <text class="exh-eyebrow" x="826" y="230">AT THE BOTTOM OF EVERY TOUR PAGE</text>
+
+        <text class="th" x="826" y="262">assertion</text>
+        <text class="th" x="1188" y="262">source</text>
+        <text class="th" x="1322" y="262">validate with</text>
+        <line class="rule-line" x1="826" y1="276" x2="1426" y2="276" />
+
+        <text class="da-id" x="826" y="316">DA-012</text>
+        <text class="da-t" x="898" y="316">usage peaks follow the billing cycle</text>
+        <rect class="chip chip--ev" x="1188" y="298" width="108" height="28" rx="14" />
+        <text class="chip-t chip-t--ev" x="1242" y="317" text-anchor="middle">interview</text>
+        <text class="da-who" x="1322" y="316">ops lead</text>
+
+        <line class="rule-line" x1="826" y1="343" x2="1426" y2="343" />
+
+        <text class="da-id" x="826" y="383">DA-031</text>
+        <text class="da-t" x="898" y="383">partners never share accounts</text>
+        <rect class="chip chip--as" x="1188" y="365" width="108" height="28" rx="14" />
+        <text class="chip-t chip-t--as" x="1242" y="384" text-anchor="middle">assumption</text>
+        <text class="da-who" x="1322" y="383">partner manager</text>
+
+        <line class="rule-line" x1="826" y1="410" x2="1426" y2="410" />
+
+        <text class="da-id" x="826" y="450">DA-047</text>
+        <text class="da-t" x="898" y="450">exports must stay under 10 MB</text>
+        <rect class="chip chip--ev" x="1188" y="432" width="108" height="28" rx="14" />
+        <text class="chip-t chip-t--ev" x="1242" y="451" text-anchor="middle">research</text>
+        <text class="da-who" x="1322" y="450">platform team</text>
+      </svg>
+    </div>
+
+    <div class="card band fade-up">
+      <p>The register is not paperwork: it is the <b>list of conversations still to be had</b>.</p>
     </div>
   </div>
 </section>

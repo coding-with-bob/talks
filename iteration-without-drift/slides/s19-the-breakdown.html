@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -649,6 +660,13 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
     #s19 .head-cap { font-size: 16px; font-weight: 700; fill: var(--muted-2); }
 
+    /* the unit label reads as the header for the chain below: bordered pill,
+       same hairline/card-bg vocabulary as the deck's tag-chip */
+    #s19 .unit-header-bg {
+      fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1;
+      rx: var(--radius-chip);
+    }
+
     #s19 .lcode {
       font-family: var(--font-mono); font-size: 18px; font-weight: 800;
       fill: var(--muted-2); letter-spacing: 0.02em;
@@ -714,7 +732,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
 
     /* ---- the three rules -------------------------------------------------- */
-    #s19 .right { display: flex; flex-direction: column; gap: 20px; justify-content: center; }
+    #s19 .right {
+      display: flex; flex-direction: column; gap: 20px; justify-content: center;
+      transform: translate(-15px, -45px);
+    }
     #s19 .rule { display: flex; align-items: flex-start; gap: 16px; padding: 20px 24px; }
     #s19 .rule .num {
       flex: none; width: 30px; height: 30px; border-radius: 50%;
@@ -723,7 +744,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       font-size: 16px; font-weight: 900; line-height: 1;
     }
     #s19 .rule p { margin: 0; font-size: 20px; font-weight: 640; line-height: 1.35; color: var(--muted); }
-    #s19 .rule p b { color: var(--white); font-weight: 850; }
+    #s19 .rule p b { color: var(--story-on-dark); font-weight: 850; }
   </style>
 
   <div class="title-block">
@@ -740,9 +761,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <svg viewBox="0 0 812 406" preserveAspectRatio="xMidYMid meet" role="img"
             aria-label="One pseudocode unit, gate check, tracked up a column of layers from L2 at the bottom to L7 at the top. L2 introduces it and L5 overrides it: both are drawn as solid amber blocks. L3, L4, L6 and L7 are dashed teal ghosts that only inherit. An edit badge sits on L2; the four inheriting layers are ticked with a shared note saying they rebuild automatically with no review, while L5 alone carries an amber callout saying it needs review.">
 
-            <!-- header: which unit is being tracked -->
-            <text class="unit-name" x="60" y="22">gate check</text>
-            <text class="head-cap" x="180" y="22">one unit, tracked up the chain</text>
+            <!-- header: which unit is being tracked, boxed as a bordered pill so it
+                 reads as the header the structure below belongs to; baseline moved
+                 up 6px from the original y=22 -->
+            <rect class="unit-header-bg" x="44" y="0" width="416" height="30" />
+            <text class="unit-name" x="60" y="16">gate check</text>
+            <text class="head-cap" x="180" y="16">one unit, tracked up the chain</text>
 
             <!-- the inheritance spine, drawn under the blocks -->
             <path class="spine" d="M44 357 V67" />

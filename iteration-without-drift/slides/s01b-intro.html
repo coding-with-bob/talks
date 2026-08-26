@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — s2b-legend</title>
+<title>Iteration Without Drift — s01b-intro</title>
 <style>
 
 @font-face {
@@ -583,61 +583,241 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" id="s2b" data-act="act0" data-owner="draft" data-minutes="0.25"
-  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+<section class="slide" id="s01b" data-act="act0" data-owner="draft" data-minutes="0.5"
+  data-theme="dark" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (draft):
-  15-20 seconds. Establish the two-lane visual language once; from here the
-  color code re-teaches itself on every slide.
+  The personal intro, 30 seconds. Establishes standing before the story
+  starts: built and led engineering organizations, shipped at real scale,
+  and the reason this talk exists is caring whether AI workflows survive
+  actual software delivery.
+  No lane marker on purpose: this is a meta slide, like s01 and s2b.
+
+  PORT NOTE: ported from talk1/deck/src/s02-about-me.html (the Craft deck's
+  "About me"). Content is verbatim. Adaptations for this deck:
+   - meetup section-root pattern (id/data-* attrs, .title-block + .kicker +
+     .accent-line vocabulary from theme/components.css)
+   - meetup type scale: h1 falls back to --fs-h1 and the kicker to the
+     shared .kicker rule, instead of talk-1's hand-measured 71px/27px that
+     were fitted to a delivered PNG
+   - color mapping, no hex in fragments (check.mjs rule e): talk-1's
+     --blue-google kicker becomes the standard on-dark kicker accent, and
+     the icon gradient --blue-content to --cyan-decor becomes this deck's
+     --blue to --cyan family
+   - the three icons are the source's inline SVG drawings, kept as is, but
+     sized off a single row height rather than talk-1's per-icon
+     translateY nudges (those existed only to match delivered pixels)
+  Asset: assets/img/title-flow-field.png, copied from talk1/deck/assets/img/.
+
+  AD OVERLAY (2026-08-26): the slide carries one in-slide step (README,
+  "In-slide step reveal"). The first next-key press drops a full-slide scrim
+  over the intro and shows the Compass AI&amp;Tech Summit discount ticket
+  (assets/img/compass-ad.jpg); the second press moves on to the next slide.
+  The ticket art itself only carries the code and the discount, so a one-line
+  caption names the event and the date.
+
+  Spoken beat (ad overlay): I am working on the Compass AI&amp;Tech Summit,
+  October 1-2. This is the plug.
   -->
 
   <style>
-    #s2b { justify-content: center; padding-bottom: calc(var(--slide-pad) + 56px); }
-    #s2b .title-block { margin-bottom: 64px; }
-    #s2b .content { display: flex; flex-direction: column; gap: 26px; }
-    #s2b .lanes { display: flex; justify-content: center; gap: 28px; }
-    #s2b .lane-demo {
-      position: relative; overflow: hidden; min-width: 380px;
-      padding: 30px 58px 30px 68px; border-radius: var(--radius-card);
-      background: var(--card-bg); border: 1px solid var(--hairline);
+    /* Full-bleed flow field replaces the deck's default navy gradient. The
+       artwork's ink sits on the right half, so all text is held to the left
+       column and never crosses the bright band. */
+    #s01b {
+      background-color: var(--navy-ink);
+      background-image: url("../assets/img/title-flow-field.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      justify-content: center;
     }
-    #s2b .lane-demo::before {
-      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+
+    #s01b .title-block { margin-bottom: 34px; }
+    #s01b .title-block h1 { text-shadow: 0 20px 52px rgba(0, 0, 0, 0.34); }
+
+    #s01b .content { max-width: 900px; }
+
+    #s01b .rows { display: grid; gap: 24px; }
+    #s01b .row {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 24px;
+      align-items: center;
     }
-    #s2b .lane-demo--story::before  { background: var(--story); }
-    #s2b .lane-demo--theory::before { background: var(--theory); }
-    #s2b .lane-demo .demo-kicker {
-      font-size: var(--fs-small); font-weight: 850; letter-spacing: var(--ls-kicker);
-      text-transform: uppercase; margin-bottom: 10px;
+
+    #s01b .icon { height: 78px; display: grid; align-items: center; justify-items: start; }
+    #s01b .icon svg {
+      stroke-width: 2.05;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 10px var(--glow-cyan));
     }
-    #s2b .lane-demo--story .demo-kicker  { color: var(--story-on-dark); }
-    #s2b .lane-demo--theory .demo-kicker { color: var(--theory-on-dark); }
-    #s2b .lane-demo .demo-kicker::before {
-      content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 10px;
-      border-radius: 3px; vertical-align: baseline;
+    #s01b .icon--server svg { width: 76px; height: 74px; }
+    #s01b .icon--globe svg { width: 72px; height: 72px; }
+    #s01b .icon--chart svg { width: 70px; height: 74px; }
+
+    #s01b .row-text {
+      color: var(--white);
+      font-size: 29px;
+      line-height: 1.14;
+      letter-spacing: -0.005em;
+      font-weight: 600;
     }
-    #s2b .lane-demo--story .demo-kicker::before  { background: var(--story); }
-    #s2b .lane-demo--theory .demo-kicker::before { background: var(--theory); }
-    #s2b .lane-demo h3 { margin: 0; font-size: 27px; font-weight: 820; color: var(--white); letter-spacing: -0.02em; }
+
+    #s01b .closing {
+      margin-top: 44px;
+      color: var(--muted);
+      font-size: 27px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      font-weight: 620;
+    }
+
+    /* ---- ad overlay (class="step": hidden until the first next press) ----
+       Absolute + inset 0 so it covers the whole canvas, padding included, and
+       sits above the intro content (.slide > * gets z-index 2 from
+       components.css). While hidden the shell sets visibility: hidden, which
+       also kills pointer events, so nothing here can catch a click. */
+    #s01b .ad-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      background: color-mix(in srgb, var(--navy-ink) 86%, transparent);
+      backdrop-filter: blur(3px);
+    }
+
+    /* 3:2 art, sized off the canvas height (640 / 900 = 71%). */
+    #s01b .ad-poster {
+      display: block;
+      height: 640px;
+      width: auto;
+      border-radius: var(--radius-card);
+      border: 1px solid var(--hairline);
+      box-shadow:
+        0 30px 78px color-mix(in srgb, var(--navy-ink) 88%, transparent),
+        0 0 46px var(--glow-cyan);
+    }
+
+    #s01b .ad-caption {
+      color: var(--white);
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      font-weight: 700;
+      text-align: center;
+    }
+    #s01b .ad-caption b { color: var(--cyan-on-dark); font-weight: 800; }
   </style>
 
-  <div class="title-block">
-    <div class="kicker">How to read this talk</div>
-    <h1>Two threads, two colors</h1>
+  <div class="title-block fade-up">
+    <div class="kicker">About me</div>
+    <h1>I&rsquo;ve built and led<br>engineering organizations</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="lanes">
-      <div class="lane-demo lane-demo--story fade-up">
-        <div class="demo-kicker">The story</div>
-        <h3>What actually happened</h3>
+    <div class="rows">
+      <div class="row fade-up">
+        <div class="icon icon--server">
+          <svg viewBox="0 0 74 72" aria-hidden="true">
+            <defs>
+              <linearGradient id="s01b-ig1" gradientUnits="userSpaceOnUse" x1="0" y1="72" x2="74" y2="0">
+                <stop offset="0%" style="stop-color: var(--blue)" />
+                <stop offset="100%" style="stop-color: var(--cyan)" />
+              </linearGradient>
+            </defs>
+            <g stroke="url(#s01b-ig1)">
+              <rect x="1.2" y="1.2" width="60.6" height="17" rx="5" />
+              <rect x="1.2" y="24.2" width="60.6" height="17" rx="5" />
+              <rect x="1.2" y="47.2" width="42" height="17" rx="5" />
+              <circle cx="12.5" cy="9.7" r="3.1" />
+              <circle cx="12.5" cy="32.7" r="3.1" />
+              <circle cx="12.5" cy="55.7" r="3.1" />
+              <circle cx="42" cy="9.7" r="1.6" />
+              <circle cx="48" cy="9.7" r="1.6" />
+              <circle cx="54" cy="9.7" r="1.6" />
+              <circle cx="42" cy="32.7" r="1.6" />
+              <circle cx="48" cy="32.7" r="1.6" />
+              <circle cx="54" cy="32.7" r="1.6" />
+              <path
+                d="M67.8 52.5L67.7 54.3L72.4 56.9L70.7 61L65.5 59.4L64.3 60.8L62.9 62L64.5 67.2L60.4 68.9L57.8 64.2L56 64.3L54.2 64.2L51.6 68.9L47.5 67.2L49.1 62L47.7 60.8L46.5 59.4L41.3 61L39.6 56.9L44.3 54.3L44.2 52.5L44.3 50.7L39.6 48.1L41.3 44L46.5 45.6L47.7 44.2L49.1 43L47.5 37.8L51.6 36.1L54.2 40.8L56 40.7L57.8 40.8L60.4 36.1L64.5 37.8L62.9 43L64.3 44.2L65.5 45.6L70.7 44L72.4 48.1L67.7 50.7Z"
+              />
+              <circle cx="56" cy="52.5" r="6.4" />
+            </g>
+          </svg>
+        </div>
+        <div class="row-text">Backend Engineer, EM, VPoE @ Ustream/Bitrise</div>
       </div>
-      <div class="lane-demo lane-demo--theory fade-up">
-        <div class="demo-kicker">The why</div>
-        <h3>What generalizes</h3>
+
+      <div class="row fade-up">
+        <div class="icon icon--globe">
+          <svg viewBox="0 0 68 68" aria-hidden="true">
+            <defs>
+              <linearGradient id="s01b-ig2" gradientUnits="userSpaceOnUse" x1="0" y1="68" x2="68" y2="0">
+                <stop offset="0%" style="stop-color: var(--blue)" />
+                <stop offset="100%" style="stop-color: var(--cyan)" />
+              </linearGradient>
+            </defs>
+            <g stroke="url(#s01b-ig2)">
+              <circle cx="23" cy="23" r="21.8" />
+              <path d="M23 1.2V44.8" />
+              <path d="M1.2 23H44.8" />
+              <path d="M4.2 12H41.8" />
+              <path d="M4.2 34H41.8" />
+              <path d="M23 1.2a11 21.8 0 0 0 0 43.6a11 21.8 0 0 0 0-43.6" />
+              <path d="M52 40V12H47.5L56.5 1.4L65.5 12H61V40" />
+              <circle cx="11" cy="47" r="6.4" />
+              <circle cx="32" cy="47" r="6.4" />
+              <circle cx="53" cy="47" r="6.4" />
+              <path d="M0.9 66.8v-4.5a10.1 10.1 0 0 1 20.2 0v4.5z" />
+              <path d="M21.9 66.8v-4.5a10.1 10.1 0 0 1 20.2 0v4.5z" />
+              <path d="M42.9 66.8v-4.5a10.1 10.1 0 0 1 20.2 0v4.5z" />
+            </g>
+          </svg>
+        </div>
+        <div class="row-text">Built services serving 100M+ users/month</div>
+      </div>
+
+      <div class="row fade-up">
+        <div class="icon icon--chart">
+          <svg viewBox="0 0 68 72" aria-hidden="true">
+            <defs>
+              <linearGradient id="s01b-ig3" gradientUnits="userSpaceOnUse" x1="0" y1="72" x2="68" y2="0">
+                <stop offset="0%" style="stop-color: var(--blue)" />
+                <stop offset="100%" style="stop-color: var(--cyan)" />
+              </linearGradient>
+            </defs>
+            <g stroke="url(#s01b-ig3)">
+              <path d="M1.5 28L13 16L21 24L34 9L42 18L64.5 1.5" />
+              <path d="M53 1.5H64.5V13" />
+              <circle cx="34" cy="38" r="10.5" />
+              <path d="M18 70.5v-6a16 16 0 0 1 32 0v6z" />
+              <circle cx="12" cy="41" r="7" />
+              <path d="M1.5 65v-4a10.5 10.5 0 0 1 21 0v4z" />
+              <circle cx="56" cy="41" r="7" />
+              <path d="M45.5 65v-4a10.5 10.5 0 0 1 21 0v4z" />
+            </g>
+          </svg>
+        </div>
+        <div class="row-text">Built teams from 5 to 200 people</div>
       </div>
     </div>
+
+    <div class="closing">
+      I care about whether AI workflows<br>actually work in real software delivery
+    </div>
+  </div>
+
+  <div class="ad-overlay step">
+    <img class="ad-poster" src="../assets/img/compass-ad.jpg"
+      alt="A vintage cinema ticket stub lying on black, printed in blue on aged paper. The stub reads FelhoSentMe, and a starburst seal on it reads 30% DISCOUNT.">
+    <div class="ad-caption"><b>Compass AI&amp;Tech Summit</b>, October 1-2</div>
   </div>
 </section>
 <script>

@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -673,16 +684,24 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       margin: 0; font-size: 21px; font-weight: 620; line-height: 1.4;
       color: var(--muted-2);
     }
-    #s17 .trait p b { font-weight: 860; color: var(--white); }
+    #s17 .trait p b { font-weight: 860; color: var(--theory); }
 
-    /* the two TRAIT cards (root cause) get a faint theory tint; the three
-       consequence cards keep the plain card background. */
     #s17 .trait--key {
       background: color-mix(in srgb, var(--theory) 16%, var(--card-bg));
+    }
+
+    /* two thought groups: cards 1-3 shift up, cards 4-5 shift down, opening
+       a clear gap between card 3 and card 4. */
+    #s17 .traits > .trait:nth-child(-n+3) {
+      transform: translateY(-20px);
+    }
+    #s17 .traits > .trait:nth-child(n+4) {
+      transform: translateY(20px);
     }
   </style>
 
   <div class="title-block">
+    <div class="kicker">Structure pays off</div>
     <h1>LLM traits behind the pain</h1>
     <div class="accent-line"></div>
   </div>

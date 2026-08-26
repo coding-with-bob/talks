@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -575,40 +586,198 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="theory" id="s26" data-act="act8" data-owner="draft" data-minutes="1.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
+  <!-- SPEAKER-NOTE (restructured 2026-08-26, owner-approved split):
+  This slide now carries four things only: why we review at all, what happens
+  without triage, how the loop stops, and the value point.
+  LENS DESIGN HAS MOVED OFF THIS SLIDE to s26b, "Designing the lenses", which
+  follows immediately. Do not try to cover lens design here: set it up, then
+  hand over.
+
   Consciously skipped: finding categories, tech-debt framing, checklist coin.
-  TO EXPAND (owner request): lens design deserves its own beat - how you
-  validate and shape a lens (mutation-style seeded defects, code-proof
-  obligations for claims, etc.).
+
+  ORDER OF DELIVERY: motivation card, then the war story, then the stop, then
+  the band. The band is the beat that lands; slow down for it.
+
+  Spoken beats (VERBATIM: text this slide used to print, now spoken):
+    - Spoken beat (removed from design-the-stop card): Freeze the surface and
+      the loop runs dry: fixes inject fewer defects than they close (0.5-0.9
+      per fix).
+    - "Lenses, not redundancy: one perspective per agent; distinct lenses
+       (falsifier / domain plausibility / fresh reader); an external model
+       family breaks self-reference."
+      This is the HANDOVER line into s26b. Say it last, as the bridge:
+      "which raises the real question, how do you design a lens?"
+    - "Everyone optimizes for quality, nobody for value. Build the value
+       counterweight in (850 lines of spec for 10 lines of code)."
+    - The old TO EXPAND note, now s26b's job, kept here verbatim so nothing
+      is lost: "the real depth is in HOW a lens is designed. Examples to
+      bring: mutation-style tests (seed a known defect; does the lens catch
+      it?); evidence obligations (the reviewer must PROVE a claim with
+      running code, not just assert it)."
+
+  CONVERGENCE MECHANISM (wienerdog runbook): below 1 new defect per fix, a
+  FROZEN surface makes the defect supply a shrinking series, the loop ends by
+  itself; every round the surface grows, the supply refills; the treadmill is
+  the growth, not the error rate. This also explains the war story: every
+  accepted finding grew the surface. Owner note: this is the mechanism behind
+  what we used to call the ratchet.
+
+  THE PAPERCLIP ASIDE (spoken, over the bottom band): this is the paperclip
+  maximizer in miniature. Give a model one objective, "make this change
+  good", and it will pursue that objective straight past the point where the
+  change is worth making at all. 850 lines of spec for 10 lines of code is
+  not the reviewer malfunctioning; it is the reviewer doing exactly what it
+  was asked. Nobody in the loop was ever asked "is this worth it?". So the
+  loop itself has to carry the value judgment. One breath, lightly, then move
+  on: do not turn it into an AI-safety detour.
+
+  ON THE BAND, THE MISSING DISPOSITION: not worth solving is a legitimate
+  disposition: a named residual before the first patch is cheaper than after
+  the third round. Wienerdog: both runaway loops the repo survived were
+  additions that each looked defensible alone and never faced the aggregate
+  question. Owner note: this is where the value-vs-quality distinction was
+  coined: a finding can be wrong from the product/subject perspective or
+  merely from a tiny wording perspective, and the two must not be treated
+  alike.
+
+  ON THE NUMBERS: ~100 rounds and ~700 findings are approximate and that is
+  fine. The load-bearing number is ZERO rejections. Every single finding was
+  accepted and acted on, because nothing in the loop was allowed to say "no".
+  That is what a missing disposition step costs.
   -->
 
   <style>
-    #s26 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-    #s26 .bullets { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 12px; }
-    #s26 .bullets li { font-size: 23px; font-weight: 600; color: var(--muted); line-height: 1.4; }
-    #s26 .bullets li b { color: var(--white); font-weight: 780; }
-    #s26 .cards { display: grid; gap: 16px; }
-    #s26 .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; }
-    #s26 .card p { margin: 0; font-size: 16px; font-weight: 600; color: var(--muted-2); line-height: 1.4; }
+    #s26 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 24px; justify-content: center;
+    }
 
+    /* ==== the three cards ================================================= */
+    #s26 .cards {
+      flex: none; height: 318px;
+      display: grid; grid-template-columns: 1fr 1.32fr 1fr; gap: 22px;
+      align-items: stretch;
+      transform: translateY(-25px);
+    }
+    /* Cards are TOP-aligned, not centered: the three h3s then share one
+       baseline across the row, which is the calm reading. The two short
+       cards keep their empty lower half deliberately. */
+    #s26 .card {
+      min-width: 0;
+      padding: 30px 32px;
+      display: flex; flex-direction: column; justify-content: flex-start; gap: 16px;
+    }
+    #s26 .card h3 {
+      margin: 0;
+      font-size: 29px; font-weight: 840; color: var(--white);
+      letter-spacing: -0.026em; line-height: 1.12; text-wrap: balance;
+    }
+    #s26 .card p {
+      margin: 0;
+      font-size: 20px; font-weight: 640; color: var(--muted); line-height: 1.42;
+    }
+    #s26 .card p b { color: var(--white); font-weight: 850; }
+
+    /* the failure-mode card sits in the middle and carries the evidence */
+    #s26 .card--war { border-color: var(--hairline-blue); }
+
+    /* ---- war-story inset (s16 quote-block grammar, scaled down) ---------- */
+    #s26 .war {
+      border-radius: 18px;
+      padding: 16px 20px 18px;
+      background: color-mix(in srgb, var(--series-flat) 8%, var(--card-bg-strong));
+      border: 1px solid color-mix(in srgb, var(--series-flat) 34%, var(--hairline));
+    }
+    #s26 .war-lead {
+      font-size: 14px; font-weight: 850; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted-2);
+      margin-bottom: 8px;
+    }
+    #s26 .war p { font-size: 21px; font-weight: 700; line-height: 1.34; color: var(--white); }
+    #s26 .war p b { color: var(--series-flat); font-weight: 880; }
+
+    #s26 .verdict { font-weight: 840; color: var(--white); }
+
+    /* ==== the bottom band ================================================= */
+    #s26 .band {
+      flex: none;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      margin: 0 auto;
+      display: grid; grid-template-columns: auto 260px;
+      align-items: center; gap: 24px;
+      padding: 20px 48px 21px;
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--theory) 11%, var(--card-bg));
+      border: 1px solid var(--hairline-blue);
+    }
+    #s26 .band p {
+      margin: 0; min-width: 0;
+      font-size: 24px; font-weight: 650; line-height: 1.3; color: var(--muted);
+    }
+    #s26 .band p b { color: var(--white); font-weight: 880; }
+    #s26 .band-eg {
+      padding-left: 24px;
+      border-left: 1px solid var(--hairline);
+      text-wrap: balance;
+    }
+    #s26 .band-eg .eg-k {
+      display: block;
+      font-size: 13px; font-weight: 850; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--muted-3);
+      margin-bottom: 5px;
+    }
+    #s26 .band-eg span.eg-t {
+      font-size: 17px; font-weight: 700; line-height: 1.36; color: var(--muted-2);
+    }
+    #s26 .band-eg span.eg-t b { color: var(--white); font-weight: 860; }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Applied</div>
+    <div class="kicker">Stop AI slop</div>
     <h1>Designing LLM review loops</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
-      <div class="card fade-up"><h3>Without triage&hellip;</h3><p>&hellip;a neverending nitpicking loop. One project&rsquo;s first cycle: ~100 rounds, ~700 findings, <b>zero rejections</b>. Dispositions are not optional.</p></div>
-      <div class="card fade-up"><h3>Design the stop</h3><p>LLMs are better at finding something than at being done. Mechanical stopping rule + altitude discipline.</p></div>
-      <div class="card fade-up"><h3>Lenses, not redundancy</h3><p>One perspective per agent; distinct lenses (falsifier / domain plausibility / fresh reader); an external model family breaks self-reference.</p></div>
-      <div class="card fade-up"><h3>The fresh reader is a forecast</h3><p>What a fresh reviewer misreads, the fresh implementer will misread too. Reviews measure <b>intent transfer</b>.</p></div>
-      <div class="card card--dashed fade-up"><h3>Designing the lenses: TO EXPAND</h3><p>Draft: the real depth is in HOW a lens is designed. Examples to bring: <b>mutation-style tests</b> (seed a known defect; does the lens catch it?); <b>evidence obligations</b> (the reviewer must PROVE a claim with running code, not just assert it).</p></div>
+
+    <div class="cards">
+
+      <!-- 1. why review at all -->
+      <div class="card fade-up">
+        <h3>The fresh reader is a forecast</h3>
+        <p>What a fresh reviewer misreads, the fresh implementer will misread
+          too.<br><br>Reviews measure <b>intent transfer</b>.</p>
+      </div>
+
+      <!-- 2. what it costs to skip triage -->
+      <div class="card card--war fade-up">
+        <h3>Without triage: a neverending nitpicking loop</h3>
+        <div class="war">
+          <div class="war-lead">War story</div>
+          <p>One project&rsquo;s first approach: ~100 rounds, ~700 findings,
+            <b>zero rejections</b>.</p>
+        </div>
+        <p class="verdict">Dispositions are not optional.</p>
+      </div>
+
+      <!-- 3. how the loop ends -->
+      <div class="card fade-up">
+        <h3>Design the stop</h3>
+        <p>LLMs are better at finding something than at being done. <br><br>Mechanical
+          stopping rule + altitude discipline.</p>
+      </div>
     </div>
-    <div class="footnote fade-up">Everyone optimizes for quality, nobody for value. Build the
-      value counterweight in (850 lines of spec for 10 lines of code).</div>
+
+    <!-- the value point -->
+    <div class="band fade-up">
+      <p>An LLM is trained to <b>finish the task</b>, not to ask whether the
+        change<br>is worth making. The loop must carry the <b>value judgment</b>.</p>
+      <p class="band-eg">
+        <span class="eg-k">seen in practice</span>
+        <span class="eg-t"><b>850 lines of spec</b> proposed for 10 lines of
+          code.</span>
+      </p>
+    </div>
   </div>
 </section>
 <script>

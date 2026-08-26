@@ -29,6 +29,17 @@
   --navy-2: #050711;            /* gradient end                            */
   --navy-ink: #050a17;          /* solid navy (talk-1 --navy)              */
 
+  /* ---- title-slide background — ported from the talk1 deck's opener,
+     owner request 2026-08-26. talk1's s01 renders a full-bleed raster
+     artwork (assets/img/title-flow-field.png): a near-black navy canvas
+     with a bright blue-to-cyan flow-field glow diagonally right-of-center,
+     fading to pure dark at the corners, no border (full bleed). These two
+     stops recreate that same dark-to-glow character as a CSS gradient
+     (no raster asset copied) for the meetup deck's own s01. ------------- */
+  --title-bg-0: #020814;                    /* near-black anchor, talk1 --deep */
+  --title-bg-1: rgba(102, 230, 239, 0.55);  /* bright cyan glow core, stronger
+                                                than the deck's ambient --glow-cyan */
+
   /* ---- core palette (verbatim from talk #1 dark slides) ---------------- */
   --blue: #2f67ff;
   --blue2: #3d7cff;
@@ -572,22 +583,169 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide" id="s28" data-act="act9" data-owner="draft" data-minutes="1.0"
-  data-theme="dark" data-exhibits="" data-tags="" data-evidence="">
+<section class="slide slide--light" id="s28" data-act="act9" data-owner="draft" data-minutes="1.0"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Wording of #4 to refine at slide design; #1's future-proof tail spoken.
+  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a five-bullet list on dark):
+
+  The closing takeaways. Light canvas, lane-less on purpose: this is a meta
+  slide that speaks for both lanes at once, so it carries no lane stripe.
+
+  Delivery: one beat per row, and do not read the rows verbatim; the audience
+  can read. Point at the glyph, name the moment in the talk it comes from,
+  then say the takeaway in your own words.
+
+  #1: speak the future-proof tail here (the tail is NOT printed): as models
+  get better, the structure is what keeps compounding; it does not become
+  redundant, it becomes cheaper to produce.
+
+  #4: wording settled 2026-08-26 (the board's old TODO is closed). "Route
+  human attention by decision type" deliberately echoes s25's title claim,
+  so the room hears the callback. Do not re-open the wording.
+
+  THE RECALL GLYPHS, in row order (each one quotes a picture the room has
+  already seen, so name the slide out loud if the recall does not land):
+    1. mini knowledge graph, from s20 "What the physical breakdown added"
+       (teal slice = context for one edit, amber = a changed invariant).
+    2. mini two-box pair HUMAN | LLM, from s07 "The working-set limit".
+    3. mini build pipeline with the byte-identical seal, from s18
+       "Divide and conquer" (round 2).
+    4. mini three-lane claim triage with the amber stop, from s25
+       "Claim structure supports agent autonomy".
+    5. mini review-rounds bar chart with the two tall warning bars, from
+       s16 "The giant monolith corpus failed to scale".
+
+  IF SHORT ON TIME: rows 1 and 4 are the load-bearing pair. Read 2, 3 and 5
+  off the slide without commentary.
   -->
 
   <style>
-    #s28 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-    #s28 .bullets { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 12px; }
-    #s28 .bullets li { font-size: 23px; font-weight: 600; color: var(--muted); line-height: 1.4; }
-    #s28 .bullets li b { color: var(--white); font-weight: 780; }
-    #s28 .cards { display: grid; gap: 16px; }
-    #s28 .card h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.01em; }
-    #s28 .card p { margin: 0; font-size: 16px; font-weight: 600; color: var(--muted-2); line-height: 1.4; }
+    #s28 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; justify-content: center;
+    }
 
+    /* ---- five calm rows: number, recall glyph, takeaway ------------------ */
+    /* The takeaway table is deliberately narrow (owner call 2026-08-26): the
+       lead is its own line and the explainer sits under it, so a wide measure
+       would leave every explainer as one long ribbon. 756px total leaves a
+       ~552px text column, the width at which the longest explainers (rows 1
+       and 5) wrap to exactly two lines and no lead ever wraps. The table is
+       centered on the slide, not left-flush to the title: at this width a
+       left flush would leave the right half of the canvas stranded. */
+    #s28 .takeaways {
+      margin: 0; padding: 0; list-style: none;
+      display: flex; flex-direction: column;
+      width: 756px; align-self: center;
+    }
+    #s28 .row {
+      display: grid; grid-template-columns: 52px 92px 1fr;
+      align-items: center; column-gap: 26px;
+      padding: 16px 4px;
+    }
+    #s28 .row + .row { border-top: 1px solid var(--hairline); }
+
+    #s28 .num {
+      font-size: 32px; font-weight: 850; letter-spacing: -0.02em;
+      text-align: center; font-variant-numeric: tabular-nums;
+      color: color-mix(in srgb, var(--blue) 60%, var(--muted-3));
+    }
+
+    #s28 .glyph {
+      width: 92px; height: 64px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #s28 .glyph svg { width: 88px; height: 62px; display: block; }
+
+    /* The paragraph carries the explainer; the <b> lead is promoted to its
+       own block line above it, one size up and in the strong color. Color
+       and weight of the explainer are unchanged from the flowing version. */
+    #s28 .say {
+      margin: 0;
+      font-size: 17px; font-weight: 620; line-height: 1.45;
+      letter-spacing: -0.004em; color: var(--muted);
+      /* the explainers wrap to two lines: keep the second line from being a
+         single orphaned word (no-op in engines without it) */
+      text-wrap: pretty;
+    }
+    #s28 .say b {
+      display: block; margin-bottom: 5px;
+      font-size: 20px; font-weight: 850; line-height: 1.3;
+      letter-spacing: -0.006em; color: var(--white);
+    }
+
+    /* ==== glyph 1: the knowledge graph (quotes s20) ======================= */
+    #s28 .g1-slice {
+      fill: var(--theory); fill-opacity: 0.09;
+      stroke: var(--theory); stroke-width: 1.3; stroke-dasharray: 4 3.5;
+      stroke-opacity: 0.6;
+    }
+    #s28 .g1-n { fill: var(--navy-0); stroke: var(--muted-2); stroke-width: 1.2; }
+    #s28 .g1-n--slice { stroke: var(--theory); stroke-width: 1.5; }
+    #s28 .g1-n--lit { stroke: var(--story); stroke-width: 1.7; }
+    #s28 .g1-e { fill: none; stroke: var(--muted-2); stroke-width: 1.2; opacity: 0.75; }
+    #s28 .g1-e--lit { stroke: var(--story); stroke-width: 1.8; opacity: 1; }
+
+    /* ==== glyph 2: the two bounded minds (quotes s07) ===================== */
+    #s28 .g2-box { fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.3; }
+    #s28 .g2-box--strong { fill: var(--card-bg-strong); stroke: var(--hairline-blue); }
+    /* the two labels are glyph micro-type, not body copy: sized to sit
+       inside a 40 unit wide box without touching its border */
+    #s28 .g2-t {
+      font-size: 8.5px; font-weight: 850; letter-spacing: 0.04em;
+      fill: var(--blue-on-dark);
+    }
+    #s28 .g2-t--llm { fill: var(--cyan-on-dark); }
+    #s28 .g2-item { fill: var(--muted-2); }
+    #s28 .g2-item--faded { fill: var(--muted-3); }
+    #s28 .g2-rule { stroke: var(--hairline); stroke-width: 1.2; }
+
+    /* ==== glyph 3: the build pipeline and its seal (quotes s18) =========== */
+    #s28 .g3-page { fill: none; stroke: var(--muted-2); stroke-width: 1.4; stroke-linejoin: round; }
+    #s28 .g3-rule { stroke: var(--muted-3); stroke-width: 1.2; stroke-linecap: round; }
+    #s28 .g3-arrow {
+      fill: none; stroke: var(--story); stroke-width: 1.6;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s28 .g3-box { fill: none; stroke: var(--story); stroke-width: 1.5; }
+    #s28 .g3-mark {
+      fill: none; stroke: var(--story); stroke-width: 1.5;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s28 .g3-bracket {
+      fill: none; stroke: var(--story); stroke-width: 1.4;
+      stroke-linecap: round; stroke-dasharray: 3.5 3;
+    }
+    #s28 .g3-seal { fill: var(--card-bg-strong); stroke: var(--story); stroke-width: 1.5; }
+    #s28 .g3-tick {
+      fill: none; stroke: var(--series-healthy); stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s28 .g3-cap {
+      font-family: var(--font-mono); font-size: 8.5px; font-weight: 750;
+      fill: var(--muted-2);
+    }
+
+    /* ==== glyph 4: the three-lane claim triage (quotes s25) =============== */
+    #s28 .g4-bus { stroke: var(--muted-2); stroke-width: 1.4; stroke-linecap: round; }
+    #s28 .g4-lane-ok { fill: none; stroke: var(--theory); stroke-width: 1.5; }
+    #s28 .g4-ah-ok { fill: var(--theory); }
+    #s28 .g4-pill {
+      fill: color-mix(in srgb, var(--theory) 13%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--theory) 45%, var(--hairline));
+      stroke-width: 1.3;
+    }
+    #s28 .g4-pill--soft { fill: color-mix(in srgb, var(--theory) 7%, var(--card-bg)); }
+    #s28 .g4-lane-new { fill: none; stroke: var(--story); stroke-width: 1.7; }
+    #s28 .g4-ah-new { fill: var(--story); }
+    #s28 .g4-bar { fill: var(--story); }
+    #s28 .g4-bar-hatch { stroke: var(--navy-1); stroke-width: 2.2; }
+
+    /* ==== glyph 5: the review-rounds bars (quotes s16) ==================== */
+    #s28 .g5-axis { stroke: var(--chart-axis); stroke-width: 1.4; }
+    #s28 .g5-grid { stroke: var(--chart-grid); stroke-width: 1.2; }
+    #s28 .g5-bar--calm { fill: var(--cyan); }
+    #s28 .g5-bar--warn { fill: var(--series-flat); }
   </style>
 
   <div class="title-block">
@@ -597,13 +755,153 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </div>
 
   <div class="content">
-    <ul class="bullets fade-up">
-      <li><b>Structure creates information</b>: the corpus is a system of relationships; the breakdown itself creates new, leverageable information.</li>
-      <li><b>It serves both minds</b>. Humans and LLMs get the same thing: understanding and navigation of the design space.</li>
-      <li><b>The design can breathe, and can be verified</b>: structure makes change safe and the result checkable.</li>
-      <li><b>Route human attention by decision type</b>. The agent runs free on decided and derived; the human handles the genuinely new.</li>
-      <li><b>Design for the LLM&rsquo;s characteristics</b>, especially the feedback loops: without triage and a stop rule, a neverending nitpicking loop.</li>
-    </ul>
+    <ol class="takeaways">
+
+      <!-- ============ 1. structure creates information ==================== -->
+      <li class="row fade-up">
+        <span class="num">1</span>
+        <span class="glyph">
+          <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A miniature knowledge graph. A dashed teal region encloses a unit box and a small domain term pill on the left. On the right an invariant plate and the two entities below it are ringed in amber, with amber edges spreading between them.">
+            <rect class="g1-slice" x="1" y="2" width="32" height="42" rx="10" />
+
+            <path class="g1-e" d="M28 11 L50 10" />
+            <path class="g1-e" d="M18 16 L38 30" />
+            <path class="g1-e" d="M24 36 L32 35" />
+            <path class="g1-e g1-e--lit" d="M58 15 L48 30" />
+            <path class="g1-e g1-e--lit" d="M56 39 L61 46" />
+
+            <rect class="g1-n g1-n--slice" x="4" y="6" width="24" height="10" rx="4" />
+            <rect class="g1-n g1-n--slice" x="6" y="32" width="18" height="8" rx="4" />
+            <rect class="g1-n g1-n--lit" x="32" y="30" width="24" height="10" rx="4" />
+            <path class="g1-n g1-n--lit" d="M50 10 L54 5 H68 L72 10 L68 15 H54 Z" />
+            <path class="g1-n g1-n--lit"
+              d="M60 48 q0 -3 3 -3 H79 q3 0 3 3 V56 l -3.2 2 l -3.2 -2 l -3.2 2 l -3.2 -2 l -3.2 2 l -3.2 -2 Z" />
+          </svg>
+        </span>
+        <p class="say"><b>Structure creates information</b>The corpus is a system of
+          relationships;<br>the breakdown itself creates new, leverageable information.</p>
+      </li>
+
+      <!-- ============ 2. it serves both minds ============================= -->
+      <li class="row fade-up">
+        <span class="num">2</span>
+        <span class="glyph">
+          <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="Two small boxes side by side, one labelled HUMAN and one labelled LLM, each holding a short row of item marks, the second row partly faded.">
+            <rect class="g2-box" x="1" y="12" width="40" height="38" rx="7" />
+            <text class="g2-t" x="21" y="30" text-anchor="middle">HUMAN</text>
+            <rect class="g2-item" x="10" y="37" width="6" height="6" rx="1.6" />
+            <rect class="g2-item" x="19" y="37" width="6" height="6" rx="1.6" />
+            <rect class="g2-item" x="28" y="37" width="6" height="6" rx="1.6" />
+
+            <line class="g2-rule" x1="44" y1="16" x2="44" y2="46" />
+
+            <rect class="g2-box g2-box--strong" x="47" y="12" width="40" height="38" rx="7" />
+            <text class="g2-t g2-t--llm" x="67" y="30" text-anchor="middle">LLM</text>
+            <rect class="g2-item" x="56" y="37" width="6" height="6" rx="1.6" />
+            <rect class="g2-item--faded" x="65" y="37" width="6" height="6" rx="1.6" />
+            <rect class="g2-item--faded" x="74" y="37" width="6" height="6" rx="1.6" />
+          </svg>
+        </span>
+        <p class="say"><b>It serves both minds</b>Humans and LLMs get the same thing:<br>understanding and navigation of the design space.</p>
+      </li>
+
+      <!-- ============ 3. it can breathe, and can be verified ============== -->
+      <li class="row fade-up">
+        <span class="num">3</span>
+        <span class="glyph">
+          <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A miniature pipeline: a document, an arrow, a build box, an arrow, the same document again. A dashed amber bracket runs underneath from the first document to the last and meets a small ticked seal captioned diff 0.">
+            <path class="g3-page" d="M3 3 H12 L16 7 V21 H3 Z" />
+            <path class="g3-page" d="M12 3 V7 H16" />
+            <line class="g3-rule" x1="6" y1="12" x2="13" y2="12" />
+            <line class="g3-rule" x1="6" y1="16" x2="13" y2="16" />
+
+            <path class="g3-arrow" d="M19 12 H25 M22.5 9 L26 12 L22.5 15" />
+
+            <rect class="g3-box" x="29" y="4" width="22" height="17" rx="4" />
+            <path class="g3-mark" d="M34 10 L37.5 12.8 L34 15.6" />
+            <path class="g3-mark" d="M40 15.6 H46" />
+
+            <path class="g3-arrow" d="M54 12 H60 M57.5 9 L61 12 L57.5 15" />
+
+            <path class="g3-page" d="M64 3 H73 L77 7 V21 H64 Z" />
+            <path class="g3-page" d="M73 3 V7 H77" />
+            <line class="g3-rule" x1="67" y1="12" x2="74" y2="12" />
+            <line class="g3-rule" x1="67" y1="16" x2="74" y2="16" />
+
+            <path class="g3-bracket" d="M9 23 V29 Q9 33 13 33 H32" />
+            <path class="g3-bracket" d="M70 23 V29 Q70 33 66 33 H56" />
+
+            <rect class="g3-seal" x="31" y="25" width="26" height="16" rx="8" />
+            <path class="g3-tick" d="M39 33.5 L42.5 37 L49 29.5" />
+
+            <text class="g3-cap" x="44" y="54" text-anchor="middle">diff 0</text>
+          </svg>
+        </span>
+        <p class="say"><b>The design can breathe, and can be verified</b>Structure makes
+          change safe and the result checkable.</p>
+      </li>
+
+      <!-- ============ 4. route human attention by decision type =========== -->
+      <li class="row fade-up">
+        <span class="num">4</span>
+        <span class="glyph">
+          <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A miniature triage: a splitter fans into three lanes. The top two are teal and end in teal pills. The bottom lane is amber and runs into a solid hatched amber barrier.">
+            <defs>
+              <clipPath id="s28-barclip">
+                <rect x="34" y="40" width="9" height="20" rx="3" />
+              </clipPath>
+            </defs>
+
+            <path class="g4-bus" d="M5 6 V52" />
+
+            <path class="g4-lane-ok" d="M5 10 H36" />
+            <path class="g4-ah-ok" d="M36 6.5 L42 10 L36 13.5 Z" />
+            <rect class="g4-pill" x="46" y="4" width="40" height="12" rx="6" />
+
+            <path class="g4-lane-ok" d="M5 29 H36" />
+            <path class="g4-ah-ok" d="M36 25.5 L42 29 L36 32.5 Z" />
+            <rect class="g4-pill g4-pill--soft" x="46" y="23" width="40" height="12" rx="6" />
+
+            <path class="g4-lane-new" d="M5 50 H24" />
+            <path class="g4-ah-new" d="M24 46.5 L30 50 L24 53.5 Z" />
+            <rect class="g4-bar" x="34" y="40" width="9" height="20" rx="3" />
+            <g clip-path="url(#s28-barclip)">
+              <path class="g4-bar-hatch" d="M30 46 L48 28" />
+              <path class="g4-bar-hatch" d="M30 54 L48 36" />
+              <path class="g4-bar-hatch" d="M30 62 L48 44" />
+              <path class="g4-bar-hatch" d="M30 70 L48 52" />
+            </g>
+          </svg>
+        </span>
+        <p class="say"><b>Route human attention by decision type</b>The agent runs free on
+          decided and derived;<br>the human handles the genuinely new.</p>
+      </li>
+
+      <!-- ============ 5. design for the LLM's characteristics ============= -->
+      <li class="row fade-up">
+        <span class="num">5</span>
+        <span class="glyph">
+          <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A miniature bar chart of four bars on a baseline. The first two are short and cyan; the last two are tall and warm red.">
+            <line class="g5-grid" x1="6" y1="18" x2="84" y2="18" />
+            <line class="g5-grid" x1="6" y1="34" x2="84" y2="34" />
+
+            <rect class="g5-bar--calm" x="9" y="40" width="14" height="12" rx="2" />
+            <rect class="g5-bar--calm" x="29" y="40" width="14" height="12" rx="2" />
+            <rect class="g5-bar--warn" x="49" y="8" width="14" height="44" rx="2" />
+            <rect class="g5-bar--warn" x="69" y="18" width="14" height="34" rx="2" />
+
+            <line class="g5-axis" x1="6" y1="52" x2="84" y2="52" />
+          </svg>
+        </span>
+        <p class="say"><b>Design for the LLM&rsquo;s characteristics</b>Especially the feedback loops:<br>without triage and a stop rule, a neverending nitpicking loop.</p>
+      </li>
+
+    </ol>
   </div>
 </section>
 <script>

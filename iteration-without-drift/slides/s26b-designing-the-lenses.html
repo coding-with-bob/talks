@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — s2b-legend</title>
+<title>Iteration Without Drift — s26b-designing-the-lenses</title>
 <style>
 
 @font-face {
@@ -583,60 +583,450 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" id="s2b" data-act="act0" data-owner="draft" data-minutes="0.25"
+<section class="slide slide--light" data-lane="theory" id="s26b" data-act="act8" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft):
-  15-20 seconds. Establish the two-lane visual language once; from here the
-  color code re-teaches itself on every slide.
+  <!-- SPEAKER-NOTE (new slide, 2026-08-26):
+  SPLIT OUT OF s26 by owner call. s26 keeps the review-loop mechanics (triage,
+  the stop, the fresh reader); this slide is the "TO EXPAND" beat s26 carried
+  as a dashed card, promoted to its own minute.
+
+  The draft text that card held, VERBATIM, is the spine of this slide:
+    "the real depth is in HOW a lens is designed. Examples: mutation-style
+     tests (seed a known defect; does the lens catch it?); evidence
+     obligations (the reviewer must PROVE a claim with running code, not
+     just assert it)".
+
+  HOW TO WALK IT, left to right:
+    1. LENSES, NOT REDUNDANCY. Three agents reading the same document three
+       times is not three reviews, it is one review paid for three times.
+       Each reviewer gets ONE deliberately designed perspective. Name the
+       three: falsifier, domain plausibility, fresh reader. Then the dashed
+       note: an external model family is a lens too, and the only one that
+       breaks self-reference. A model grading its own family agrees with
+       itself.
+    2. VALIDATE THE LENS ITSELF. This is the beat people have not heard.
+       Say it plainly: a lens is code, so test it like code. Seed a known
+       defect into the corpus and run the lens. Catches it: the lens works.
+       Misses it: the lens just failed its own test, and every clean report
+       it ever produced was worth nothing. Point at the amber marker.
+       VALIDATE THE GATE IN BOTH DIRECTIONS (wienerdog runbook):
+       red-before-work proves the check is not vacuous, but not that it is
+       not over-strict; a check that rejects the correct answer is also red
+       before the work and looks identical from that side. So: expect red on
+       the untouched tree AND green on a hand-constructed correct state.
+    3. EVIDENCE OBLIGATIONS. A reviewer saying "this cannot deadlock" is an
+       opinion. The obligation is: show me. Running code, or it is not a
+       finding. Read the terminal line aloud.
+
+  CAPTION NOTE (panel 3): the written caption is now scoped ("A claim about
+  what the system actually does is settled by running it, not by reading
+  about it. No run, no finding."). Keep "An opinion is not a defect report."
+  as a SPOKEN punchline when walking this panel, even though it is no longer
+  in the caption text.
+
+  PROVENANCE: the obligation is scoped per pairflow PRI-062 (Execution finds
+  what reading cannot): claims about ordering, side effects, gate scope, and
+  measurements are settled by running, not reading; born in the ch13
+  rederivation arm; birth line: "Say explicitly which of your conclusions
+  rest on evidence you did not reproduce yourself."
+
+  CLOSE ON THE BAND: a lens is an artifact. Design it, validate it, version
+  it. Same lifecycle as any other part of the corpus.
+
+  IF SHORT ON TIME: drop panel 1 to one sentence (the chips read themselves)
+  and spend the time on panel 2. The mutation-style validation is the part
+  nobody does.
+
+  Grounding (owner-verified, 2026-08-26): the systematic practice was on tests
+  and gates: CHK-018 Negative-tested gate (a gate counts as realized only once
+  a deliberate violation has failed it; every lint rule lands negative-tested)
+  and MEC-087 The receipt-backed mutation probe (mutation runs through a named
+  runner with receipts; a suite that stays green under the mutation is a
+  blind probe and a finding; alias: the meter must be metered). Applying it
+  to review lenses was occasional, done when a new lens was created; the
+  slide generalizes honestly across checks, tests, and lenses.
+
+  sub-line reverted to the lens-specific phrasing (owner call): the
+  generalized detector wording pointed at nothing on the slide.
+
+  REFRAME (2026-08-26, owner call): running code was only the edge case; the
+  general rule is that every reviewer claim must carry evidence so it can be
+  re-validated, because LLM reviewers are non-deterministic and sometimes
+  plain wrong. Sub-line, terminal check line, and closer updated accordingly.
+  Spoken beat (replaced closer, the running-code edge case): A claim about
+  what the system actually does is settled by running it, not by reading
+  about it. No run, no finding.
   -->
 
   <style>
-    #s2b { justify-content: center; padding-bottom: calc(var(--slide-pad) + 56px); }
-    #s2b .title-block { margin-bottom: 64px; }
-    #s2b .content { display: flex; flex-direction: column; gap: 26px; }
-    #s2b .lanes { display: flex; justify-content: center; gap: 28px; }
-    #s2b .lane-demo {
-      position: relative; overflow: hidden; min-width: 380px;
-      padding: 30px 58px 30px 68px; border-radius: var(--radius-card);
-      background: var(--card-bg); border: 1px solid var(--hairline);
+    #s26b .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 20px; justify-content: center;
     }
-    #s2b .lane-demo::before {
-      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+
+    /* ==== the three panels ================================================ */
+    #s26b .panels {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
     }
-    #s2b .lane-demo--story::before  { background: var(--story); }
-    #s2b .lane-demo--theory::before { background: var(--theory); }
-    #s2b .lane-demo .demo-kicker {
-      font-size: var(--fs-small); font-weight: 850; letter-spacing: var(--ls-kicker);
-      text-transform: uppercase; margin-bottom: 10px;
+    #s26b .panel {
+      min-width: 0;
+      display: flex; flex-direction: column;
+      border-radius: var(--radius-card);
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+      padding: 22px 24px 20px;
     }
-    #s2b .lane-demo--story .demo-kicker  { color: var(--story-on-dark); }
-    #s2b .lane-demo--theory .demo-kicker { color: var(--theory-on-dark); }
-    #s2b .lane-demo .demo-kicker::before {
-      content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 10px;
-      border-radius: 3px; vertical-align: baseline;
+    #s26b .eyebrow {
+      flex: none;
+      font-size: 13px; font-weight: 850; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--theory-on-dark);
+      display: flex; align-items: center; gap: 9px;
     }
-    #s2b .lane-demo--story .demo-kicker::before  { background: var(--story); }
-    #s2b .lane-demo--theory .demo-kicker::before { background: var(--theory); }
-    #s2b .lane-demo h3 { margin: 0; font-size: 27px; font-weight: 820; color: var(--white); letter-spacing: -0.02em; }
+    #s26b .eyebrow::before {
+      content: ""; flex: none;
+      width: 10px; height: 10px; border-radius: 3px; background: var(--theory);
+    }
+    #s26b .panel h3 {
+      flex: none;
+      margin: 11px 0 6px;
+      font-size: 25px; font-weight: 850; line-height: 1.1;
+      letter-spacing: -0.024em; color: var(--white);
+    }
+    #s26b .lead {
+      flex: none;
+      margin: 0;
+      font-size: 16px; font-weight: 660; line-height: 1.4; color: var(--muted-2);
+    }
+    #s26b .lead b { color: var(--muted); font-weight: 820; }
+
+    /* ---- the drawing area inside a panel --------------------------------- */
+    #s26b .viz { flex: 1; min-height: 0; margin: 12px 0 0; }
+    #s26b .viz svg { width: 100%; height: 100%; display: block; }
+
+    /* ---- shared SVG vocabulary ------------------------------------------- */
+    #s26b .doc {
+      fill: var(--card-bg); stroke: var(--muted-2); stroke-width: 1.7;
+    }
+    #s26b .doc-line { fill: var(--muted-3); }
+    #s26b .cap {
+      font-size: 13.5px; font-weight: 800; fill: var(--muted-2);
+      letter-spacing: 0.01em;
+    }
+    #s26b .cap--warn { fill: var(--story-on-dark); }
+    #s26b .bus { stroke: var(--muted-2); stroke-width: 2.4; stroke-linecap: round; }
+    #s26b .bus-node { fill: var(--muted-2); }
+    #s26b .stub { fill: none; stroke: var(--muted-2); stroke-width: 2.1; }
+    #s26b .ah-n { fill: var(--muted-2); }
+
+    /* the lens glyph itself */
+    #s26b .lens {
+      fill: none; stroke: var(--theory); stroke-width: 2.6;
+      stroke-linecap: round;
+    }
+    #s26b .lens-glass { fill: color-mix(in srgb, var(--theory) 12%, transparent); }
+    #s26b .lens--alt { stroke-dasharray: 4.5 4; }
+
+    /* named lens chips */
+    #s26b .chip {
+      fill: color-mix(in srgb, var(--theory) 11%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--theory) 42%, var(--hairline));
+      stroke-width: 1.5;
+    }
+    #s26b .chip-t {
+      font-size: 17px; font-weight: 820; fill: var(--white);
+      letter-spacing: -0.012em;
+    }
+
+    /* verdict pills: teal = the lens works, amber = the lens failed */
+    #s26b .pill-ok {
+      fill: color-mix(in srgb, var(--theory) 13%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--theory) 48%, var(--hairline));
+      stroke-width: 1.6;
+    }
+    #s26b .pill-bad {
+      fill: color-mix(in srgb, var(--story) 15%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--story) 55%, var(--hairline));
+      stroke-width: 1.6;
+    }
+    #s26b .pill-t {
+      font-size: 17px; font-weight: 850; fill: var(--theory-on-dark);
+      letter-spacing: -0.01em;
+    }
+    #s26b .pill-t--bad { fill: var(--story-on-dark); }
+    #s26b .ic-ok {
+      fill: none; stroke: var(--theory-on-dark); stroke-width: 2.4;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s26b .ic-bad {
+      fill: none; stroke: var(--story-on-dark); stroke-width: 2.4;
+      stroke-linecap: round;
+    }
+
+    /* the seeded defect */
+    #s26b .seed-band {
+      fill: color-mix(in srgb, var(--story) 26%, var(--card-bg));
+      stroke: var(--story); stroke-width: 1.4;
+    }
+    #s26b .seed-dot { fill: var(--story); }
+    #s26b .seed-bang {
+      fill: none; stroke: var(--navy-0); stroke-width: 2.2; stroke-linecap: round;
+    }
+    /* the dot of the exclamation mark: filled, in the panel's own ground */
+    #s26b .seed-bang--dot { fill: var(--navy-0); stroke: none; }
+
+    /* the claim + terminal (panel 3) */
+    #s26b .claim {
+      fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.5;
+    }
+    #s26b .claim-edge { fill: var(--muted-2); }
+    #s26b .claim-t {
+      font-size: 17px; font-weight: 720; fill: var(--white);
+      letter-spacing: -0.012em;
+    }
+    #s26b .micro {
+      font-size: 12px; font-weight: 850; letter-spacing: 0.13em;
+      fill: var(--muted-3);
+    }
+    #s26b .term {
+      fill: var(--card-bg-strong); stroke: var(--muted-2); stroke-width: 1.7;
+    }
+    #s26b .term-bar { stroke: var(--hairline); stroke-width: 1.4; }
+    #s26b .term-dot { fill: var(--muted-3); }
+    #s26b .term-p {
+      font-family: var(--font-mono); font-size: 17px; font-weight: 700;
+      fill: var(--theory-on-dark);
+    }
+    #s26b .term-t {
+      font-family: var(--font-mono); font-size: 17px; font-weight: 700;
+      fill: var(--white);
+    }
+    #s26b .term-s {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 650;
+      fill: var(--muted-2);
+    }
+
+    /* ---- the per-panel closing note --------------------------------------- */
+    #s26b .note {
+      flex: none;
+      margin-top: 14px;
+      display: flex; align-items: flex-start; gap: 11px;
+      font-size: 15px; font-weight: 680; line-height: 1.32; color: var(--muted-2);
+    }
+    #s26b .note b { color: var(--white); font-weight: 860; }
+    #s26b .note + .note { margin-top: 7px; }
+    #s26b .note--outside {
+      margin-top: 14px;
+      align-items: center; gap: 12px;
+      padding: 11px 14px;
+      border-radius: 16px;
+      border: 1.5px dashed color-mix(in srgb, var(--theory) 50%, var(--hairline));
+    }
+    #s26b .note--outside svg { flex: none; display: block; }
+
+    /* ==== the bottom band ================================================== */
+    #s26b .band {
+      flex: none;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      margin: 0 auto;
+      transform: translateY(10px);
+      display: flex; align-items: center; justify-content: center; gap: 18px;
+      padding: 15px 48px 16px;
+      border-radius: var(--radius-card);
+      background: var(--card-bg);
+      border: 1px solid var(--hairline);
+    }
+    #s26b .band p {
+      margin: 0; font-size: 23px; font-weight: 640; line-height: 1.3;
+      color: var(--muted);
+    }
+    #s26b .band p b { color: var(--theory); font-weight: 880; }
   </style>
 
   <div class="title-block">
-    <div class="kicker">How to read this talk</div>
-    <h1>Two threads, two colors</h1>
+    <div class="kicker">More compute, better results</div>
+    <h1>Designing the lenses</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="lanes">
-      <div class="lane-demo lane-demo--story fade-up">
-        <div class="demo-kicker">The story</div>
-        <h3>What actually happened</h3>
+
+    <div class="panels">
+
+      <!-- ============ 1. one deliberate perspective per agent ============ -->
+      <div class="panel fade-up">
+        <div class="eyebrow">the roster</div>
+        <h3>Lenses, not redundancy</h3>
+        <p class="lead">One perspective per agent. Three agents reading the same way is <b>one review paid for three times</b>.</p>
+
+        <div class="viz">
+          <svg viewBox="0 0 420 240" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="One document on the left, captioned the corpus, feeds a vertical splitter that fans out into three magnifying-glass glyphs, each followed by a labelled chip: falsifier, domain plausibility, fresh reader.">
+            <defs>
+              <marker id="s26b-ah" viewBox="0 0 11 11" refX="10" refY="5.5"
+                markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+                <path class="ah-n" d="M0 0 L11 5.5 L0 11 Z" />
+              </marker>
+            </defs>
+
+            <!-- the corpus -->
+            <rect class="doc" x="8" y="76" width="66" height="86" rx="9" />
+            <rect class="doc-line" x="21" y="94" width="40" height="5" rx="2.5" />
+            <rect class="doc-line" x="21" y="107" width="32" height="5" rx="2.5" />
+            <rect class="doc-line" x="21" y="120" width="40" height="5" rx="2.5" />
+            <rect class="doc-line" x="21" y="133" width="36" height="5" rx="2.5" />
+            <rect class="doc-line" x="21" y="146" width="24" height="5" rx="2.5" />
+            <text class="cap" x="41" y="182" text-anchor="middle">the corpus</text>
+
+            <!-- splitter -->
+            <path class="stub" d="M74 119 H89" />
+            <path class="bus" d="M89 46 V192" />
+            <circle class="bus-node" cx="89" cy="119" r="4.5" />
+            <path class="stub" d="M89 46 H116" marker-end="url(#s26b-ah)" />
+            <path class="stub" d="M89 119 H116" marker-end="url(#s26b-ah)" />
+            <path class="stub" d="M89 192 H116" marker-end="url(#s26b-ah)" />
+
+            <!-- lens 1 -->
+            <circle class="lens lens-glass" cx="138" cy="46" r="12.5" />
+            <path class="lens" d="M147 55 L154.5 62.5" />
+            <rect class="chip" x="166" y="29" width="97" height="34" rx="17" />
+            <text class="chip-t" x="183" y="52">falsifier</text>
+
+            <!-- lens 2 -->
+            <circle class="lens lens-glass" cx="138" cy="119" r="12.5" />
+            <path class="lens" d="M147 128 L154.5 135.5" />
+            <rect class="chip" x="166" y="102" width="190" height="34" rx="17" />
+            <text class="chip-t" x="183" y="125">domain plausibility</text>
+
+            <!-- lens 3 -->
+            <circle class="lens lens-glass" cx="138" cy="192" r="12.5" />
+            <path class="lens" d="M147 201 L154.5 208.5" />
+            <rect class="chip" x="166" y="175" width="135" height="34" rx="17" />
+            <text class="chip-t" x="183" y="198">fresh reader</text>
+          </svg>
+        </div>
+
+        <div class="note note--outside">
+          <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+            <circle class="lens lens--alt lens-glass" cx="12" cy="12" r="8" />
+            <path class="lens lens--alt" d="M18 18 L24 24" />
+          </svg>
+          <span>An <b>external model family</b> is a lens too, and the only one that breaks self-reference.</span>
+        </div>
       </div>
-      <div class="lane-demo lane-demo--theory fade-up">
-        <div class="demo-kicker">The why</div>
-        <h3>What generalizes</h3>
+
+      <!-- ============ 2. test the lens like you test code ================= -->
+      <div class="panel fade-up">
+        <div class="eyebrow">mutation-style</div>
+        <h3>Validate the lens itself</h3>
+        <p class="lead">Seed a <b>known defect</b> into the corpus, then run the lens. Does it catch it?</p>
+
+        <div class="viz">
+          <svg viewBox="0 0 420 240" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A page mock on the left with one line highlighted in amber and marked with an exclamation dot, captioned seeded defect. The page feeds two magnifying-glass glyphs. The first ends in a teal pill reading catches it. The second, drawn with a dashed outline, ends in an amber pill reading misses it, captioned the lens fails its own test.">
+            <defs>
+              <marker id="s26b-ah2" viewBox="0 0 11 11" refX="10" refY="5.5"
+                markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+                <path class="ah-n" d="M0 0 L11 5.5 L0 11 Z" />
+              </marker>
+            </defs>
+
+            <!-- the corpus, with one line deliberately broken -->
+            <rect class="doc" x="6" y="28" width="106" height="150" rx="10" />
+            <rect class="doc-line" x="20" y="46" width="64" height="6" rx="3" />
+            <rect class="doc-line" x="20" y="60" width="76" height="6" rx="3" />
+            <rect class="doc-line" x="20" y="74" width="56" height="6" rx="3" />
+            <rect class="seed-band" x="19" y="86" width="58" height="15" rx="4.5" />
+            <circle class="seed-dot" cx="93" cy="93.5" r="8.5" />
+            <path class="seed-bang" d="M93 89.5 V94" />
+            <circle class="seed-bang--dot" cx="93" cy="97.6" r="1.2" />
+            <rect class="doc-line" x="20" y="112" width="72" height="6" rx="3" />
+            <rect class="doc-line" x="20" y="126" width="60" height="6" rx="3" />
+            <rect class="doc-line" x="20" y="140" width="68" height="6" rx="3" />
+            <rect class="doc-line" x="20" y="154" width="40" height="6" rx="3" />
+            <text class="cap cap--warn" x="59" y="198" text-anchor="middle">seeded defect</text>
+
+            <!-- splitter into two candidate lenses -->
+            <path class="stub" d="M112 103 H128" />
+            <path class="bus" d="M128 72 V152" />
+            <circle class="bus-node" cx="128" cy="103" r="4.5" />
+            <path class="stub" d="M128 72 H140" marker-end="url(#s26b-ah2)" />
+            <path class="stub" d="M128 152 H140" marker-end="url(#s26b-ah2)" />
+
+            <!-- lens A catches it -->
+            <circle class="lens lens-glass" cx="162" cy="72" r="12.5" />
+            <path class="lens" d="M171 81 L178.5 88.5" />
+            <path class="stub" d="M182 72 H198" marker-end="url(#s26b-ah2)" />
+            <rect class="pill-ok" x="204" y="50" width="155" height="44" rx="22" />
+            <path class="ic-ok" d="M224 72.5 L230 79 L240 66" />
+            <text class="pill-t" x="252" y="78">catches it</text>
+
+            <!-- lens B misses it -->
+            <circle class="lens lens--alt lens-glass" cx="162" cy="152" r="12.5" />
+            <path class="lens lens--alt" d="M171 161 L178.5 168.5" />
+            <path class="stub" d="M182 152 H198" marker-end="url(#s26b-ah2)" />
+            <rect class="pill-bad" x="204" y="130" width="155" height="44" rx="22" />
+            <path class="ic-bad" d="M224 146 L238 160 M238 146 L224 160" />
+            <text class="pill-t pill-t--bad" x="252" y="158">misses it</text>
+            <text class="cap cap--warn" x="282" y="198" text-anchor="middle">the lens fails its own test</text>
+          </svg>
+        </div>
+
+        <div class="note">
+          <span>An <b>unvalidated lens</b> produces confident silence.</span>
+        </div>
+        <div class="note">
+          <span>Monitor lens yield too: sometimes you <b>retire a lens</b>, because the structure or the guidance improved.</span>
+        </div>
       </div>
+
+      <!-- ============ 3. a claim is not a finding until it runs ========== -->
+      <div class="panel fade-up">
+        <div class="eyebrow">the obligation</div>
+        <h3>Evidence obligations</h3>
+        <p class="lead">The reviewer must attach <b>evidence</b> to every claim, not just assert it.</p>
+
+        <div class="viz">
+          <svg viewBox="0 0 420 240" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A chip labelled the claim reading this path can never deadlock, with an arrow pointing down into a terminal window. The terminal shows the command show me and a line reading proven by a run, with a tick.">
+            <defs>
+              <marker id="s26b-ah3" viewBox="0 0 11 11" refX="10" refY="5.5"
+                markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+                <path class="ah-n" d="M0 0 L11 5.5 L0 11 Z" />
+              </marker>
+            </defs>
+
+            <!-- the assertion -->
+            <text class="micro" x="16" y="16">THE CLAIM</text>
+            <rect class="claim" x="10" y="26" width="400" height="50" rx="16" />
+            <rect class="claim-edge" x="30" y="41" width="4" height="20" rx="2" />
+            <text class="claim-t" x="46" y="57">&ldquo;this path can never deadlock&rdquo;</text>
+
+            <!-- show me -->
+            <path class="stub" d="M210 78 V102" marker-end="url(#s26b-ah3)" />
+
+            <rect class="term" x="44" y="110" width="332" height="96" rx="13" />
+            <line class="term-bar" x1="44" y1="136" x2="376" y2="136" />
+            <circle class="term-dot" cx="64" cy="123" r="3.6" />
+            <circle class="term-dot" cx="79" cy="123" r="3.6" />
+            <circle class="term-dot" cx="94" cy="123" r="3.6" />
+            <text class="term-p" x="64" y="166">$</text>
+            <text class="term-t" x="80" y="166">show me</text>
+            <path class="ic-ok" d="M65 186.5 L70 192 L79 181" />
+            <text class="term-s" x="90" y="191">evidence, not an assertion</text>
+          </svg>
+        </div>
+
+        <div class="note">
+          <span>LLM reviewers are non-deterministic: sometimes the claim is simply <b>wrong</b>. Evidence makes it re-checkable.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ the generalization ================================== -->
+    <div class="band fade-up">
+      <p>A lens is an artifact: <b>design it, validate it, version it</b>.</p>
     </div>
   </div>
 </section>
