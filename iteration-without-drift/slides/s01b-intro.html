@@ -608,16 +608,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
      sized off a single row height rather than talk-1's per-icon
      translateY nudges (those existed only to match delivered pixels)
   Asset: assets/img/title-flow-field.png, copied from talk1/deck/assets/img/.
-
-  AD OVERLAY (2026-08-26): the slide carries one in-slide step (README,
-  "In-slide step reveal"). The first next-key press drops a full-slide scrim
-  over the intro and shows the Compass AI&amp;Tech Summit discount ticket
-  (assets/img/compass-ad.jpg); the second press moves on to the next slide.
-  The ticket art itself only carries the code and the discount, so a one-line
-  caption names the event and the date.
-
-  Spoken beat (ad overlay): I am working on the Compass AI&amp;Tech Summit,
-  October 1-2. This is the plug.
   -->
 
   <style>
@@ -673,46 +663,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       letter-spacing: -0.01em;
       font-weight: 620;
     }
-
-    /* ---- ad overlay (class="step": hidden until the first next press) ----
-       Absolute + inset 0 so it covers the whole canvas, padding included, and
-       sits above the intro content (.slide > * gets z-index 2 from
-       components.css). While hidden the shell sets visibility: hidden, which
-       also kills pointer events, so nothing here can catch a click. */
-    #s01b .ad-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 30px;
-      background: color-mix(in srgb, var(--navy-ink) 86%, transparent);
-      backdrop-filter: blur(3px);
-    }
-
-    /* 3:2 art, sized off the canvas height (640 / 900 = 71%). */
-    #s01b .ad-poster {
-      display: block;
-      height: 640px;
-      width: auto;
-      border-radius: var(--radius-card);
-      border: 1px solid var(--hairline);
-      box-shadow:
-        0 30px 78px color-mix(in srgb, var(--navy-ink) 88%, transparent),
-        0 0 46px var(--glow-cyan);
-    }
-
-    #s01b .ad-caption {
-      color: var(--white);
-      font-size: 28px;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      font-weight: 700;
-      text-align: center;
-    }
-    #s01b .ad-caption b { color: var(--cyan-on-dark); font-weight: 800; }
   </style>
 
   <div class="title-block fade-up">
@@ -812,12 +762,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     <div class="closing">
       I care about whether AI workflows<br>actually work in real software delivery
     </div>
-  </div>
-
-  <div class="ad-overlay step">
-    <img class="ad-poster" src="../assets/img/compass-ad.jpg"
-      alt="A vintage cinema ticket stub lying on black, printed in blue on aged paper. The stub reads FelhoSentMe, and a starburst seal on it reads 30% DISCOUNT.">
-    <div class="ad-caption"><b>Compass AI&amp;Tech Summit</b>, October 1-2</div>
   </div>
 </section>
 <script>
