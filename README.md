@@ -15,6 +15,7 @@ Treat the files here as build output: fixes belong upstream.
 
 | Talk | Where | Deck |
 |---|---|---|
+| Iteration Without Drift: Keeping a Growing Design Corpus Coherent (v2) | code.talks 2026 | [iteration-without-drift-v2/](https://coding-with-bob.github.io/talks/iteration-without-drift-v2/) |
 | Iteration Without Drift: Keeping a Growing Design Corpus Coherent | Claude Code Meetup, Budapest 2026 | [iteration-without-drift/](https://coding-with-bob.github.io/talks/iteration-without-drift/) |
 | From Prompts to Convergence: My Journey Building Reliable Agentic Workflows | Craft Conference 2026 | [from-prompts-to-convergence/](https://coding-with-bob.github.io/talks/from-prompts-to-convergence/) |
 
