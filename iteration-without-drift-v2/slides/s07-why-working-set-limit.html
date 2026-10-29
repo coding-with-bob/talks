@@ -240,6 +240,15 @@
   font-size: var(--fs-kicker);
   margin-bottom: 14px;
 }
+/* every kicker leads with the small square (2026-10-29, owner call on s2b:
+   it was lane-only, so lane-less slides, s01b / s2b / s28 / s29, had a
+   bare kicker). Base blue here; a lane slide recolors it below. */
+.kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--blue);
+  vertical-align: baseline;
+}
 
 .title-block h1,
 h1.hero {
@@ -498,12 +507,7 @@ h1.hero {
 }
 
 .slide[data-lane] .kicker { color: var(--lane-ui); }
-.slide[data-lane] .kicker::before {
-  content: "";
-  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
-  border-radius: 3px; background: var(--lane);
-  vertical-align: baseline;
-}
+.slide[data-lane] .kicker::before { background: var(--lane); }
 .slide[data-lane] .accent-line { background: var(--lane); }
 
 /* warm paper tint for light story slides (bg tokens re-pointed locally) */
@@ -511,6 +515,63 @@ h1.hero {
   --navy-0: #fffefb;
   --navy-1: #fdf7ec;
   --navy-2: #f8efdc;
+}
+
+/* ==========================================================================
+   Theory stamp (2026-10-28, v2): a story slide gets stamped with the theory
+   concept it instantiates, so the opening's three ideas (reason 1, reason 2,
+   coherency load) each come back once inside the story, in the theory
+   color, in the theory words. Top-right corner: the stripe and the kicker
+   own the top-left. Static for now (owner call 2026-10-28: no in-slide
+   reveals deck-wide until the rehearsal pass); adding class="step" would
+   make it land on a key press. Users: s05, s06, s08, s09, s16.
+   2026-10-29, owner call: a slide that instantiates two concepts gets
+   two stamps, stacked; the "Reason 1/2" eyebrow was dropped (it adds
+   nothing), so the eyebrow is now used only by s16 ("The price").
+   2026-10-29: a stamp pair sits in a .stamps wrapper, rotated as one block.
+   2026-10-29, later (owner call): s05 is back to one stamp; its second
+   stamp, "(Un)known unknowns", moved to s09. No slide has a pair now.
+   ========================================================================== */
+/* ".slide > .stamp": the generic ".slide > *:not(.decor) { position:
+   relative }" rule above has higher specificity than a bare class, so the
+   stamp must be selected as a slide child to actually leave the flow.
+   The rotated box overhangs the title-block's bounding box on purpose, so
+   its users carry data-overflow-ok (overflowcheck.mjs opt-out, see there). */
+.slide > .stamp,
+.slide > .stamps > .stamp {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: inline-flex; align-items: baseline; gap: 22px;
+  padding: 11px 22px 11px 18px;
+  border: 3px solid var(--theory); border-radius: 12px;
+  background: color-mix(in srgb, var(--theory) 9%, transparent);
+  color: var(--theory-on-dark);
+  font-weight: 850; letter-spacing: var(--ls-kicker);
+  text-transform: uppercase; font-size: var(--fs-kicker);
+  white-space: nowrap;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamp::before,
+.slide > .stamps > .stamp::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: -8px;
+  border-radius: 3px; background: var(--theory);
+  vertical-align: baseline;
+}
+/* Stamp pair (2026-10-29, owner call): two separately rotated stamps
+   looked unanchored (different widths, so different left edges, and an
+   uneven gap). The .stamps wrapper takes the position and the ONE rotation;
+   align-items: stretch gives both stamps the wider one's width, so left and
+   right edges line up. The children keep the stamp look but drop their own
+   placement and rotation. Users: none at the moment (s05 used it for a day). */
+.slide > .stamps {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamps > .stamp { position: static; transform: none; }
+.slide > .stamp .eyebrow,
+.slide > .stamps > .stamp .eyebrow {
+  font-size: 18px; font-weight: 720; color: var(--muted); letter-spacing: 0.08em;
 }
 
 
@@ -583,10 +644,18 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" data-lane="theory" id="s07" data-act="act1" data-owner="draft" data-minutes="1.5"
+<section class="slide slide--light" data-lane="theory" id="s07" data-act="act0" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
+  <!-- RECEIPT (board pass, 2026-10-28): this slide now sits in the opening
+  block, directly after s02, as reason 1 up close (s02 -> s07 -> s11 ->
+  s02b). s02 only states "too big for one head"; the numbers and the LLM
+  half are spoken HERE, not there. Kicker "Reason 1" pairs with
+  s11's "Reason 2" (was "Both minds are bounded", which is now the
+  first spoken line instead). Minutes stay 1.0: cards are quick, the
+  experiment band is the content.
+
+  SPEAKER-NOTE (draft, from the Miro board):
   We need structure to think through a problem - both minds are bounded.
 
   Pre-redesign card wording (kept here so nothing is lost; the slide now
@@ -598,10 +667,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     Experiment: "Review with 1 agent x 10 perspectives vs a subagent per
       perspective: the second is far more comprehensive."
 
-  Delivery: say the 7+/-2 number, then land the 50-page document line as the
-  thing everyone in the room has already lived through. The LLM box is the
-  same bound, restated: attention is a budget, not a switch. The IFScale
-  footnote is the receipt, only read it out if someone pushes back.
+  Kicker "Reason 1" (2026-10-29: "up close" dropped, owner call; it was a
+  framing remark, the kind a slide does not carry). s11 is "Reason 2".
+  Delivery (board pass 2026-10-28): "Reason one, up close. Both minds are
+  bounded." Human card: working memory, seven plus or minus two, and the
+  50-page document line as the thing everyone in the room has lived
+  through. LLM card headline "Limited attention budget." (2026-10-29: was
+  "focus"; the spoken line "attention is a budget, not a switch" is dropped,
+  the "not a switch" half contrasted nothing the room believes). Then the
+  experiment band. The IFScale footnote is
+  the receipt, only read it out if someone pushes back. The story's own
+  instance of this reason is stamped on s06 (the giant design doc).
   -->
 
   <style>
@@ -624,6 +700,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       font-size: var(--fs-kicker); font-weight: 850; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--blue-on-dark);
     }
+    /* human card in the deck's human color (story amber, the "human decides"
+       figure on s25 / s26); LLM card in the theory cyan (owner call, 2026-10-29) */
+    #s07 .bounds .card--human .label { color: var(--story-on-dark); }
     #s07 .bounds .card--strong .label { color: var(--theory-on-dark); }
     #s07 .bounds .card .claim {
       font-size: 38px; font-weight: 820; letter-spacing: -0.025em;
@@ -631,6 +710,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
     #s07 .bounds .card .claim .accent,
     #s07 .bounds .card .claim .accent-cyan { white-space: nowrap; }
+    #s07 .bounds .card--human .claim .accent { color: var(--story); }
     #s07 .bounds .card--strong .claim .accent-cyan { color: var(--theory); }
     #s07 .bounds .card .sub {
       font-size: var(--fs-caption); color: var(--muted-2);
@@ -669,21 +749,21 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Both minds are bounded</div>
+    <div class="kicker">Reason 1</div>
     <h1>The working-set limit</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
     <div class="bounds">
-      <div class="card fade-up">
+      <div class="card card--human fade-up">
         <div class="label">Human</div>
         <div class="claim">Working memory: <span class="accent">7&plusmn;2</span> items.</div>
         <div class="sub">Comprehension is limited.<br>Nobody truly reviews a 50-page design document.</div>
       </div>
       <div class="card card--strong fade-up">
         <div class="label">LLM</div>
-        <div class="claim">Limited <span class="accent-cyan">attention</span> focus.</div>
+        <div class="claim">Limited <span class="accent-cyan">attention</span> budget.</div>
         <div class="sub">Ask one agent to focus on 100 things and the quality per perspective drops
           significantly. IFScale benchmark <sup>[1]</sup></div>
       </div>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — s12-why-two-dimensions</title>
+<title>Iteration Without Drift — s02b-coherency-load</title>
 <style>
 
 @font-face {
@@ -239,6 +239,15 @@
   text-transform: uppercase;
   font-size: var(--fs-kicker);
   margin-bottom: 14px;
+}
+/* every kicker leads with the small square (2026-10-29, owner call on s2b:
+   it was lane-only, so lane-less slides, s01b / s2b / s28 / s29, had a
+   bare kicker). Base blue here; a lane slide recolors it below. */
+.kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--blue);
+  vertical-align: baseline;
 }
 
 .title-block h1,
@@ -498,12 +507,7 @@ h1.hero {
 }
 
 .slide[data-lane] .kicker { color: var(--lane-ui); }
-.slide[data-lane] .kicker::before {
-  content: "";
-  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
-  border-radius: 3px; background: var(--lane);
-  vertical-align: baseline;
-}
+.slide[data-lane] .kicker::before { background: var(--lane); }
 .slide[data-lane] .accent-line { background: var(--lane); }
 
 /* warm paper tint for light story slides (bg tokens re-pointed locally) */
@@ -511,6 +515,63 @@ h1.hero {
   --navy-0: #fffefb;
   --navy-1: #fdf7ec;
   --navy-2: #f8efdc;
+}
+
+/* ==========================================================================
+   Theory stamp (2026-10-28, v2): a story slide gets stamped with the theory
+   concept it instantiates, so the opening's three ideas (reason 1, reason 2,
+   coherency load) each come back once inside the story, in the theory
+   color, in the theory words. Top-right corner: the stripe and the kicker
+   own the top-left. Static for now (owner call 2026-10-28: no in-slide
+   reveals deck-wide until the rehearsal pass); adding class="step" would
+   make it land on a key press. Users: s05, s06, s08, s09, s16.
+   2026-10-29, owner call: a slide that instantiates two concepts gets
+   two stamps, stacked; the "Reason 1/2" eyebrow was dropped (it adds
+   nothing), so the eyebrow is now used only by s16 ("The price").
+   2026-10-29: a stamp pair sits in a .stamps wrapper, rotated as one block.
+   2026-10-29, later (owner call): s05 is back to one stamp; its second
+   stamp, "(Un)known unknowns", moved to s09. No slide has a pair now.
+   ========================================================================== */
+/* ".slide > .stamp": the generic ".slide > *:not(.decor) { position:
+   relative }" rule above has higher specificity than a bare class, so the
+   stamp must be selected as a slide child to actually leave the flow.
+   The rotated box overhangs the title-block's bounding box on purpose, so
+   its users carry data-overflow-ok (overflowcheck.mjs opt-out, see there). */
+.slide > .stamp,
+.slide > .stamps > .stamp {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: inline-flex; align-items: baseline; gap: 22px;
+  padding: 11px 22px 11px 18px;
+  border: 3px solid var(--theory); border-radius: 12px;
+  background: color-mix(in srgb, var(--theory) 9%, transparent);
+  color: var(--theory-on-dark);
+  font-weight: 850; letter-spacing: var(--ls-kicker);
+  text-transform: uppercase; font-size: var(--fs-kicker);
+  white-space: nowrap;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamp::before,
+.slide > .stamps > .stamp::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: -8px;
+  border-radius: 3px; background: var(--theory);
+  vertical-align: baseline;
+}
+/* Stamp pair (2026-10-29, owner call): two separately rotated stamps
+   looked unanchored (different widths, so different left edges, and an
+   uneven gap). The .stamps wrapper takes the position and the ONE rotation;
+   align-items: stretch gives both stamps the wider one's width, so left and
+   right edges line up. The children keep the stamp look but drop their own
+   placement and rotation. Users: none at the moment (s05 used it for a day). */
+.slide > .stamps {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamps > .stamp { position: static; transform: none; }
+.slide > .stamp .eyebrow,
+.slide > .stamps > .stamp .eyebrow {
+  font-size: 18px; font-weight: 720; color: var(--muted); letter-spacing: 0.08em;
 }
 
 
@@ -583,18 +644,72 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" data-lane="theory" id="s12" data-act="act3" data-owner="draft" data-minutes="1.25"
+<section class="slide slide--light" data-lane="theory" id="s02b" data-act="act0" data-owner="draft" data-minutes="1.25"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  The spatial twin of drift: the parts must stay mutually coherent.
+  <!-- SPEAKER-NOTE (v2 opening restructure, 2026-10-28):
+  MOVED from act3 (was s12-why-two-dimensions, right after s11) into the
+  opening. Board pass later the same day: the opening block is now s02
+  (two reasons, two moves) -> s07 (reason 1 up close) -> s11 (reason 2 up
+  close) -> this slide, so s11 is again the slide right before it and its
+  band ("corpus-wide changes") is the hand-off. Open with: "s02 said both
+  moves come at a price. Here it is." The slide is THE stage for the whole
+  talk: the price both moves of s02 share. The story stamps it back on s16. Title and
+  kicker swapped roles for that reason (the concept is the headline, the
+  price framing is the kicker). The two break labels were renamed so the
+  title's word covers both of them: first "drift in time" (a part against
+  its own past) and "drift between parts" (two parts at their boundary),
+  since 2026-10-29 "integrity drift" and "contract drift" (see below); the
+  oldest names, "drift" and "misalignment", live on in the note below.
+  Chip order flipped to match s02's card order: iterate in space first,
+  iterate in time second.
+
+  NO IN-SLIDE REVEAL for now (owner call, 2026-10-28, deck-wide): the band
+  is visible from the start; read it only after the grid has been walked.
+
+  2026-10-29 owner pass on the board: kicker "The price of iteration" (was
+  "The price of both moves"). The grey promise line ("This talk: how to
+  carry it. One case, as it happened.") is off the slide; the sentence stays
+  a spoken beat below. Band reworded: "every link that must hold" replaces
+  "every link you must keep true", and the second line now says the load
+  grows faster than the corpus ("And the links grow faster than the
+  corpus.") instead of "the links multiply: more parts, more rounds, both
+  at once". The mechanism is spoken, not printed: a new part adds links to
+  the parts already there, a new round reopens every link. Honest order of
+  growth: the product of the two axes, not exponential; do not say
+  "exponential" out loud.
+
+  Break labels renamed a second time (owner, 2026-10-29), to name the
+  nature of the wrong change rather than its axis: "integrity drift" (was
+  "drift in time": a round left the corpus inconsistent with itself, the
+  part no longer matches its own past) and "contract drift" (was "drift
+  between parts": two parts no longer agree at their boundary). "Contract"
+  was chosen over "boundary": the boundary is where it lives, the contract
+  is what breaks, and it covers level-to-level as well as component-to-
+  component.
+
+  Spoken beats:
+    grid:  walk it as the note below says, then: "Every one of these links
+            is something you have to keep true. And look what happens: more
+            parts, more rounds, the links multiply."
+    band:  "That is the coherency load. This whole talk is about how to
+            carry it. I will show you one case, as it happened: my own
+            harness, Pairflow, going from v1 to v3. The principles are the
+            transferable part; the harness is one instance."
+    That last sentence is the answer to the "it mirrors its creator"
+    feedback. Say it here, once, and let the story carry it from then on.
+
+  ORIGINAL NOTE (draft, from the Miro board; the two cards below are in
+  their pre-flip order, and the walkthrough was reworded on 2026-10-28 to
+  use the printed labels):
+  The spatial half of drift: the parts must stay mutually coherent.
 
   The two dimension cards, moved here verbatim when the grid visual replaced
   them (the legend chips on the slide are the trimmed form):
     1 &middot; Iterate in time
        "Every change lands in a growing corpus, and the whole corpus must stay
         coherent after every round."
-    2 &middot; Divide in space
+    2 &middot; Iterate in space
        "Partitioning into levels / layers / components creates its own
         consistency load: boundary contracts, cross-part alignment."
 
@@ -609,11 +724,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     - The links are the coherence obligations. Horizontal: a part must stay
       coherent with its own past. Vertical: the parts must stay coherent with
       each other inside the same version.
-    - The two dimensions MULTIPLY: the number of links you must keep true grows
+    - The two moves MULTIPLY: the number of links you must keep true grows
       on both axes at once.
-    - The red breaks are the two failure modes. "drift" is a part that lost the
-      thread of its own history. "misalignment" is two parts that no longer
-      agree at their boundary, here the newest component against its neighbour.
+    - The red breaks are the two failure modes, both drift. "integrity drift"
+      is a part that lost the thread of its own history. "contract drift" is
+      two parts that no longer agree at their boundary, here the newest
+      component against its neighbour.
 
   ABSORBED into the bottom band (2026-08-25): the old centered caption
   ("coherence must hold along both axes") and the old footnote ("Drift risk on
@@ -624,95 +740,95 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   -->
 
   <style>
-    #s12 .content {
+    /* gap 18 -> 14 (2026-10-28) when the band gained a promise line; the
+       line is gone since 2026-10-29, the gap stays, the slack is welcome. */
+    #s02b .content {
       flex: 1; min-height: 0;
-      display: flex; flex-direction: column; gap: 18px; justify-content: center;
+      display: flex; flex-direction: column; gap: 14px; justify-content: center;
     }
 
     /* ---- the two dimensions + grid, nudged as one unit ------------------- */
     /* translateY(-5px): vertical nudge (was -10px). translateX(-50px):
        re-centers the composition after the space axis moved 110px right,
        toward the grid, which shifted the visual balance rightward. */
-    #s12 .diagram-group {
+    #s02b .diagram-group {
       flex: none; display: flex; flex-direction: column; gap: 18px;
       transform: translate(-50px, -5px);
     }
 
-    #s12 .legend {
+    #s02b .legend {
       flex: none; display: flex; gap: 16px; justify-content: center; align-items: stretch;
     }
-    #s12 .dim {
+    #s02b .dim {
       display: inline-flex; align-items: center; gap: 14px; white-space: nowrap;
       padding: 12px 24px 12px 14px; border-radius: var(--radius-chip);
       background: var(--card-bg); border: 1px solid var(--hairline);
     }
-    #s12 .dim .num {
+    #s02b .dim .num {
       flex: none; width: 28px; height: 28px; border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--theory); color: var(--navy-0);
       font-size: 16px; font-weight: 900; line-height: 1;
     }
-    #s12 .dim .txt { font-size: 19px; font-weight: 640; color: var(--muted-2); }
-    #s12 .dim .txt b { font-weight: 850; color: var(--white); }
+    #s02b .dim .txt { font-size: 19px; font-weight: 640; color: var(--muted-2); }
+    #s02b .dim .txt b { font-weight: 850; color: var(--white); }
 
     /* ---- the time x space grid ------------------------------------------ */
-    #s12 .grid-wrap { flex: none; height: 400px; }
-    #s12 .grid-wrap svg { display: block; width: 100%; height: 100%; }
+    #s02b .grid-wrap { flex: none; height: 400px; }
+    #s02b .grid-wrap svg { display: block; width: 100%; height: 100%; }
 
-    #s12 .axis { stroke: var(--chart-axis); stroke-width: 2; }
-    #s12 .axis-head { fill: var(--chart-axis); }
-    #s12 .axis-label {
+    #s02b .axis { stroke: var(--chart-axis); stroke-width: 2; }
+    #s02b .axis-head { fill: var(--chart-axis); }
+    #s02b .axis-label {
       font-size: 17px; font-weight: 830; letter-spacing: 0.05em;
       fill: var(--theory-on-dark);
     }
-    #s12 .round {
+    #s02b .round {
       font-size: 17px; font-weight: 850; letter-spacing: 0.04em;
       fill: var(--theory-on-dark);
     }
-    #s12 .part {
+    #s02b .part {
       font-size: 16px; font-weight: 700; fill: var(--muted-2);
     }
 
-    #s12 .block { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.6; }
+    #s02b .block { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.6; }
 
-    #s12 .link {
+    #s02b .link {
       stroke: var(--theory); stroke-width: 3; stroke-linecap: round;
       opacity: 0.55; fill: none;
     }
 
-    #s12 .break { stroke: var(--series-flat); stroke-width: 3.4; stroke-linecap: round; }
-    #s12 .break-x { stroke: var(--series-flat); stroke-width: 4.4; stroke-linecap: round; }
-    #s12 .break-label {
+    #s02b .break { stroke: var(--series-flat); stroke-width: 3.4; stroke-linecap: round; }
+    #s02b .break-x { stroke: var(--series-flat); stroke-width: 4.4; stroke-linecap: round; }
+    #s02b .break-label {
       font-size: 17px; font-weight: 850; letter-spacing: 0.01em;
       fill: var(--series-flat);
     }
 
     /* ---- closing band (s07 "Try it" / s11 / s23b pattern) ---------------- */
-    /* Two lines now instead of one: the box is 28px taller than the old
-       one-line band (one extra line at font-size 20 / line-height 1.4).
-       That growth fits inside the slide's existing slack with no
-       compensating margin needed; a negative margin-bottom hack was tried
-       here and removed because it fought div.content's scroll height
-       instead of fixing it (overflowcheck got worse, not better, as the
-       margin was made more negative). */
-    #s12 .band {
+    /* One paragraph, two lines (definition, growth). A negative
+       margin-bottom hack was tried here once and removed because it fought
+       div.content's scroll height instead of fixing it (overflowcheck got
+       worse, not better, as the margin was made more negative). */
+    #s02b .band {
       flex: none; align-self: center;
       width: fit-content; min-width: 40%; max-width: 100%;
-      padding: 16px 48px; text-align: center;
+      padding: 13px 48px; text-align: center;
+      display: flex; flex-direction: column; gap: 6px;
     }
-    #s12 .band p {
+    #s02b .band p {
       margin: 0; font-size: 20px; font-weight: 700;
       line-height: 1.4; color: var(--muted);
     }
-    #s12 .band p b.danger {
+    #s02b .band p b.danger {
       font-weight: 850; color: var(--series-flat); letter-spacing: 0.01em;
     }
-    #s12 .band p b { font-weight: 850; color: var(--theory); }
+    #s02b .band p b { font-weight: 850; color: var(--theory); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Coherency load</div>
-    <h1>Two dimensions of iteration</h1>
+    <div class="kicker">The price of iteration</div>
+    <h1>Coherency load</h1>
     <div class="accent-line"></div>
   </div>
 
@@ -722,17 +838,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     <div class="legend fade-up">
       <div class="dim">
         <span class="num" aria-hidden="true">1</span>
-        <span class="txt"><b>Iterate in time:</b> every change must leave the corpus coherent</span>
+        <span class="txt"><b>Iterate in space:</b> the parts must stay coherent with each other</span>
       </div>
       <div class="dim">
         <span class="num" aria-hidden="true">2</span>
-        <span class="txt"><b>Divide in space:</b> contracts must stay aligned</span>
+        <span class="txt"><b>Iterate in time:</b> every round must leave the whole corpus coherent</span>
       </div>
     </div>
 
     <div class="grid-wrap fade-up">
       <svg viewBox="0 0 1456 400" preserveAspectRatio="xMidYMid meet" role="img"
-        aria-label="A grid of corpus versions v1 to v4 across the horizontal axis labelled iterate in time, and parts level A, level B, level C, component D, component E along the vertical axis labelled divide in space, whose arrow points upward. Each version is a column of blocks; the columns grow both in block count, from two to five, and in width, so v4 is the widest. Links join each block to its predecessor in the previous version and to its neighbour in the same version. One horizontal link is broken and marked drift, one vertical link is broken and marked misalignment.">
+        aria-label="A grid of corpus versions v1 to v4 across the horizontal axis labelled iterate in time, and parts level A, level B, level C, component D, component E along the vertical axis labelled iterate in space, whose arrow points upward. Each version is a column of blocks; the columns grow both in block count, from two to five, and in width, so v4 is the widest. Links join each block to its predecessor in the previous version and to its neighbour in the same version. One horizontal link is broken and marked integrity drift, one vertical link is broken and marked contract drift.">
 
         <!-- version labels, centered on their (widening) columns -->
         <g transform="translate(35 0)">
@@ -746,7 +862,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <line class="axis" x1="158" y1="338" x2="158" y2="62" />
         <path class="axis-head" d="M150 62 L166 62 L158 44 Z" />
         <text class="axis-label" x="188" y="189" text-anchor="middle"
-          transform="rotate(-90 160 217)">divide in space</text>
+          transform="rotate(-90 160 217)">iterate in space</text>
 
         <!-- everything else (row labels, columns, links, breaks, time axis)
              shifted 35px right; the space axis above is the only exception -->
@@ -807,14 +923,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <line class="break" x1="730" y1="126" x2="762" y2="126" />
         <line class="break-x" x1="710" y1="118" x2="726" y2="134" />
         <line class="break-x" x1="726" y1="118" x2="710" y2="134" />
-        <text class="break-label" x="718" y="101" text-anchor="middle">drift</text>
+        <text class="break-label" x="718" y="101" text-anchor="middle">integrity drift</text>
 
         <!-- BREAK 2: the newest component disagrees with its neighbour -->
-        <line class="break" x1="1200" y1="271" x2="1200" y2="277" />
-        <line class="break" x1="1200" y1="290" x2="1200" y2="296" />
-        <line class="break-x" x1="1192" y1="276" x2="1208" y2="292" />
-        <line class="break-x" x1="1208" y1="276" x2="1192" y2="292" />
-        <text class="break-label" x="1180" y="289" text-anchor="end">misalignment</text>
+        <!-- the stubs stop short of the X on both sides, like the break above,
+             so it reads as a broken link and not as an asterisk -->
+        <line class="break" x1="1200" y1="271" x2="1200" y2="274" />
+        <line class="break" x1="1200" y1="293" x2="1200" y2="296" />
+        <line class="break-x" x1="1193" y1="277" x2="1207" y2="291" />
+        <line class="break-x" x1="1207" y1="277" x2="1193" y2="291" />
+        <text class="break-label" x="1180" y="289" text-anchor="end">contract drift</text>
 
         <!-- the time axis, arrowhead pulled in to sit just past the v4 boxes (right edge 1330) -->
         <line class="axis" x1="266" y1="360" x2="1327" y2="360" />
@@ -825,9 +943,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     </div>
     </div>
 
-    <div class="card band fade-up">
-      <p><b class="danger">Drift risk on both dimensions:</b> enormous pressure on coherence.<br>
-        <b>Coherence must hold along both axes.</b></p>
+    <div class="card band">
+      <p><b>Coherency load:</b> every link that must hold.<br>
+        And the links <b class="danger">grow faster</b> than the corpus.</p>
     </div>
   </div>
 </section>

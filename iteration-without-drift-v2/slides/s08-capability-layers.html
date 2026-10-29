@@ -240,6 +240,15 @@
   font-size: var(--fs-kicker);
   margin-bottom: 14px;
 }
+/* every kicker leads with the small square (2026-10-29, owner call on s2b:
+   it was lane-only, so lane-less slides, s01b / s2b / s28 / s29, had a
+   bare kicker). Base blue here; a lane slide recolors it below. */
+.kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--blue);
+  vertical-align: baseline;
+}
 
 .title-block h1,
 h1.hero {
@@ -498,12 +507,7 @@ h1.hero {
 }
 
 .slide[data-lane] .kicker { color: var(--lane-ui); }
-.slide[data-lane] .kicker::before {
-  content: "";
-  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
-  border-radius: 3px; background: var(--lane);
-  vertical-align: baseline;
-}
+.slide[data-lane] .kicker::before { background: var(--lane); }
 .slide[data-lane] .accent-line { background: var(--lane); }
 
 /* warm paper tint for light story slides (bg tokens re-pointed locally) */
@@ -511,6 +515,63 @@ h1.hero {
   --navy-0: #fffefb;
   --navy-1: #fdf7ec;
   --navy-2: #f8efdc;
+}
+
+/* ==========================================================================
+   Theory stamp (2026-10-28, v2): a story slide gets stamped with the theory
+   concept it instantiates, so the opening's three ideas (reason 1, reason 2,
+   coherency load) each come back once inside the story, in the theory
+   color, in the theory words. Top-right corner: the stripe and the kicker
+   own the top-left. Static for now (owner call 2026-10-28: no in-slide
+   reveals deck-wide until the rehearsal pass); adding class="step" would
+   make it land on a key press. Users: s05, s06, s08, s09, s16.
+   2026-10-29, owner call: a slide that instantiates two concepts gets
+   two stamps, stacked; the "Reason 1/2" eyebrow was dropped (it adds
+   nothing), so the eyebrow is now used only by s16 ("The price").
+   2026-10-29: a stamp pair sits in a .stamps wrapper, rotated as one block.
+   2026-10-29, later (owner call): s05 is back to one stamp; its second
+   stamp, "(Un)known unknowns", moved to s09. No slide has a pair now.
+   ========================================================================== */
+/* ".slide > .stamp": the generic ".slide > *:not(.decor) { position:
+   relative }" rule above has higher specificity than a bare class, so the
+   stamp must be selected as a slide child to actually leave the flow.
+   The rotated box overhangs the title-block's bounding box on purpose, so
+   its users carry data-overflow-ok (overflowcheck.mjs opt-out, see there). */
+.slide > .stamp,
+.slide > .stamps > .stamp {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: inline-flex; align-items: baseline; gap: 22px;
+  padding: 11px 22px 11px 18px;
+  border: 3px solid var(--theory); border-radius: 12px;
+  background: color-mix(in srgb, var(--theory) 9%, transparent);
+  color: var(--theory-on-dark);
+  font-weight: 850; letter-spacing: var(--ls-kicker);
+  text-transform: uppercase; font-size: var(--fs-kicker);
+  white-space: nowrap;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamp::before,
+.slide > .stamps > .stamp::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: -8px;
+  border-radius: 3px; background: var(--theory);
+  vertical-align: baseline;
+}
+/* Stamp pair (2026-10-29, owner call): two separately rotated stamps
+   looked unanchored (different widths, so different left edges, and an
+   uneven gap). The .stamps wrapper takes the position and the ONE rotation;
+   align-items: stretch gives both stamps the wider one's width, so left and
+   right edges line up. The children keep the stamp look but drop their own
+   placement and rotation. Users: none at the moment (s05 used it for a day). */
+.slide > .stamps {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamps > .stamp { position: static; transform: none; }
+.slide > .stamp .eyebrow,
+.slide > .stamps > .stamp .eyebrow {
+  font-size: 18px; font-weight: 720; color: var(--muted); letter-spacing: 0.08em;
 }
 
 
@@ -590,7 +651,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   The falsifiable criterion, kept verbatim in the quote block: it is a
   design-quality metric, not a slogan.
 
+  POSITION (board pass 2026-10-28): the slide before this one is now s06,
+  the giant design doc stamped "Reason 1: too big for one head"; this slide
+  is the answer to that stamp. The slide after it is s13 "Who carries the
+  load?". Close with the hand-off: "That handled reason one. But I knew I
+  would iterate a lot, and every round had to leave all these layers
+  coherent with each other. Reason two was still open." s13 picks it up.
+
   Spoken beats, moved here from the old bullet list:
+    - (2026-10-28) name the move first: "this is iterate in space, round one."
     - "I broke the problem into capability layers."
     - "One layer is small enough to actually think through."
     - "And I defined the feedback loop up front:" (then read the quote).
@@ -599,13 +668,13 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     1. SMALL SPEC. Before any corpus work, a small spec was agreed for the
        layer: what the layer's contract is, what it owns, what it does not.
        Small enough to hold in one head at once, which is the whole point of
-       the working-set slide right before this one.
+       the working-set slide in the opening (s07).
     2. V1 REALITY CHECK. Then a separate pass read the v1 codebase and
        confirmed that the capability layer as specified really covers the
        expectations v1 poses. v1 was the ground truth: if the layer could not
        carry what v1 already demanded, the layer boundary was wrong, not v1.
   The bracket note "one layer = one working set" is the quiet callback to the
-  7 plus or minus 2 bound from the previous slide. Do not belabour it; if
+  7 plus or minus 2 bound from s07 in the opening. Do not belabour it; if
   someone asks, that IS the sizing rule for a layer.
 
   CROSS-SLIDE ARC (updated 2026-08-25, owner call): the dashed red back-arrow
@@ -626,23 +695,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       display: flex; flex-direction: column; gap: 20px; justify-content: center;
     }
 
-    /* ---- the visual row: transformation (left) + the test (right) -------- */
-    /* fixed px split (was 1.28fr/0.72fr with 28px gap, ~914/514 at the
-       1600px canvas): the right column is 70px narrower, its left edge
-       (the transform column's width) unchanged, gap absorbing the freed
-       space so both edges land clean. */
+    /* ---- the visual row: the transformation, alone and centered ---------- */
+    /* the diagram keeps its earlier 914px column width (same render size);
+       the row just centers it now that it is the only visual. */
     #s08 .viz {
       height: 396px; flex: none;
-      display: grid; grid-template-columns: 914px 444px; gap: 98px;
-      align-items: stretch;
+      display: flex; justify-content: center; align-items: stretch;
     }
     #s08 .viz > * { min-width: 0; min-height: 0; }
     #s08 svg { width: 100%; height: 100%; display: block; }
     #s08 .transform {
+      width: 914px; flex: none;
       display: flex; align-items: center; justify-content: center;
       /* whole composition (knot, arrow, layer stack, captions, bracket)
-         nudged up 22px per owner feedback */
-      transform: translateY(-22px);
+         nudged up 22px per owner feedback; 42px left so the visible ink
+         (knot to "one working set"), not the viewBox, centers on the slide:
+         the viewBox carries more empty margin on its left than its right */
+      transform: translate(-42px, -22px);
     }
 
     /* the v1 tangle */
@@ -675,38 +744,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       font-size: 15px; font-weight: 700; letter-spacing: 0.02em; fill: var(--muted-2);
     }
 
-    /* ---- right card: the criterion, drawn ------------------------------- */
-    #s08 .test {
-      display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; height: 369px;
-      /* left border moved right so the left inset (up-arrow to border) matches
-         the right inset (X to border, see .test-svg crop below), then the
-         whole card shifted 110px left (70px, plus 40px more to balance the
-         wider transform diagram on the left); the grid gap absorbs it. Also
-         nudged up 5px per owner feedback. */
-      width: 403.66px; justify-self: end; transform: translate(-110px, -5px);
-    }
-    #s08 .test-head {
-      font-size: var(--fs-micro); font-weight: 850; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--muted-3); flex: none;
-    }
-    /* the diagram itself keeps its original size (content untouched); the
-       narrower card just crops its left margin so the two insets match. */
-    #s08 .test-svg { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: flex-end; }
-    #s08 .test-svg svg { width: 394px; flex: none; }
-
-    #s08 .m-layer { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.5; }
-    #s08 .m-new { fill: none; stroke: var(--cyan); stroke-width: 2.4; stroke-dasharray: 8 7; }
-    #s08 .m-label { font-size: 15px; font-weight: 830; fill: var(--cyan-on-dark); }
-    #s08 .m-sub { font-size: 14px; font-weight: 700; fill: var(--muted-2); }
-    #s08 .m-ok { stroke: var(--cyan); stroke-width: 5; stroke-linecap: round; fill: none; }
-    #s08 .m-ok-head { fill: var(--cyan); }
-    #s08 .m-back {
-      stroke: var(--series-flat); stroke-width: 3.6; fill: none;
-      stroke-dasharray: 9 8; stroke-linecap: round;
-    }
-    #s08 .m-back-head { fill: var(--series-flat); }
-    #s08 .m-cross { stroke: var(--series-flat); stroke-width: 5; stroke-linecap: round; }
-
     /* ---- how each layer landed: two chips, one line ---------------------- */
     #s08 .steps {
       flex: none; display: grid; grid-auto-flow: column; grid-auto-columns: auto;
@@ -728,6 +765,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s08 .pstep .txt b { font-weight: 850; color: var(--white); }
     #s08 .steps-arrow { font-size: 22px; font-weight: 800; color: var(--muted-3); }
   </style>
+
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>Coherency load</div>
 
   <div class="title-block">
     <div class="kicker">Capability layers</div>
@@ -799,35 +839,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <text class="bracket-note" x="756" y="219">one layer =</text>
           <text class="bracket-note" x="756" y="245">one working set</text>
         </svg>
-      </div>
-
-      <div class="card test fade-up">
-        <div class="test-head">The test</div>
-        <div class="test-svg">
-          <svg viewBox="0 0 420 250" preserveAspectRatio="xMidYMid meet" role="img"
-            aria-label="A new layer arrives on top of an existing stack with a teal upward arrow. A dashed red arrow bends back down from the new layer into the bottom layer and is crossed out.">
-
-            <!-- the new layer arriving on top -->
-            <rect class="m-new" x="110" y="50" width="220" height="34" rx="8" />
-            <text class="m-label" x="220" y="72" text-anchor="middle">new layer</text>
-
-            <!-- the layers already in place -->
-            <rect class="m-layer" x="110" y="118" width="220" height="30" rx="8" />
-            <rect class="m-layer" x="110" y="156" width="220" height="30" rx="8" />
-            <rect class="m-layer" x="110" y="194" width="220" height="30" rx="8" />
-            <text class="m-sub" x="220" y="214" text-anchor="middle">lower layer</text>
-
-            <!-- enabling it: fine -->
-            <line class="m-ok" x1="76" y1="209" x2="76" y2="88" />
-            <path class="m-ok-head" d="M76 72 L66 92 L86 92 Z" />
-
-            <!-- forcing a fix below: must never happen -->
-            <path class="m-back" d="M334 67 C394 80, 396 186, 348 205" />
-            <path class="m-back-head" d="M337 209 L351 212 L345 197 Z" />
-            <line class="m-cross" x1="365" y1="118" x2="397" y2="150" />
-            <line class="m-cross" x1="397" y1="118" x2="365" y2="150" />
-          </svg>
-        </div>
       </div>
     </div>
 

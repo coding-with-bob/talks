@@ -240,6 +240,15 @@
   font-size: var(--fs-kicker);
   margin-bottom: 14px;
 }
+/* every kicker leads with the small square (2026-10-29, owner call on s2b:
+   it was lane-only, so lane-less slides, s01b / s2b / s28 / s29, had a
+   bare kicker). Base blue here; a lane slide recolors it below. */
+.kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--blue);
+  vertical-align: baseline;
+}
 
 .title-block h1,
 h1.hero {
@@ -498,12 +507,7 @@ h1.hero {
 }
 
 .slide[data-lane] .kicker { color: var(--lane-ui); }
-.slide[data-lane] .kicker::before {
-  content: "";
-  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
-  border-radius: 3px; background: var(--lane);
-  vertical-align: baseline;
-}
+.slide[data-lane] .kicker::before { background: var(--lane); }
 .slide[data-lane] .accent-line { background: var(--lane); }
 
 /* warm paper tint for light story slides (bg tokens re-pointed locally) */
@@ -511,6 +515,63 @@ h1.hero {
   --navy-0: #fffefb;
   --navy-1: #fdf7ec;
   --navy-2: #f8efdc;
+}
+
+/* ==========================================================================
+   Theory stamp (2026-10-28, v2): a story slide gets stamped with the theory
+   concept it instantiates, so the opening's three ideas (reason 1, reason 2,
+   coherency load) each come back once inside the story, in the theory
+   color, in the theory words. Top-right corner: the stripe and the kicker
+   own the top-left. Static for now (owner call 2026-10-28: no in-slide
+   reveals deck-wide until the rehearsal pass); adding class="step" would
+   make it land on a key press. Users: s05, s06, s08, s09, s16.
+   2026-10-29, owner call: a slide that instantiates two concepts gets
+   two stamps, stacked; the "Reason 1/2" eyebrow was dropped (it adds
+   nothing), so the eyebrow is now used only by s16 ("The price").
+   2026-10-29: a stamp pair sits in a .stamps wrapper, rotated as one block.
+   2026-10-29, later (owner call): s05 is back to one stamp; its second
+   stamp, "(Un)known unknowns", moved to s09. No slide has a pair now.
+   ========================================================================== */
+/* ".slide > .stamp": the generic ".slide > *:not(.decor) { position:
+   relative }" rule above has higher specificity than a bare class, so the
+   stamp must be selected as a slide child to actually leave the flow.
+   The rotated box overhangs the title-block's bounding box on purpose, so
+   its users carry data-overflow-ok (overflowcheck.mjs opt-out, see there). */
+.slide > .stamp,
+.slide > .stamps > .stamp {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: inline-flex; align-items: baseline; gap: 22px;
+  padding: 11px 22px 11px 18px;
+  border: 3px solid var(--theory); border-radius: 12px;
+  background: color-mix(in srgb, var(--theory) 9%, transparent);
+  color: var(--theory-on-dark);
+  font-weight: 850; letter-spacing: var(--ls-kicker);
+  text-transform: uppercase; font-size: var(--fs-kicker);
+  white-space: nowrap;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamp::before,
+.slide > .stamps > .stamp::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: -8px;
+  border-radius: 3px; background: var(--theory);
+  vertical-align: baseline;
+}
+/* Stamp pair (2026-10-29, owner call): two separately rotated stamps
+   looked unanchored (different widths, so different left edges, and an
+   uneven gap). The .stamps wrapper takes the position and the ONE rotation;
+   align-items: stretch gives both stamps the wider one's width, so left and
+   right edges line up. The children keep the stamp look but drop their own
+   placement and rotation. Users: none at the moment (s05 used it for a day). */
+.slide > .stamps {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamps > .stamp { position: static; transform: none; }
+.slide > .stamp .eyebrow,
+.slide > .stamps > .stamp .eyebrow {
+  font-size: 18px; font-weight: 720; color: var(--muted); letter-spacing: 0.08em;
 }
 
 
@@ -583,7 +644,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" data-lane="story" id="s09" data-act="act2" data-owner="draft" data-minutes="1.75"
+<section class="slide slide--light" data-lane="story" id="s09" data-act="act1" data-owner="draft" data-minutes="1.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (draft, from the Miro board):
@@ -624,6 +685,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   survive as spoken beats: the goal is cheaper learning; and that much
   iteration needs a structure to iterate on, prose will not carry it (C4
   flight levels).
+  TRIM (v2 opening restructure, 2026-10-28, minutes 1.75 -> 1.5): the C4
+  beat is now spoken on s02 as the definition of the space move. Here say
+  only "the C4 levels from the opening". That is where the 0.25 min comes
+  from.
+
+  POSITION (board pass 2026-10-28, owner call): MOVED from after s08 to
+  directly after s05, the config-format wall, which now ends on the stamp
+  "Reason 2: too many unknowns". This slide is the decision that stamp
+  forces: twelve unknowns on day one is one reason not to start building,
+  and the three cards are the others. Open with "that complexity was one
+  reason I did not just build it. There were more." Close on the caption:
+  "I knew I would iterate on this. A lot." The next slide, s06, is the
+  first attempt at a substrate for all that iteration (the giant doc), so
+  the hand-off is: "so I needed something to iterate ON."
+  2026-10-29, owner call: the stamp now lives HERE, under its s02 name
+  "(Un)known unknowns" (top right, kicker "Intensive iteration" removed);
+  s05 keeps "Too big for one head".
   -->
 
   <style>
@@ -701,9 +779,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s09 .target .caption b { color: var(--story-on-dark); font-weight: 850; }
   </style>
 
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>(Un)known unknowns</div>
+
   <div class="title-block">
-    <div class="kicker">Intensive iteration</div>
-    <h1>Why not just start building it?</h1>
+    <h1>Why not prototype my way through?</h1>
     <div class="accent-line"></div>
   </div>
 
@@ -753,7 +833,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           </svg>
           <div class="node">the v3 plan</div>
         </div>
-        <div class="caption">I knew I would iterate on this. <b>A lot.</b></div>
+        <div class="caption">Iterate on <b>the plan</b>, not the code.</div>
       </div>
     </div>
   </div>

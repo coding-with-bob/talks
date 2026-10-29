@@ -240,6 +240,15 @@
   font-size: var(--fs-kicker);
   margin-bottom: 14px;
 }
+/* every kicker leads with the small square (2026-10-29, owner call on s2b:
+   it was lane-only, so lane-less slides, s01b / s2b / s28 / s29, had a
+   bare kicker). Base blue here; a lane slide recolors it below. */
+.kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--blue);
+  vertical-align: baseline;
+}
 
 .title-block h1,
 h1.hero {
@@ -498,12 +507,7 @@ h1.hero {
 }
 
 .slide[data-lane] .kicker { color: var(--lane-ui); }
-.slide[data-lane] .kicker::before {
-  content: "";
-  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
-  border-radius: 3px; background: var(--lane);
-  vertical-align: baseline;
-}
+.slide[data-lane] .kicker::before { background: var(--lane); }
 .slide[data-lane] .accent-line { background: var(--lane); }
 
 /* warm paper tint for light story slides (bg tokens re-pointed locally) */
@@ -511,6 +515,63 @@ h1.hero {
   --navy-0: #fffefb;
   --navy-1: #fdf7ec;
   --navy-2: #f8efdc;
+}
+
+/* ==========================================================================
+   Theory stamp (2026-10-28, v2): a story slide gets stamped with the theory
+   concept it instantiates, so the opening's three ideas (reason 1, reason 2,
+   coherency load) each come back once inside the story, in the theory
+   color, in the theory words. Top-right corner: the stripe and the kicker
+   own the top-left. Static for now (owner call 2026-10-28: no in-slide
+   reveals deck-wide until the rehearsal pass); adding class="step" would
+   make it land on a key press. Users: s05, s06, s08, s09, s16.
+   2026-10-29, owner call: a slide that instantiates two concepts gets
+   two stamps, stacked; the "Reason 1/2" eyebrow was dropped (it adds
+   nothing), so the eyebrow is now used only by s16 ("The price").
+   2026-10-29: a stamp pair sits in a .stamps wrapper, rotated as one block.
+   2026-10-29, later (owner call): s05 is back to one stamp; its second
+   stamp, "(Un)known unknowns", moved to s09. No slide has a pair now.
+   ========================================================================== */
+/* ".slide > .stamp": the generic ".slide > *:not(.decor) { position:
+   relative }" rule above has higher specificity than a bare class, so the
+   stamp must be selected as a slide child to actually leave the flow.
+   The rotated box overhangs the title-block's bounding box on purpose, so
+   its users carry data-overflow-ok (overflowcheck.mjs opt-out, see there). */
+.slide > .stamp,
+.slide > .stamps > .stamp {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: inline-flex; align-items: baseline; gap: 22px;
+  padding: 11px 22px 11px 18px;
+  border: 3px solid var(--theory); border-radius: 12px;
+  background: color-mix(in srgb, var(--theory) 9%, transparent);
+  color: var(--theory-on-dark);
+  font-weight: 850; letter-spacing: var(--ls-kicker);
+  text-transform: uppercase; font-size: var(--fs-kicker);
+  white-space: nowrap;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamp::before,
+.slide > .stamps > .stamp::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: -8px;
+  border-radius: 3px; background: var(--theory);
+  vertical-align: baseline;
+}
+/* Stamp pair (2026-10-29, owner call): two separately rotated stamps
+   looked unanchored (different widths, so different left edges, and an
+   uneven gap). The .stamps wrapper takes the position and the ONE rotation;
+   align-items: stretch gives both stamps the wider one's width, so left and
+   right edges line up. The children keep the stamp look but drop their own
+   placement and rotation. Users: none at the moment (s05 used it for a day). */
+.slide > .stamps {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamps > .stamp { position: static; transform: none; }
+.slide > .stamp .eyebrow,
+.slide > .stamps > .stamp .eyebrow {
+  font-size: 18px; font-weight: 720; color: var(--muted); letter-spacing: 0.08em;
 }
 
 
@@ -595,6 +656,25 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   slide do the work. The config keys stop after line nine; from there it is all
   questions, and the file just keeps going past the bottom of the screen.
   The listing is illustrative, not a real v3 file: correct, not exact.
+
+  STAMP (board pass 2026-10-28): the owner's board note asked for an
+  overlay here, "oops, complexity kicks in", and said the band is probably
+  not needed. Both done with the theory stamp (class="stamp", shared
+  component in theme/components.css, same device as s06 and s16), top
+  right: "Reason 2: too many unknowns". It is visible from the start (no
+  in-slide reveals for now, owner call 2026-10-28); point at it only after
+  the questions have been read. Say: "Twelve of them. On day one. Reason
+  two, from the opening." The band ("This is much bigger than
+  I expected") was removed: the stamp says it. The next slide, s09, is the
+  decision the stamp forces (design first, do not just build).
+  2026-10-29, owner call: the slide instantiates both opening reasons, so
+  it carries two stamps, "Too big for one head" and "(Un)known unknowns"
+  (s02's wording), no "Reason N" eyebrow; read "Reason two" above as
+  "Reason one, from the opening".
+  2026-10-29, owner call: the pair is now one rotated block (div.stamps),
+  equal widths, shared left and right edges.
+  2026-10-29: the unknowns stamp moved to s09, owner call; s05 keeps only
+  "Too big for one head" (single stamp, no div.stamps wrapper).
   -->
 
   <style>
@@ -661,19 +741,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
     #s05 .line--tail .code { color: var(--story-on-dark); font-size: 25px; font-weight: 800; letter-spacing: 0.22em; }
 
-    /* ---- closing band (s13 / s18 / s25 pattern) --------------------------- */
-    #s05 .band {
-      flex: none; align-self: center;
-      width: fit-content; min-width: 40%; max-width: 100%;
-      padding: 16px 48px; text-align: center;
-      transform: translateY(10px);
-    }
-    #s05 .band p { margin: 0; font-size: 20px; font-weight: 640; line-height: 1.4; color: var(--muted-2); }
-    #s05 .band p b { font-weight: 850; color: var(--story-on-dark); }
+    /* (closing band removed 2026-10-28, the theory stamp replaced it;
+       the band read "This is much bigger than I expected.") */
   </style>
 
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>Too big for one head</div>
+
   <div class="title-block">
-    <div class="kicker">The starting point</div>
     <h1>&ldquo;I just need a config format&rdquo;</h1>
     <div class="accent-line"></div>
   </div>
@@ -749,10 +824,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <span class="qs"></span>
         </div>
       </div>
-    </div>
-
-    <div class="card band fade-up">
-      <p>🤔 This is <b>much bigger</b> than I expected.</p>
     </div>
   </div>
 </section>

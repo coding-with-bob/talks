@@ -240,6 +240,15 @@
   font-size: var(--fs-kicker);
   margin-bottom: 14px;
 }
+/* every kicker leads with the small square (2026-10-29, owner call on s2b:
+   it was lane-only, so lane-less slides, s01b / s2b / s28 / s29, had a
+   bare kicker). Base blue here; a lane slide recolors it below. */
+.kicker::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
+  border-radius: 3px; background: var(--blue);
+  vertical-align: baseline;
+}
 
 .title-block h1,
 h1.hero {
@@ -498,12 +507,7 @@ h1.hero {
 }
 
 .slide[data-lane] .kicker { color: var(--lane-ui); }
-.slide[data-lane] .kicker::before {
-  content: "";
-  display: inline-block; width: 13px; height: 13px; margin-right: 12px;
-  border-radius: 3px; background: var(--lane);
-  vertical-align: baseline;
-}
+.slide[data-lane] .kicker::before { background: var(--lane); }
 .slide[data-lane] .accent-line { background: var(--lane); }
 
 /* warm paper tint for light story slides (bg tokens re-pointed locally) */
@@ -511,6 +515,63 @@ h1.hero {
   --navy-0: #fffefb;
   --navy-1: #fdf7ec;
   --navy-2: #f8efdc;
+}
+
+/* ==========================================================================
+   Theory stamp (2026-10-28, v2): a story slide gets stamped with the theory
+   concept it instantiates, so the opening's three ideas (reason 1, reason 2,
+   coherency load) each come back once inside the story, in the theory
+   color, in the theory words. Top-right corner: the stripe and the kicker
+   own the top-left. Static for now (owner call 2026-10-28: no in-slide
+   reveals deck-wide until the rehearsal pass); adding class="step" would
+   make it land on a key press. Users: s05, s06, s08, s09, s16.
+   2026-10-29, owner call: a slide that instantiates two concepts gets
+   two stamps, stacked; the "Reason 1/2" eyebrow was dropped (it adds
+   nothing), so the eyebrow is now used only by s16 ("The price").
+   2026-10-29: a stamp pair sits in a .stamps wrapper, rotated as one block.
+   2026-10-29, later (owner call): s05 is back to one stamp; its second
+   stamp, "(Un)known unknowns", moved to s09. No slide has a pair now.
+   ========================================================================== */
+/* ".slide > .stamp": the generic ".slide > *:not(.decor) { position:
+   relative }" rule above has higher specificity than a bare class, so the
+   stamp must be selected as a slide child to actually leave the flow.
+   The rotated box overhangs the title-block's bounding box on purpose, so
+   its users carry data-overflow-ok (overflowcheck.mjs opt-out, see there). */
+.slide > .stamp,
+.slide > .stamps > .stamp {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: inline-flex; align-items: baseline; gap: 22px;
+  padding: 11px 22px 11px 18px;
+  border: 3px solid var(--theory); border-radius: 12px;
+  background: color-mix(in srgb, var(--theory) 9%, transparent);
+  color: var(--theory-on-dark);
+  font-weight: 850; letter-spacing: var(--ls-kicker);
+  text-transform: uppercase; font-size: var(--fs-kicker);
+  white-space: nowrap;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamp::before,
+.slide > .stamps > .stamp::before {
+  content: "";
+  display: inline-block; width: 13px; height: 13px; margin-right: -8px;
+  border-radius: 3px; background: var(--theory);
+  vertical-align: baseline;
+}
+/* Stamp pair (2026-10-29, owner call): two separately rotated stamps
+   looked unanchored (different widths, so different left edges, and an
+   uneven gap). The .stamps wrapper takes the position and the ONE rotation;
+   align-items: stretch gives both stamps the wider one's width, so left and
+   right edges line up. The children keep the stamp look but drop their own
+   placement and rotation. Users: none at the moment (s05 used it for a day). */
+.slide > .stamps {
+  position: absolute; top: 28px; right: 76px; z-index: 3;
+  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
+  transform: rotate(-2.5deg); transform-origin: 100% 0;
+}
+.slide > .stamps > .stamp { position: static; transform: none; }
+.slide > .stamp .eyebrow,
+.slide > .stamps > .stamp .eyebrow {
+  font-size: 18px; font-weight: 720; color: var(--muted); letter-spacing: 0.08em;
 }
 
 
@@ -665,6 +726,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   Spoken beat (ad overlay): I am working on the Craft Conference,
   June 3-4. This is the plug.
+  TODO (owner, board 2026-10-28): ask Bene whether the Craft exposure in a
+  code.talks deck is okay. Until answered, the overlay stays as is.
+
+  OPTION, cold open (board pass 2026-10-28, see s02's note): one story
+  sentence spoken here, before the theory block, so the room knows a story
+  is coming: "I just needed a config format. I got twelve questions."
   -->
 
   <style>
@@ -926,11 +993,994 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </div>
 </section>
 
+<section class="slide slide--light" data-lane="theory" id="s02" data-act="act0" data-owner="draft" data-minutes="1.25"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- SPEAKER-NOTE (draft, v2 opening restructure, 2026-10-28):
+  NEW SLIDE. The talk now opens with the theory it used to explain on the
+  way (s07 working-set limit, s11 two sources, s12 two dimensions, now s02b), so the
+  story that follows is read against a frame the room already holds. The
+  source for this reframe is the owner's own observation: splitting the plan
+  into parts is itself a round of iteration (C4-style: iterate on the top
+  level, then go one level down), so the title covers both moves, not only
+  the one in time. Feedback this answers (codetalks/feedback.md): "frame the
+  end result up front", "is this useful for me", "it mirrors its creator".
+
+  BOARD PASS (2026-10-28, afternoon): the owner rearranged the deck on the
+  Miro board. The two receipts now follow this slide directly, s07 (reason
+  1 up close) and s11 (reason 2 up close), and only then s02b names the
+  price. So this slide got SIMPLER on purpose (owner call): the cards lost
+  their detail lines (7 plus or minus 2, attention budget, route and
+  destination), because the next two slides carry exactly those details
+  and a sub line here would spoil them.
+
+  SIMPLER AGAIN (owner call, 2026-10-29, from the Miro review of the
+  2026-10-28 render): no kicker, no grey one-liner under the move names.
+  What stays: the lead statement, two cards, each a reason and its move,
+  and (restored the same day, second owner call) the closing band, cut to
+  "Both come at a price." because it is the hook s02b opens on. The band
+  does NOT say "both moves are iteration": that is a derivation, and the
+  room can see it from the two move names. Rule from the owner, deck-wide:
+  a slide states; the WHY and the "how we got here" live in the notes and
+  the spoken line, never on the slide. The lead is the main message of the slide ("nobody designs
+  a complex system in one pass, neither a human nor an LLM"), so it got the
+  weight: biggest type on the slide, white, the second line in the lane
+  color. Reason 2 was renamed from "Too many unknowns" to "(Un)known
+  unknowns": the owner's point is that iteration is not only a response to
+  a LARGE number of unknowns; a few are enough to need a round of testing,
+  and the parenthesis covers both shapes the unknown comes in, the one
+  where the solution is unknown (unknown unknowns) and the one where the
+  destination is known but the path has to be found (known unknowns). s11
+  then opens those two shapes up (route vs destination).
+
+  MOVE RENAMED (owner call, 2026-10-29): "Divide in space" is now "Iterate
+  in space", so the two move names are parallel and the lead's claim (both
+  moves ARE iteration) is visible in the names themselves; s02b's chip,
+  legend and grid axis follow the rename.
+
+  NO IN-SLIDE REVEALS for now (owner call, 2026-10-28, deck-wide: step
+  reveals are decided later, in the rehearsal pass). The slide is static;
+  the reading order below is the SPOKEN order, not a key-press order:
+    0. title and the lead statement (the main message).
+    1. reason 1, too big for one head, and its move: iterate in space.
+    2. reason 2, (un)known unknowns, and its move: iterate in time.
+    3. the band: both come at a price.
+
+  Spoken beats (short: the detail is spoken on s07 and s11):
+    lead:   "The title says iteration. Before the story, one question: why do
+             we iterate at all? Because nobody designs a complex system in one
+             pass. Not a human, not an LLM. Two reasons."
+    card 1: "It is too big to hold in one head. So you split it. Top level
+             first, then one level down, C4 style. That split IS a round of
+             iteration, in space."
+    card 2: "And there are unknowns. Known ones, where you know where you
+             want to get and have to find the path, and unknown ones, where
+             you do not even know the solution yet. Even a few are enough:
+             you go round again on what you already have. That is the round
+             everyone calls iteration, in time."
+    band:   "Both come at a price."
+             Do NOT name the price here: two receipts come first (s07, s11),
+             and s02b names it. The unnamed price is the hook that carries
+             the room through the two receipts.
+
+  OPTION, cold open (not on any slide yet): the owner's worry is losing the
+  room to four theory slides before the story starts. The stronger answer
+  than an apology is one story sentence BEFORE this slide, spoken over
+  s01b's end or on a teaser slide: "I just needed a config format. I got
+  twelve questions." Then the theory, then s03 picks the story up. If used,
+  s02b's "One case, as it happened" closes that sentence. Decide in the
+  rehearsal pass.
+  -->
+
+  <style>
+    #s02 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 56px; justify-content: center;
+    }
+
+    /* the main message of the slide: the biggest type on it (2026-10-29) */
+    #s02 .lead {
+      flex: none; align-self: center; text-align: center;
+      margin: 0; max-width: 1300px;
+      font-size: 52px; font-weight: 820; letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--white);
+    }
+    #s02 .lead b { font-weight: 850; color: var(--theory); }
+
+    /* two-box pattern (s07 "Both minds are bounded"): fixed column widths
+       so the pair reads as a centered group, not an edge-to-edge stretch */
+    #s02 .reasons {
+      flex: none; align-self: center;
+      display: grid; grid-template-columns: 600px 600px; gap: 32px; align-items: stretch;
+    }
+    #s02 .reasons .card { display: flex; flex-direction: column; gap: 12px; padding: 26px 28px 22px; }
+    #s02 .reasons .card .label {
+      font-size: var(--fs-kicker); font-weight: 850; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--theory-on-dark);
+    }
+    #s02 .reasons .card .claim {
+      font-size: 34px; font-weight: 820; letter-spacing: -0.025em;
+      line-height: 1.12; color: var(--white);
+    }
+    /* (the .sub detail lines were removed on 2026-10-28: s07 and s11 now
+       follow directly and carry the detail; the grey .how one-liners under
+       the move names went on 2026-10-29 for the same reason) */
+
+    /* the move each reason forces: an arrow and the move's name */
+    /* margin-top auto keeps the two move rows level even if a claim wraps */
+    #s02 .move {
+      margin-top: auto; padding-top: 16px;
+      border-top: 1px solid var(--hairline);
+      display: flex; align-items: baseline; gap: 14px;
+    }
+    #s02 .move .arrow {
+      font-size: 30px; font-weight: 900; line-height: 1; color: var(--theory);
+    }
+    #s02 .move .name {
+      font-size: 26px; font-weight: 850; letter-spacing: -0.015em; color: var(--theory);
+    }
+
+    /* closing band (s07 / s11 / s02b pattern); restored 2026-10-29 */
+    #s02 .band {
+      flex: none; align-self: center; margin-top: -20px;
+      width: fit-content; max-width: 100%;   /* no min-width: four words would float in a 40% pill */
+      padding: 16px 48px; text-align: center;
+    }
+    #s02 .band p {
+      margin: 0; font-size: 21px; font-weight: 640;
+      line-height: 1.4; color: var(--muted-2);
+    }
+    #s02 .band p b { font-weight: 850; color: var(--theory); }
+  </style>
+
+  <div class="title-block">
+    <h1>Why iterate at all?</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+    <p class="lead">Nobody designs a complex system in one pass.<br><b>Neither a human, nor an LLM.</b></p>
+
+    <div class="reasons">
+      <div class="card">
+        <div class="label">Reason 1</div>
+        <div class="claim">Too big for one head.</div>
+        <div class="move">
+          <span class="arrow" aria-hidden="true">&#8594;</span>
+          <span class="name">Iterate in space</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Reason 2</div>
+        <div class="claim">(Un)known unknowns.</div>
+        <div class="move">
+          <span class="arrow" aria-hidden="true">&#8594;</span>
+          <span class="name">Iterate in time</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card band">
+      <p>Both come <b>at a price.</b></p>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide--light" data-lane="theory" id="s07" data-act="act0" data-owner="draft" data-minutes="1.0"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- RECEIPT (board pass, 2026-10-28): this slide now sits in the opening
+  block, directly after s02, as reason 1 up close (s02 -> s07 -> s11 ->
+  s02b). s02 only states "too big for one head"; the numbers and the LLM
+  half are spoken HERE, not there. Kicker "Reason 1" pairs with
+  s11's "Reason 2" (was "Both minds are bounded", which is now the
+  first spoken line instead). Minutes stay 1.0: cards are quick, the
+  experiment band is the content.
+
+  SPEAKER-NOTE (draft, from the Miro board):
+  We need structure to think through a problem - both minds are bounded.
+
+  Pre-redesign card wording (kept here so nothing is lost; the slide now
+  carries the two-box form borrowed from talk #1's "Last time / this time"):
+    Human: "Comprehension is limited; nobody truly reviews a 50-page
+      document. Working memory ~ 7+/-2 items."
+    LLM: "Ask one agent to focus on 100 things, and in practice the quality
+      PER PERSPECTIVE drops significantly."
+    Experiment: "Review with 1 agent x 10 perspectives vs a subagent per
+      perspective: the second is far more comprehensive."
+
+  Kicker "Reason 1" (2026-10-29: "up close" dropped, owner call; it was a
+  framing remark, the kind a slide does not carry). s11 is "Reason 2".
+  Delivery (board pass 2026-10-28): "Reason one, up close. Both minds are
+  bounded." Human card: working memory, seven plus or minus two, and the
+  50-page document line as the thing everyone in the room has lived
+  through. LLM card headline "Limited attention budget." (2026-10-29: was
+  "focus"; the spoken line "attention is a budget, not a switch" is dropped,
+  the "not a switch" half contrasted nothing the room believes). Then the
+  experiment band. The IFScale footnote is
+  the receipt, only read it out if someone pushes back. The story's own
+  instance of this reason is stamped on s06 (the giant design doc).
+  -->
+
+  <style>
+    #s07 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+
+    /* two-box pattern (talk #1, s04 "Last time / this time")
+       Cards narrowed by 220px each (owner request, 2026-08-26): fixed
+       column widths instead of 1fr so the pair reads as a centered group
+       with room to spare on both sides, rather than stretching edge to
+       edge. Widened by 70px each (owner request, 2026-08-26) so the human
+       headline "Working memory: 7+/-2 items." fits on one line. Pair
+       nudged up 20px (owner: "up a bit"). */
+    #s07 .bounds {
+      flex: none; align-self: center;
+      display: grid; grid-template-columns: 565px 565px; gap: 32px; align-items: stretch;
+      transform: translateY(-20px);
+    }
+    #s07 .bounds .card { display: flex; flex-direction: column; gap: 12px; padding: 28px 26px; }
+    #s07 .bounds .card .label {
+      font-size: var(--fs-kicker); font-weight: 850; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--blue-on-dark);
+    }
+    /* human card in the deck's human color (story amber, the "human decides"
+       figure on s25 / s26); LLM card in the theory cyan (owner call, 2026-10-29) */
+    #s07 .bounds .card--human .label { color: var(--story-on-dark); }
+    #s07 .bounds .card--strong .label { color: var(--theory-on-dark); }
+    #s07 .bounds .card .claim {
+      font-size: 38px; font-weight: 820; letter-spacing: -0.025em;
+      line-height: 1.12; color: var(--white);
+    }
+    #s07 .bounds .card .claim .accent,
+    #s07 .bounds .card .claim .accent-cyan { white-space: nowrap; }
+    #s07 .bounds .card--human .claim .accent { color: var(--story); }
+    #s07 .bounds .card--strong .claim .accent-cyan { color: var(--theory); }
+    #s07 .bounds .card .sub {
+      font-size: var(--fs-caption); color: var(--muted-2);
+      font-weight: 620; line-height: 1.38;
+    }
+    #s07 .bounds .card .sub sup {
+      font-size: var(--fs-micro); font-weight: 850;
+      color: var(--theory-on-dark); vertical-align: super; line-height: 0;
+    }
+
+    /* the experiment: closing band (s13 / s18 / s22 pattern), re-centered
+       under the narrower pair and split into two lines. */
+    #s07 .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 20px 48px; text-align: center;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #s07 .band p {
+      margin: 0; font-size: 21px; font-weight: 620;
+      line-height: 1.4; color: var(--muted-2);
+    }
+    #s07 .band p .lead {
+      font-weight: 850; color: var(--theory-on-dark);
+      letter-spacing: 0.02em;
+    }
+    #s07 .band p.result { font-weight: 800; color: var(--white); }
+
+    #s07 .footnote {
+      margin-top: 18px; padding-top: 14px;
+      border-top: 1px solid var(--hairline);
+      font-size: var(--fs-small); color: var(--muted-3);
+      font-style: italic;
+    }
+    #s07 .footnote .ref { font-weight: 850; color: var(--theory-on-dark); }
+  </style>
+
+  <div class="title-block">
+    <div class="kicker">Reason 1</div>
+    <h1>The working-set limit</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+    <div class="bounds">
+      <div class="card card--human fade-up">
+        <div class="label">Human</div>
+        <div class="claim">Working memory: <span class="accent">7&plusmn;2</span> items.</div>
+        <div class="sub">Comprehension is limited.<br>Nobody truly reviews a 50-page design document.</div>
+      </div>
+      <div class="card card--strong fade-up">
+        <div class="label">LLM</div>
+        <div class="claim">Limited <span class="accent-cyan">attention</span> budget.</div>
+        <div class="sub">Ask one agent to focus on 100 things and the quality per perspective drops
+          significantly. IFScale benchmark <sup>[1]</sup></div>
+      </div>
+    </div>
+
+    <div class="card band fade-up">
+      <p><span class="lead">Try it:</span> review with 1 agent and 10 perspectives, then with a
+        subagent per perspective.</p>
+      <p class="result">The second is far more comprehensive.</p>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <span class="ref">[1]</span> Jaroslawicz et al., How Many Instructions Can LLMs Follow at Once?
+    (IFScale benchmark), 2025: even frontier models drop to ~68% adherence at 500 simultaneous instructions.
+  </div>
+</section>
+
+<section class="slide slide--light" data-lane="theory" id="s11" data-act="act0" data-owner="draft" data-minutes="1.0"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- RECEIPT (board pass, 2026-10-28): this slide now sits in the opening
+  block, after s07 and before s02b (s02 -> s07 -> s11 -> s02b), as reason 2
+  up close. s02 only states "(un)known unknowns" (renamed from "too many
+  unknowns" on 2026-10-29: a few unknowns are enough to force a round, and
+  the parenthesis already hints at the two shapes); the route /
+  destination split and the two maps are HERE. Open with "Reason two, up close: the
+  unknown comes in two shapes." Kicker "Reason 2" pairs with s07's
+  "Reason 1" (2026-10-29: "up close" dropped from both, owner call; was
+  "Reason 2, as I lived it", which no longer fits: the story has not
+  started yet). Keep the spoken beats below,
+  do not re-derive the taxonomy. Minutes 1.0. The story's own instance of
+  this reason is stamped on s05 (the twelve questions).
+
+  SPEAKER-NOTE (draft, from the Miro board):
+  TODO board note: concrete examples for both sources.
+
+  h1 "Two shapes of the unknown" (2026-10-28, was "Two sources of
+  iteration": after s02's "two reasons" a second counted pair of iteration
+  sources collided with it; the two shapes are reason 2's sub-cases,
+  destination unknown and route unknown). Both showed up inside the same
+  body of work later in the story; say "I met both" as a forward pointer,
+  the lived version comes with s05 and s09.
+
+  SPOKEN BEATS, panel 1 (Problem / solution emergence). The on-slide lead,
+  the teal caption and the example chip were all removed from the slide so
+  the map can breathe; say them instead, verbatim:
+    lead:    "Even the problem space is unclear. Iteration is how
+              understanding is produced, not just managed."
+    caption: "the destination emerges as you walk"
+    example: "e.g. exploring a new product domain"
+
+  SPOKEN BEATS, panel 2 (Path uncertainty), same three lines to say:
+    lead:    "The goal is clear, the route is not. Designing how to get
+              there still needs iteration."
+    caption: "the destination is fixed; the route is discovered"
+    example: "e.g. pairflow v3: goal clear, route unknown"
+
+  The two ORIGINAL card paragraphs, kept verbatim from when the cards were
+  still text cards (the spoken leads above are trimmed versions of these):
+    1. "Sometimes even the problem space is not clear; iteration is how
+       understanding is produced, not just managed."
+    2. "The goal is clear, but the route is not. Designing how to get there
+       still needs iteration."
+
+  How to read the two mini-maps out loud:
+    LEFT, fog of war. There is no flag on this map. The destination is a
+    smudge with a question mark on it. The only part of the terrain that is
+    drawn in is the corridor BEHIND the walker: the mountain and the trees
+    exist on the map only because someone walked past them. You get the map
+    by walking. That is the point: the iteration does not merely manage
+    uncertainty, it produces the understanding.
+    RIGHT, a properly surveyed map: grid lines, compass, contour rings, and
+    a crisp flag. Nothing about the goal is in doubt. What is in doubt is
+    which of the braided routes gets you there, and you only find out by
+    trying. So the iteration is about the path, not the destination.
+
+  The closing band is the bridge to the next slide, s02b "Coherency load":
+  whichever shape you are in, the learnings travel BOTH ways, top-down and
+  bottom-up, and the patterns are not designed up front, they show up while
+  the work happens, which is exactly what forces a corpus-wide change. s02
+  promised a price for both moves; the band is the price arriving, and s02b
+  names it.
+  -->
+
+  <style>
+    #s11 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 20px; justify-content: center;
+    }
+
+    /* ---- the two mini-maps ------------------------------------------------ */
+    #s11 .panels {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 34px;
+      align-items: stretch;
+      position: relative; top: -10px;
+    }
+    #s11 .panel {
+      padding: 18px 24px;
+      display: flex; flex-direction: column;
+    }
+    #s11 .panel h3 {
+      /* centered over its own panel; the numbering was dropped, the two
+         headers are now read as a pair, not as an ordered list */
+      margin: 0 0 10px; text-align: center;
+      font-size: 21px; font-weight: 820; letter-spacing: -0.015em;
+      line-height: 1.2; color: var(--white);
+    }
+
+    #s11 .map { display: block; width: 100%; height: auto; }
+
+    /* shared map chrome */
+    #s11 .map-bg { fill: var(--navy-0); }
+    #s11 .map-frame { fill: none; stroke: var(--hairline); stroke-width: 2; }
+    #s11 .map-label {
+      fill: var(--muted-2); font-size: 17px; font-weight: 720;
+      text-anchor: middle;
+    }
+
+    /* ---- left map: fog of war -------------------------------------------- */
+    #s11 .fog { fill: var(--chart-grid); }
+    #s11 .haze { fill: var(--muted-3); opacity: 0.10; }
+    #s11 .fog-dot { fill: var(--muted-3); opacity: 0.20; }
+    #s11 .corridor {
+      fill: none; stroke: var(--navy-0); stroke-width: 96;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    /* landmark glyphs inside the revealed corridor: a two-peak mountain and
+       two trees (trunk + round crown). Quiet, but unambiguous as map icons. */
+    #s11 .landmark {
+      fill: none; stroke: var(--muted-2); stroke-width: 2.2;
+      stroke-linecap: round; stroke-linejoin: round; opacity: 0.55;
+    }
+    #s11 .walked {
+      fill: none; stroke: var(--theory); stroke-width: 3.4; stroke-linecap: round;
+    }
+    #s11 .ahead {
+      fill: none; stroke: var(--theory); stroke-width: 3;
+      stroke-dasharray: 5 10; stroke-linecap: round; opacity: 0.40;
+    }
+    #s11 .start-dot { fill: var(--muted-2); }
+    #s11 .traveler-ring { fill: var(--navy-0); }
+    #s11 .traveler { fill: var(--theory); }
+    #s11 .blob-glow { fill: var(--theory); opacity: 0.15; }
+    #s11 .blob-edge {
+      fill: none; stroke: var(--theory-on-dark); stroke-width: 2.6;
+      stroke-dasharray: 9 11; opacity: 0.62;
+    }
+    #s11 .blob-q {
+      fill: var(--theory-on-dark); font-size: 46px; font-weight: 850;
+      text-anchor: middle; opacity: 0.78;
+    }
+
+    /* ---- right map: fixed goal, uncertain route --------------------------- */
+    /* three cartographic cues so the surface reads as a MAP and not as decor:
+       a dashed graticule, closed nested contour rings, and a compass rose. */
+    #s11 .graticule {
+      fill: none; stroke: var(--chart-grid); stroke-width: 1.4;
+      stroke-dasharray: 3 9;
+    }
+    #s11 .contour {
+      fill: none; stroke: var(--chart-grid); stroke-width: 2.4;
+      stroke-linejoin: round;
+    }
+    #s11 .compass { fill: none; stroke: var(--muted-3); stroke-width: 1.8; }
+    #s11 .compass-n { fill: var(--muted-2); opacity: 0.55; }
+    #s11 .compass-s { fill: none; stroke: var(--muted-3); stroke-width: 1.8; }
+    #s11 .compass-label {
+      fill: var(--muted-2); font-size: 16px; font-weight: 800;
+      text-anchor: middle; opacity: 0.8;
+    }
+    #s11 .route-alt {
+      fill: none; stroke: var(--muted-3); stroke-width: 2.6;
+      stroke-dasharray: 8 9; stroke-linecap: round;
+    }
+    #s11 .route-found {
+      fill: none; stroke: var(--theory); stroke-width: 3.8; stroke-linecap: round;
+    }
+    #s11 .goal-ring { fill: var(--navy-0); stroke: var(--theory); stroke-width: 3; }
+    #s11 .goal-dot { fill: var(--theory); }
+    #s11 .pole { fill: none; stroke: var(--white); stroke-width: 3.2; stroke-linecap: round; }
+    #s11 .flag { fill: var(--theory); }
+    #s11 .legend-bg { fill: var(--navy-0); opacity: 0.88; }
+    #s11 .legend-text { font-size: 16px; font-weight: 720; fill: var(--muted-2); }
+    #s11 .legend-text--found { fill: var(--theory-on-dark); }
+
+    /* ---- closing band (s07 "Try it" pattern) ------------------------------- */
+    #s11 .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 16px 48px; text-align: center;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #s11 .band p {
+      margin: 0; font-size: 20px; font-weight: 620;
+      line-height: 1.4; color: var(--muted-2);
+    }
+    #s11 .band p b { font-weight: 820; color: var(--theory); }
+    #s11 .band p b.accent-word {
+      font-weight: 850; color: var(--theory); letter-spacing: 0.02em;
+    }
+  </style>
+
+  <div class="title-block">
+    <div class="kicker">Reason 2</div>
+    <h1>Two shapes of the unknown</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+
+    <div class="panels">
+
+      <!-- ============ problem / solution emergence ======================= -->
+      <div class="panel card fade-up">
+        <h3>Problem / solution emergence</h3>
+
+        <svg class="map" viewBox="0 -16 640 400" role="img"
+          aria-label="A fog of war map: the terrain is drawn in only along the corridor already walked, where a mountain and two trees are visible. Everything ahead is haze, and the destination is a blurred dashed blob marked with a question mark.">
+          <defs>
+            <filter id="s11-blur-soft" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
+            <filter id="s11-blur-blob" x="-45%" y="-45%" width="190%" height="190%">
+              <feGaussianBlur stdDeviation="15" />
+            </filter>
+            <filter id="s11-blur-edge" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="1.8" />
+            </filter>
+            <clipPath id="s11-map-clip">
+              <rect x="6" y="-10" width="628" height="384" rx="18" />
+            </clipPath>
+          </defs>
+
+          <rect class="map-bg" x="6" y="-10" width="628" height="384" rx="18" />
+
+          <g clip-path="url(#s11-map-clip)">
+            <!-- unrevealed ground -->
+            <rect class="fog" x="6" y="-10" width="628" height="384" />
+
+            <!-- the corridor revealed BEHIND the traveler -->
+            <path class="corridor" filter="url(#s11-blur-soft)"
+              d="M 58 322 C 100 316, 108 286, 148 278 C 190 269, 206 306, 246 296 C 288 285, 286 226, 328 216 C 348 211, 360 208, 374 202" />
+
+            <!-- terrain that only exists because it was walked past:
+                 a two-peak mountain and two trees (trunk + crown) -->
+            <g class="landmark">
+              <path d="M 84 288 L 110 254 L 124 272 L 136 260 L 156 288 Z" />
+              <path d="M 110 254 L 119 288" />
+              <path d="M 205 282 L 205 268" />
+              <circle cx="205" cy="259" r="10" />
+              <path d="M 240 290 L 240 277" />
+              <circle cx="240" cy="268" r="9" />
+            </g>
+
+            <!-- everything ahead is haze -->
+            <g filter="url(#s11-blur-soft)">
+              <ellipse class="haze" cx="500" cy="170" rx="185" ry="205" />
+              <circle class="fog-dot" cx="390" cy="60" r="24" />
+              <circle class="fog-dot" cx="452" cy="272" r="28" />
+              <circle class="fog-dot" cx="524" cy="322" r="22" />
+              <circle class="fog-dot" cx="596" cy="248" r="26" />
+              <circle class="fog-dot" cx="612" cy="86" r="20" />
+              <circle class="fog-dot" cx="360" cy="150" r="18" />
+              <circle class="fog-dot" cx="470" cy="8" r="22" />
+              <circle class="fog-dot" cx="606" cy="348" r="24" />
+              <circle class="fog-dot" cx="150" cy="40" r="26" />
+              <circle class="fog-dot" cx="96" cy="140" r="20" />
+            </g>
+
+            <!-- the destination: no flag, a smudge with a question on it -->
+            <ellipse class="blob-glow" cx="498" cy="148" rx="90" ry="70" filter="url(#s11-blur-blob)" />
+            <ellipse class="blob-edge" cx="498" cy="148" rx="82" ry="62" filter="url(#s11-blur-edge)" />
+            <text class="blob-q" x="498" y="165">?</text>
+
+            <!-- the walk itself -->
+            <path class="walked"
+              d="M 58 322 C 100 316, 108 286, 148 278 C 190 269, 206 306, 246 296 C 288 285, 286 226, 328 216 C 348 211, 360 208, 374 202" />
+            <path class="ahead" d="M 382 200 C 404 195, 424 192, 448 192" />
+            <circle class="start-dot" cx="58" cy="322" r="6.5" />
+            <circle class="traveler-ring" cx="374" cy="202" r="14" />
+            <circle class="traveler" cx="374" cy="202" r="9.5" />
+          </g>
+
+          <text class="map-label" x="58" y="356">start</text>
+          <rect class="map-frame" x="6" y="-10" width="628" height="384" rx="18" />
+        </svg>
+      </div>
+
+      <!-- ============ path uncertainty =================================== -->
+      <div class="panel card fade-up">
+        <h3>Path uncertainty</h3>
+
+        <svg class="map" viewBox="0 -16 640 400" role="img"
+          aria-label="A fully surveyed map with a dashed grid, nested contour rings, a compass rose, and a crisp goal flag at a fixed point. Three braided candidate routes lead to it, two dashed, one solid: the route that was actually discovered.">
+          <defs>
+            <clipPath id="s11-map-clip-2">
+              <rect x="6" y="-10" width="628" height="384" rx="18" />
+            </clipPath>
+          </defs>
+
+          <rect class="map-bg" x="6" y="-10" width="628" height="384" rx="18" />
+
+          <g clip-path="url(#s11-map-clip-2)">
+            <!-- graticule hint: a surveyed sheet has a grid -->
+            <g class="graticule">
+              <path d="M 164 -10 L 164 374" />
+              <path d="M 320 -10 L 320 374" />
+              <path d="M 476 -10 L 476 374" />
+              <path d="M 6 88 L 634 88" />
+              <path d="M 6 192 L 634 192" />
+              <path d="M 6 296 L 634 296" />
+            </g>
+
+            <!-- contour rings: closed, nested, irregular. Elevation islands. -->
+            <g class="contour">
+              <path d="M 318 58 C 322 18, 374 0, 424 6 C 476 12, 506 36, 500 66 C 494 96, 440 116, 390 108 C 346 101, 314 92, 318 58 Z" />
+              <path d="M 348 60 C 352 34, 384 22, 422 28 C 462 34, 480 48, 474 68 C 468 88, 432 98, 396 92 C 366 87, 345 82, 348 60 Z" />
+              <path d="M 378 62 C 382 48, 400 42, 424 46 C 448 50, 456 58, 452 70 C 448 82, 426 86, 406 82 C 390 79, 376 76, 378 62 Z" />
+
+              <path d="M 196 306 C 198 268, 246 250, 296 256 C 348 262, 380 286, 374 316 C 368 346, 314 366, 264 358 C 220 351, 192 344, 196 306 Z" />
+              <path d="M 226 308 C 228 282, 260 270, 298 276 C 338 282, 356 296, 350 316 C 344 336, 308 346, 272 340 C 242 335, 224 330, 226 308 Z" />
+              <path d="M 256 310 C 258 296, 276 290, 300 294 C 324 298, 332 306, 328 318 C 324 330, 302 334, 282 330 C 266 327, 254 324, 256 310 Z" />
+
+              <path d="M 30 180 C 32 154, 62 142, 96 148 C 132 154, 150 172, 144 194 C 138 216, 100 228, 66 220 C 38 214, 28 202, 30 180 Z" />
+              <path d="M 58 182 C 60 168, 78 162, 100 166 C 122 170, 130 180, 126 192 C 122 204, 96 210, 78 206 C 62 203, 56 194, 58 182 Z" />
+            </g>
+
+            <!-- compass rose, top right -->
+            <g class="compass">
+              <circle cx="580" cy="54" r="30" />
+              <path d="M 546 54 L 614 54" />
+            </g>
+            <path class="compass-s" d="M 580 86 L 589 54 L 571 54 Z" />
+            <path class="compass-n" d="M 580 22 L 589 54 L 571 54 Z" />
+            <text class="compass-label" x="580" y="14">N</text>
+
+            <!-- candidate routes, braiding toward one fixed point -->
+            <path class="route-alt"
+              d="M 66 258 C 156 240, 178 124, 276 116 C 366 108, 392 172, 464 180 C 508 185, 530 204, 566 214" />
+            <path class="route-alt"
+              d="M 66 258 C 150 300, 200 330, 286 318 C 358 306, 380 254, 458 244 C 504 238, 530 220, 566 214" />
+            <path class="route-found"
+              d="M 66 258 C 150 248, 180 206, 262 200 C 334 195, 372 232, 440 226 C 490 221, 528 216, 566 214" />
+
+            <circle class="start-dot" cx="66" cy="258" r="7" />
+
+            <!-- the goal: fixed, crisp, never in doubt -->
+            <path class="pole" d="M 566 118 L 566 214" />
+            <path class="flag" d="M 569 122 L 618 141 L 569 160 Z" />
+            <circle class="goal-ring" cx="566" cy="214" r="10" />
+            <circle class="goal-dot" cx="566" cy="214" r="3.6" />
+
+            <!-- legend -->
+            <g>
+              <rect class="legend-bg" x="16" y="8" width="204" height="64" rx="12" />
+              <path class="route-found" d="M 28 26 L 62 26" />
+              <text class="legend-text legend-text--found" x="72" y="32">discovered route</text>
+              <path class="route-alt" d="M 28 54 L 62 54" />
+              <text class="legend-text" x="72" y="60">candidates</text>
+            </g>
+          </g>
+
+          <text class="map-label" x="66" y="300">start</text>
+          <text class="map-label" x="566" y="250">goal</text>
+          <rect class="map-frame" x="6" y="-10" width="628" height="384" rx="18" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="card band fade-up">
+      <p><b class="accent-word">In both shapes:</b> learnings transfer top-down AND bottom-up.</p>
+      <p>Patterns emerge during the work, <b>potentially inducing corpus-wide changes.</b></p>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide--light" data-lane="theory" id="s02b" data-act="act0" data-owner="draft" data-minutes="1.25"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- SPEAKER-NOTE (v2 opening restructure, 2026-10-28):
+  MOVED from act3 (was s12-why-two-dimensions, right after s11) into the
+  opening. Board pass later the same day: the opening block is now s02
+  (two reasons, two moves) -> s07 (reason 1 up close) -> s11 (reason 2 up
+  close) -> this slide, so s11 is again the slide right before it and its
+  band ("corpus-wide changes") is the hand-off. Open with: "s02 said both
+  moves come at a price. Here it is." The slide is THE stage for the whole
+  talk: the price both moves of s02 share. The story stamps it back on s16. Title and
+  kicker swapped roles for that reason (the concept is the headline, the
+  price framing is the kicker). The two break labels were renamed so the
+  title's word covers both of them: first "drift in time" (a part against
+  its own past) and "drift between parts" (two parts at their boundary),
+  since 2026-10-29 "integrity drift" and "contract drift" (see below); the
+  oldest names, "drift" and "misalignment", live on in the note below.
+  Chip order flipped to match s02's card order: iterate in space first,
+  iterate in time second.
+
+  NO IN-SLIDE REVEAL for now (owner call, 2026-10-28, deck-wide): the band
+  is visible from the start; read it only after the grid has been walked.
+
+  2026-10-29 owner pass on the board: kicker "The price of iteration" (was
+  "The price of both moves"). The grey promise line ("This talk: how to
+  carry it. One case, as it happened.") is off the slide; the sentence stays
+  a spoken beat below. Band reworded: "every link that must hold" replaces
+  "every link you must keep true", and the second line now says the load
+  grows faster than the corpus ("And the links grow faster than the
+  corpus.") instead of "the links multiply: more parts, more rounds, both
+  at once". The mechanism is spoken, not printed: a new part adds links to
+  the parts already there, a new round reopens every link. Honest order of
+  growth: the product of the two axes, not exponential; do not say
+  "exponential" out loud.
+
+  Break labels renamed a second time (owner, 2026-10-29), to name the
+  nature of the wrong change rather than its axis: "integrity drift" (was
+  "drift in time": a round left the corpus inconsistent with itself, the
+  part no longer matches its own past) and "contract drift" (was "drift
+  between parts": two parts no longer agree at their boundary). "Contract"
+  was chosen over "boundary": the boundary is where it lives, the contract
+  is what breaks, and it covers level-to-level as well as component-to-
+  component.
+
+  Spoken beats:
+    grid:  walk it as the note below says, then: "Every one of these links
+            is something you have to keep true. And look what happens: more
+            parts, more rounds, the links multiply."
+    band:  "That is the coherency load. This whole talk is about how to
+            carry it. I will show you one case, as it happened: my own
+            harness, Pairflow, going from v1 to v3. The principles are the
+            transferable part; the harness is one instance."
+    That last sentence is the answer to the "it mirrors its creator"
+    feedback. Say it here, once, and let the story carry it from then on.
+
+  ORIGINAL NOTE (draft, from the Miro board; the two cards below are in
+  their pre-flip order, and the walkthrough was reworded on 2026-10-28 to
+  use the printed labels):
+  The spatial half of drift: the parts must stay mutually coherent.
+
+  The two dimension cards, moved here verbatim when the grid visual replaced
+  them (the legend chips on the slide are the trimmed form):
+    1 &middot; Iterate in time
+       "Every change lands in a growing corpus, and the whole corpus must stay
+        coherent after every round."
+    2 &middot; Iterate in space
+       "Partitioning into levels / layers / components creates its own
+        consistency load: boundary contracts, cross-part alignment."
+
+  How to read the grid out loud:
+    - Left to right: corpus versions v1 to v4. Each column is the corpus at
+      that version, and the columns GROW TWICE OVER: in part count (2, then 3,
+      then 4, then 5) and in width (each version is a bigger corpus than the
+      one before it).
+    - The space axis runs bottom to top: the partitioning into levels and
+      components. Its arrow points up, against the reading order of the row
+      labels, so the two axes fan out from the same origin corner.
+    - The links are the coherence obligations. Horizontal: a part must stay
+      coherent with its own past. Vertical: the parts must stay coherent with
+      each other inside the same version.
+    - The two moves MULTIPLY: the number of links you must keep true grows
+      on both axes at once.
+    - The red breaks are the two failure modes, both drift. "integrity drift"
+      is a part that lost the thread of its own history. "contract drift" is
+      two parts that no longer agree at their boundary, here the newest
+      component against its neighbour.
+
+  ABSORBED into the bottom band (2026-08-25): the old centered caption
+  ("coherence must hold along both axes") and the old footnote ("Drift risk on
+  both dimensions: enormous pressure on coherence.") are now the two halves of
+  the single band card, the second half in the break color, split across two
+  lines (2026-08-26: band narrowed to fit-content, matching the deck's other
+  closing bands, and the diagram above it nudged up 10px to compensate).
+  -->
+
+  <style>
+    /* gap 18 -> 14 (2026-10-28) when the band gained a promise line; the
+       line is gone since 2026-10-29, the gap stays, the slack is welcome. */
+    #s02b .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 14px; justify-content: center;
+    }
+
+    /* ---- the two dimensions + grid, nudged as one unit ------------------- */
+    /* translateY(-5px): vertical nudge (was -10px). translateX(-50px):
+       re-centers the composition after the space axis moved 110px right,
+       toward the grid, which shifted the visual balance rightward. */
+    #s02b .diagram-group {
+      flex: none; display: flex; flex-direction: column; gap: 18px;
+      transform: translate(-50px, -5px);
+    }
+
+    #s02b .legend {
+      flex: none; display: flex; gap: 16px; justify-content: center; align-items: stretch;
+    }
+    #s02b .dim {
+      display: inline-flex; align-items: center; gap: 14px; white-space: nowrap;
+      padding: 12px 24px 12px 14px; border-radius: var(--radius-chip);
+      background: var(--card-bg); border: 1px solid var(--hairline);
+    }
+    #s02b .dim .num {
+      flex: none; width: 28px; height: 28px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--theory); color: var(--navy-0);
+      font-size: 16px; font-weight: 900; line-height: 1;
+    }
+    #s02b .dim .txt { font-size: 19px; font-weight: 640; color: var(--muted-2); }
+    #s02b .dim .txt b { font-weight: 850; color: var(--white); }
+
+    /* ---- the time x space grid ------------------------------------------ */
+    #s02b .grid-wrap { flex: none; height: 400px; }
+    #s02b .grid-wrap svg { display: block; width: 100%; height: 100%; }
+
+    #s02b .axis { stroke: var(--chart-axis); stroke-width: 2; }
+    #s02b .axis-head { fill: var(--chart-axis); }
+    #s02b .axis-label {
+      font-size: 17px; font-weight: 830; letter-spacing: 0.05em;
+      fill: var(--theory-on-dark);
+    }
+    #s02b .round {
+      font-size: 17px; font-weight: 850; letter-spacing: 0.04em;
+      fill: var(--theory-on-dark);
+    }
+    #s02b .part {
+      font-size: 16px; font-weight: 700; fill: var(--muted-2);
+    }
+
+    #s02b .block { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.6; }
+
+    #s02b .link {
+      stroke: var(--theory); stroke-width: 3; stroke-linecap: round;
+      opacity: 0.55; fill: none;
+    }
+
+    #s02b .break { stroke: var(--series-flat); stroke-width: 3.4; stroke-linecap: round; }
+    #s02b .break-x { stroke: var(--series-flat); stroke-width: 4.4; stroke-linecap: round; }
+    #s02b .break-label {
+      font-size: 17px; font-weight: 850; letter-spacing: 0.01em;
+      fill: var(--series-flat);
+    }
+
+    /* ---- closing band (s07 "Try it" / s11 / s23b pattern) ---------------- */
+    /* One paragraph, two lines (definition, growth). A negative
+       margin-bottom hack was tried here once and removed because it fought
+       div.content's scroll height instead of fixing it (overflowcheck got
+       worse, not better, as the margin was made more negative). */
+    #s02b .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 13px 48px; text-align: center;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #s02b .band p {
+      margin: 0; font-size: 20px; font-weight: 700;
+      line-height: 1.4; color: var(--muted);
+    }
+    #s02b .band p b.danger {
+      font-weight: 850; color: var(--series-flat); letter-spacing: 0.01em;
+    }
+    #s02b .band p b { font-weight: 850; color: var(--theory); }
+  </style>
+
+  <div class="title-block">
+    <div class="kicker">The price of iteration</div>
+    <h1>Coherency load</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+
+    <div class="diagram-group">
+    <div class="legend fade-up">
+      <div class="dim">
+        <span class="num" aria-hidden="true">1</span>
+        <span class="txt"><b>Iterate in space:</b> the parts must stay coherent with each other</span>
+      </div>
+      <div class="dim">
+        <span class="num" aria-hidden="true">2</span>
+        <span class="txt"><b>Iterate in time:</b> every round must leave the whole corpus coherent</span>
+      </div>
+    </div>
+
+    <div class="grid-wrap fade-up">
+      <svg viewBox="0 0 1456 400" preserveAspectRatio="xMidYMid meet" role="img"
+        aria-label="A grid of corpus versions v1 to v4 across the horizontal axis labelled iterate in time, and parts level A, level B, level C, component D, component E along the vertical axis labelled iterate in space, whose arrow points upward. Each version is a column of blocks; the columns grow both in block count, from two to five, and in width, so v4 is the widest. Links join each block to its predecessor in the previous version and to its neighbour in the same version. One horizontal link is broken and marked integrity drift, one vertical link is broken and marked contract drift.">
+
+        <!-- version labels, centered on their (widening) columns -->
+        <g transform="translate(35 0)">
+        <text class="round" x="336" y="28" text-anchor="middle">v1</text>
+        <text class="round" x="584" y="28" text-anchor="middle">v2</text>
+        <text class="round" x="872" y="28" text-anchor="middle">v3</text>
+        <text class="round" x="1200" y="28" text-anchor="middle">v4</text>
+        </g>
+
+        <!-- the space axis: arrow points UP (stays put, not shifted) -->
+        <line class="axis" x1="158" y1="338" x2="158" y2="62" />
+        <path class="axis-head" d="M150 62 L166 62 L158 44 Z" />
+        <text class="axis-label" x="188" y="189" text-anchor="middle"
+          transform="rotate(-90 160 217)">iterate in space</text>
+
+        <!-- everything else (row labels, columns, links, breaks, time axis)
+             shifted 35px right; the space axis above is the only exception -->
+        <g transform="translate(35 0)">
+
+        <!-- part labels -->
+        <text class="part" x="246" y="69" text-anchor="end">level A</text>
+        <text class="part" x="246" y="132" text-anchor="end">level B</text>
+        <text class="part" x="246" y="195" text-anchor="end">level C</text>
+        <text class="part" x="246" y="258" text-anchor="end">component D</text>
+        <text class="part" x="246" y="321" text-anchor="end">component E</text>
+
+        <!-- horizontal links: a part against its own past -->
+        <line class="link" x1="406" y1="63" x2="494" y2="63" />
+        <line class="link" x1="674" y1="63" x2="762" y2="63" />
+        <line class="link" x1="982" y1="63" x2="1070" y2="63" />
+        <line class="link" x1="406" y1="126" x2="494" y2="126" />
+        <line class="link" x1="982" y1="126" x2="1070" y2="126" />
+        <line class="link" x1="674" y1="189" x2="762" y2="189" />
+        <line class="link" x1="982" y1="189" x2="1070" y2="189" />
+        <line class="link" x1="982" y1="252" x2="1070" y2="252" />
+
+        <!-- vertical links: the parts against each other -->
+        <line class="link" x1="336" y1="82" x2="336" y2="107" />
+        <line class="link" x1="584" y1="82" x2="584" y2="107" />
+        <line class="link" x1="584" y1="145" x2="584" y2="170" />
+        <line class="link" x1="872" y1="82" x2="872" y2="107" />
+        <line class="link" x1="872" y1="145" x2="872" y2="170" />
+        <line class="link" x1="872" y1="208" x2="872" y2="233" />
+        <line class="link" x1="1200" y1="82" x2="1200" y2="107" />
+        <line class="link" x1="1200" y1="145" x2="1200" y2="170" />
+        <line class="link" x1="1200" y1="208" x2="1200" y2="233" />
+
+        <!-- v1: two parts, the narrowest corpus -->
+        <rect class="block" x="266" y="44" width="140" height="38" rx="8" />
+        <rect class="block" x="266" y="107" width="140" height="38" rx="8" />
+
+        <!-- v2: a third part arrives, and every block is wider -->
+        <rect class="block" x="494" y="44" width="180" height="38" rx="8" />
+        <rect class="block" x="494" y="107" width="180" height="38" rx="8" />
+        <rect class="block" x="494" y="170" width="180" height="38" rx="8" />
+
+        <!-- v3: a fourth part arrives, wider again -->
+        <rect class="block" x="762" y="44" width="220" height="38" rx="8" />
+        <rect class="block" x="762" y="107" width="220" height="38" rx="8" />
+        <rect class="block" x="762" y="170" width="220" height="38" rx="8" />
+        <rect class="block" x="762" y="233" width="220" height="38" rx="8" />
+
+        <!-- v4: a fifth part arrives, the widest corpus -->
+        <rect class="block" x="1070" y="44" width="260" height="38" rx="8" />
+        <rect class="block" x="1070" y="107" width="260" height="38" rx="8" />
+        <rect class="block" x="1070" y="170" width="260" height="38" rx="8" />
+        <rect class="block" x="1070" y="233" width="260" height="38" rx="8" />
+        <rect class="block" x="1070" y="296" width="260" height="38" rx="8" />
+
+        <!-- BREAK 1: level B lost the thread of its own past (v2 to v3) -->
+        <line class="break" x1="674" y1="126" x2="706" y2="126" />
+        <line class="break" x1="730" y1="126" x2="762" y2="126" />
+        <line class="break-x" x1="710" y1="118" x2="726" y2="134" />
+        <line class="break-x" x1="726" y1="118" x2="710" y2="134" />
+        <text class="break-label" x="718" y="101" text-anchor="middle">integrity drift</text>
+
+        <!-- BREAK 2: the newest component disagrees with its neighbour -->
+        <!-- the stubs stop short of the X on both sides, like the break above,
+             so it reads as a broken link and not as an asterisk -->
+        <line class="break" x1="1200" y1="271" x2="1200" y2="274" />
+        <line class="break" x1="1200" y1="293" x2="1200" y2="296" />
+        <line class="break-x" x1="1193" y1="277" x2="1207" y2="291" />
+        <line class="break-x" x1="1207" y1="277" x2="1193" y2="291" />
+        <text class="break-label" x="1180" y="289" text-anchor="end">contract drift</text>
+
+        <!-- the time axis, arrowhead pulled in to sit just past the v4 boxes (right edge 1330) -->
+        <line class="axis" x1="266" y1="360" x2="1327" y2="360" />
+        <path class="axis-head" d="M1327 352 L1345 360 L1327 368 Z" />
+        <text class="axis-label" x="798" y="386" text-anchor="middle">iterate in time</text>
+        </g>
+      </svg>
+    </div>
+    </div>
+
+    <div class="card band">
+      <p><b>Coherency load:</b> every link that must hold.<br>
+        And the links <b class="danger">grow faster</b> than the corpus.</p>
+    </div>
+  </div>
+</section>
+
 <section class="slide slide--light" data-lane="story" id="s03" data-act="act0" data-owner="draft" data-minutes="0.75"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (draft, from the Miro board):
   Strictly one minute of context. No deeper pairflow detail.
+  Open with the owner's board line (2026-10-28): "And now, back to the
+  story." Then "so, the harness I just mentioned" (s02b's band already
+  announced Pairflow v1 to v3 as the case); do not re-introduce it. This is
+  the first story-lane slide after four theory slides, so the lane switch
+  (orange stripe) and that line do the same job: the room is told the
+  theory is over.
   The three points to say out loud (verbatim from the previous bullet
   version of this slide, now carried by the picture instead of by text):
     - My agent harness: workflows for LLM-driven software work.
@@ -1160,7 +2210,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Long time ago&hellip;</div>
     <h1>Quick pairflow v1 intro</h1>
     <div class="accent-line"></div>
   </div>
@@ -1226,7 +2275,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (draft, from the Miro board):
-  THE HOOK LANDS HERE: I had to design v3, and at first I had no idea
+  THE STORY HOOK LANDS HERE (the talk's own hook is s02's unnamed price,
+  which s02b names): I had to design v3, and at first I had no idea
   how to even start. That helplessness is what kicked off the whole
   innovation direction this talk is about. Deliver it as the hook.
 
@@ -1402,7 +2452,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Our story starts here</div>
     <h1>Moving from v1 to v3</h1>
     <div class="accent-line"></div>
   </div>
@@ -1503,6 +2552,25 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   slide do the work. The config keys stop after line nine; from there it is all
   questions, and the file just keeps going past the bottom of the screen.
   The listing is illustrative, not a real v3 file: correct, not exact.
+
+  STAMP (board pass 2026-10-28): the owner's board note asked for an
+  overlay here, "oops, complexity kicks in", and said the band is probably
+  not needed. Both done with the theory stamp (class="stamp", shared
+  component in theme/components.css, same device as s06 and s16), top
+  right: "Reason 2: too many unknowns". It is visible from the start (no
+  in-slide reveals for now, owner call 2026-10-28); point at it only after
+  the questions have been read. Say: "Twelve of them. On day one. Reason
+  two, from the opening." The band ("This is much bigger than
+  I expected") was removed: the stamp says it. The next slide, s09, is the
+  decision the stamp forces (design first, do not just build).
+  2026-10-29, owner call: the slide instantiates both opening reasons, so
+  it carries two stamps, "Too big for one head" and "(Un)known unknowns"
+  (s02's wording), no "Reason N" eyebrow; read "Reason two" above as
+  "Reason one, from the opening".
+  2026-10-29, owner call: the pair is now one rotated block (div.stamps),
+  equal widths, shared left and right edges.
+  2026-10-29: the unknowns stamp moved to s09, owner call; s05 keeps only
+  "Too big for one head" (single stamp, no div.stamps wrapper).
   -->
 
   <style>
@@ -1569,19 +2637,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
     #s05 .line--tail .code { color: var(--story-on-dark); font-size: 25px; font-weight: 800; letter-spacing: 0.22em; }
 
-    /* ---- closing band (s13 / s18 / s25 pattern) --------------------------- */
-    #s05 .band {
-      flex: none; align-self: center;
-      width: fit-content; min-width: 40%; max-width: 100%;
-      padding: 16px 48px; text-align: center;
-      transform: translateY(10px);
-    }
-    #s05 .band p { margin: 0; font-size: 20px; font-weight: 640; line-height: 1.4; color: var(--muted-2); }
-    #s05 .band p b { font-weight: 850; color: var(--story-on-dark); }
+    /* (closing band removed 2026-10-28, the theory stamp replaced it;
+       the band read "This is much bigger than I expected.") */
   </style>
 
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>Too big for one head</div>
+
   <div class="title-block">
-    <div class="kicker">The starting point</div>
     <h1>&ldquo;I just need a config format&rdquo;</h1>
     <div class="accent-line"></div>
   </div>
@@ -1658,9 +2721,200 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="card band fade-up">
-      <p>🤔 This is <b>much bigger</b> than I expected.</p>
+<section class="slide slide--light" data-lane="story" id="s09" data-act="act1" data-owner="draft" data-minutes="1.5"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- SPEAKER-NOTE (draft, from the Miro board):
+  Design-before-build decision; fresh-start folded in as color.
+
+  Spoken beats, moved here verbatim from the old bullet list:
+    - "I was sure: as my understanding deepens, it would influence the design."
+      (the emphasis sat on "it would influence the design")
+    - "It did, multiple times. Jumping to implementation would have created a
+      lot of waste."
+
+  The three input streams on the slide, in the order they are spoken:
+    1. Un-thought perspectives. THE main reason, so land it first and slowest.
+       Many viewpoints were still un-digested; writing code then would have
+       frozen the gaps into the implementation.
+    2. The v2 vision. Requirements that fell out of the abandoned v2 still had
+       to be carried over; v3 inherited them.
+    3. Other projects. 10-15 of them researched. Say the parenthesis out loud:
+       this kind of learning suddenly became cheap with LLMs.
+
+  Fresh start advantage, the old card text, verbatim; only the "researched
+  10-15 other projects" part survives on the slide, the rest is spoken color:
+    "Rethink the big picture, researched 10-15 other projects (easy with LLMs),
+     avoid analysis paralysis, a foundation open to future features."
+
+  Beats folded in from the old s10 ("It was clear: I would iterate a lot on
+  this plan"), now carried by the loop around the v3-plan node and by the
+  footnote:
+    - I needed structures to support my own understanding of the design space.
+    - Prose alone would have been hard to iterate on, even as a human.
+    - It is no accident we build models with flight levels, like C4.
+
+  Merged s09+s10 (owner call, 2026-08-25). The two-path visual was dropped;
+  the spoken punchline survives: the pivots come either way, the only question
+  is what they hit.
+
+  Punchline band and C4 footnote removed from the slide (owner call); both
+  survive as spoken beats: the goal is cheaper learning; and that much
+  iteration needs a structure to iterate on, prose will not carry it (C4
+  flight levels).
+  TRIM (v2 opening restructure, 2026-10-28, minutes 1.75 -> 1.5): the C4
+  beat is now spoken on s02 as the definition of the space move. Here say
+  only "the C4 levels from the opening". That is where the 0.25 min comes
+  from.
+
+  POSITION (board pass 2026-10-28, owner call): MOVED from after s08 to
+  directly after s05, the config-format wall, which now ends on the stamp
+  "Reason 2: too many unknowns". This slide is the decision that stamp
+  forces: twelve unknowns on day one is one reason not to start building,
+  and the three cards are the others. Open with "that complexity was one
+  reason I did not just build it. There were more." Close on the caption:
+  "I knew I would iterate on this. A lot." The next slide, s06, is the
+  first attempt at a substrate for all that iteration (the giant doc), so
+  the hand-off is: "so I needed something to iterate ON."
+  2026-10-29, owner call: the stamp now lives HERE, under its s02 name
+  "(Un)known unknowns" (top right, kicker "Intensive iteration" removed);
+  s05 keeps "Too big for one head".
+  -->
+
+  <style>
+    #s09 .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 26px; justify-content: center;
+    }
+
+    /* ---- the converging diagram ----------------------------------------- */
+    #s09 .viz {
+      flex: none; height: 420px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Composition geometry (owner rework, 2026-08-26). Content column is
+       1454px wide. The row is 410 + 200 + 400 = 1010, so flex centering
+       leaves 222px on each side. The cards lost 230px off their LEFT edge
+       (640 to 410); the loop cluster moved left with them. The target box is
+       sized to HUG the loop (400 = 2 x rx 198 + stroke), so the box edges are
+       the visual edges and plain centering yields a symmetric composition:
+       content edge to card border = 222, loop stroke to content edge = 222.3. */
+
+    /* left: the three input streams */
+    #s09 .sources {
+      width: 410px; height: 100%;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    #s09 .sources .card {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 18px 22px; justify-content: center;
+    }
+    #s09 .sources h3 {
+      margin: 0; display: flex; align-items: baseline; gap: 12px;
+      font-size: 21px; font-weight: 820; letter-spacing: -0.015em;
+      color: var(--white); line-height: 1.15;
+    }
+    #s09 .sources p {
+      margin: 0; font-size: 17px; font-weight: 620;
+      line-height: 1.4; color: var(--muted-2);
+    }
+
+    /* middle: the three arrows converging into one */
+    #s09 .converge { width: 200px; height: 100%; flex: none; }
+    #s09 .converge svg { display: block; }
+    #s09 .feed {
+      fill: none; stroke: var(--muted-3); stroke-width: 3;
+      stroke-linecap: round;
+    }
+    #s09 .feed-head { fill: var(--muted-3); }
+
+    /* right: the v3 plan node, wrapped in the iterate loop */
+    #s09 .target {
+      width: 400px; flex: none;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    #s09 .node-block { position: relative; width: 400px; height: 300px; }
+    #s09 .node-block svg { position: absolute; inset: 0; }
+    #s09 .loop {
+      fill: none; stroke: var(--story); stroke-width: 3.4; stroke-linecap: round;
+    }
+    #s09 .loop-head { fill: var(--story); }
+    #s09 .node {
+      position: absolute; left: 50px; top: 90px; width: 300px; height: 120px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-card);
+      background: var(--card-bg-strong); border: 1px solid var(--hairline-blue);
+      font-size: 30px; font-weight: 830; letter-spacing: -0.025em;
+      color: var(--white);
+    }
+    #s09 .target .caption {
+      font-size: 20px; font-weight: 700; color: var(--muted-2);
+      text-align: center; line-height: 1.3;
+    }
+    #s09 .target .caption b { color: var(--story-on-dark); font-weight: 850; }
+  </style>
+
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>(Un)known unknowns</div>
+
+  <div class="title-block">
+    <h1>Why not prototype my way through?</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+
+    <div class="viz fade-up">
+
+      <div class="sources">
+        <div class="card">
+          <h3>Un-thought perspectives</h3>
+          <p>Building a website versus building a web framework.</p>
+        </div>
+        <div class="card">
+          <h3>The v2 vision</h3>
+          <p>Those perspectives needed to be incorporated.</p>
+        </div>
+        <div class="card">
+          <h3>Fresh perspectives</h3>
+          <p>Researching other projects is cheap with LLMs.</p>
+        </div>
+      </div>
+
+      <div class="converge">
+        <svg width="200" height="420" viewBox="0 0 200 420" role="img"
+          aria-label="Three arrows, one from each source, converge into a single arrowhead pointing at the plan node.">
+          <!-- Card centres sit at y 63 / 210 / 357 (three flex:1 cards, 20px
+               gaps, 420px column) - unchanged by the narrowing. The three
+               curves merge at x 158 and the single head tips at x 176, which
+               leaves a 24px gap before the loop's left edge. -->
+          <path class="feed" d="M 4 63 C 77 63, 96 210, 158 210" />
+          <path class="feed" d="M 4 210 L 158 210" />
+          <path class="feed" d="M 4 357 C 77 357, 96 210, 158 210" />
+          <path class="feed-head" d="M 156 199 L 176 210 L 156 221 Z" />
+        </svg>
+      </div>
+
+      <div class="target">
+        <div class="node-block">
+          <svg width="400" height="300" viewBox="0 0 400 300" role="img"
+            aria-label="A near-complete circular arrow loops around the plan node, its head closing back on itself.">
+            <!-- Ellipse centred at (200, 150), rx 198, ry 112: it spans x 2 to
+                 398, so with the 3.4px stroke the loop fills the 400px box
+                 edge to edge. 345 degrees of it are drawn; the gap at the top
+                 is closed by the head pointing back at the start. -->
+            <path class="loop" d="M 177.9 38.7 A 198 112 0 1 1 127.9 45.7" />
+            <path class="loop-head" d="M 143.5 42.2 L 129.6 53.5 L 126.1 37.9 Z" />
+          </svg>
+          <div class="node">the v3 plan</div>
+        </div>
+        <div class="caption">Iterate on <b>the plan</b>, not the code.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1668,8 +2922,20 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s06" data-act="act1" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  The naive move visibly not going to work - sets up the working-set slide.
+  <!-- POSITION + STAMP (board pass 2026-10-28): this slide now follows s09
+  ("I knew I would iterate a lot", so I needed something to iterate on)
+  and precedes s08 (the layers). The theory stamp (class="stamp", shared
+  component in theme/components.css, same device as s05 and s16) sits top
+  right from the start (no in-slide reveals for now, owner call
+  2026-10-28): "Reason 1: too big for one head". Point at it after the
+  three charges. Say: "Reason one, from the opening. One head, one attention
+  budget, one giant file. So: iterate in space." s08 is that move.
+  2026-10-29, owner call: the "Reason 1" eyebrow was dropped from the
+  stamp (it adds nothing); the stamp reads "Too big for one head" only.
+
+  SPEAKER-NOTE (draft, from the Miro board):
+  The naive move visibly not going to work - used to set up the working-set
+  slide (s07), which now lives in the opening; the stamp does that job.
   Reframed 2026-08-25: "one big design document" would collide with the monolith beat (that corpus WAS one big document); the naive option here is the usual plain-markdown design doc.
   Spoken beats, moved here from the old bullet list:
     - "My first thought: this would not scale."
@@ -1748,6 +3014,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       color: var(--story); font-size: 18px; font-weight: 900; line-height: 1;
     }
   </style>
+
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>Too big for one head</div>
 
   <div class="title-block">
     <div class="kicker">The usual suspect</div>
@@ -1830,128 +3099,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <ul class="charge-list">
         <li><span class="mark" aria-hidden="true">&#215;</span><span>Hard to comprehend</span></li>
         <li><span class="mark" aria-hidden="true">&#215;</span><span>Not visual enough for this complexity</span></li>
-        <li><span class="mark" aria-hidden="true">&#215;</span><span>Even the best LLM fails on far smaller contexts</span></li>
+        <li><span class="mark" aria-hidden="true">&#215;</span><span>Even LLMs fail with giant, semantically unstructured docs</span></li>
       </ul>
     </div>
-  </div>
-</section>
-
-<section class="slide slide--light" data-lane="theory" id="s07" data-act="act1" data-owner="draft" data-minutes="1.5"
-  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
-
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  We need structure to think through a problem - both minds are bounded.
-
-  Pre-redesign card wording (kept here so nothing is lost; the slide now
-  carries the two-box form borrowed from talk #1's "Last time / this time"):
-    Human: "Comprehension is limited; nobody truly reviews a 50-page
-      document. Working memory ~ 7+/-2 items."
-    LLM: "Ask one agent to focus on 100 things, and in practice the quality
-      PER PERSPECTIVE drops significantly."
-    Experiment: "Review with 1 agent x 10 perspectives vs a subagent per
-      perspective: the second is far more comprehensive."
-
-  Delivery: say the 7+/-2 number, then land the 50-page document line as the
-  thing everyone in the room has already lived through. The LLM box is the
-  same bound, restated: attention is a budget, not a switch. The IFScale
-  footnote is the receipt, only read it out if someone pushes back.
-  -->
-
-  <style>
-    #s07 .content { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
-
-    /* two-box pattern (talk #1, s04 "Last time / this time")
-       Cards narrowed by 220px each (owner request, 2026-08-26): fixed
-       column widths instead of 1fr so the pair reads as a centered group
-       with room to spare on both sides, rather than stretching edge to
-       edge. Widened by 70px each (owner request, 2026-08-26) so the human
-       headline "Working memory: 7+/-2 items." fits on one line. Pair
-       nudged up 20px (owner: "up a bit"). */
-    #s07 .bounds {
-      flex: none; align-self: center;
-      display: grid; grid-template-columns: 565px 565px; gap: 32px; align-items: stretch;
-      transform: translateY(-20px);
-    }
-    #s07 .bounds .card { display: flex; flex-direction: column; gap: 12px; padding: 28px 26px; }
-    #s07 .bounds .card .label {
-      font-size: var(--fs-kicker); font-weight: 850; letter-spacing: 0.06em;
-      text-transform: uppercase; color: var(--blue-on-dark);
-    }
-    #s07 .bounds .card--strong .label { color: var(--theory-on-dark); }
-    #s07 .bounds .card .claim {
-      font-size: 38px; font-weight: 820; letter-spacing: -0.025em;
-      line-height: 1.12; color: var(--white);
-    }
-    #s07 .bounds .card .claim .accent,
-    #s07 .bounds .card .claim .accent-cyan { white-space: nowrap; }
-    #s07 .bounds .card--strong .claim .accent-cyan { color: var(--theory); }
-    #s07 .bounds .card .sub {
-      font-size: var(--fs-caption); color: var(--muted-2);
-      font-weight: 620; line-height: 1.38;
-    }
-    #s07 .bounds .card .sub sup {
-      font-size: var(--fs-micro); font-weight: 850;
-      color: var(--theory-on-dark); vertical-align: super; line-height: 0;
-    }
-
-    /* the experiment: closing band (s13 / s18 / s22 pattern), re-centered
-       under the narrower pair and split into two lines. */
-    #s07 .band {
-      flex: none; align-self: center;
-      width: fit-content; min-width: 40%; max-width: 100%;
-      padding: 20px 48px; text-align: center;
-      display: flex; flex-direction: column; gap: 6px;
-    }
-    #s07 .band p {
-      margin: 0; font-size: 21px; font-weight: 620;
-      line-height: 1.4; color: var(--muted-2);
-    }
-    #s07 .band p .lead {
-      font-weight: 850; color: var(--theory-on-dark);
-      letter-spacing: 0.02em;
-    }
-    #s07 .band p.result { font-weight: 800; color: var(--white); }
-
-    #s07 .footnote {
-      margin-top: 18px; padding-top: 14px;
-      border-top: 1px solid var(--hairline);
-      font-size: var(--fs-small); color: var(--muted-3);
-      font-style: italic;
-    }
-    #s07 .footnote .ref { font-weight: 850; color: var(--theory-on-dark); }
-  </style>
-
-  <div class="title-block">
-    <div class="kicker">Both minds are bounded</div>
-    <h1>The working-set limit</h1>
-    <div class="accent-line"></div>
-  </div>
-
-  <div class="content">
-    <div class="bounds">
-      <div class="card fade-up">
-        <div class="label">Human</div>
-        <div class="claim">Working memory: <span class="accent">7&plusmn;2</span> items.</div>
-        <div class="sub">Comprehension is limited.<br>Nobody truly reviews a 50-page design document.</div>
-      </div>
-      <div class="card card--strong fade-up">
-        <div class="label">LLM</div>
-        <div class="claim">Limited <span class="accent-cyan">attention</span> focus.</div>
-        <div class="sub">Ask one agent to focus on 100 things and the quality per perspective drops
-          significantly. IFScale benchmark <sup>[1]</sup></div>
-      </div>
-    </div>
-
-    <div class="card band fade-up">
-      <p><span class="lead">Try it:</span> review with 1 agent and 10 perspectives, then with a
-        subagent per perspective.</p>
-      <p class="result">The second is far more comprehensive.</p>
-    </div>
-  </div>
-
-  <div class="footnote">
-    <span class="ref">[1]</span> Jaroslawicz et al., How Many Instructions Can LLMs Follow at Once?
-    (IFScale benchmark), 2025: even frontier models drop to ~68% adherence at 500 simultaneous instructions.
   </div>
 </section>
 
@@ -1962,7 +3112,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   The falsifiable criterion, kept verbatim in the quote block: it is a
   design-quality metric, not a slogan.
 
+  POSITION (board pass 2026-10-28): the slide before this one is now s06,
+  the giant design doc stamped "Reason 1: too big for one head"; this slide
+  is the answer to that stamp. The slide after it is s13 "Who carries the
+  load?". Close with the hand-off: "That handled reason one. But I knew I
+  would iterate a lot, and every round had to leave all these layers
+  coherent with each other. Reason two was still open." s13 picks it up.
+
   Spoken beats, moved here from the old bullet list:
+    - (2026-10-28) name the move first: "this is iterate in space, round one."
     - "I broke the problem into capability layers."
     - "One layer is small enough to actually think through."
     - "And I defined the feedback loop up front:" (then read the quote).
@@ -1971,13 +3129,13 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     1. SMALL SPEC. Before any corpus work, a small spec was agreed for the
        layer: what the layer's contract is, what it owns, what it does not.
        Small enough to hold in one head at once, which is the whole point of
-       the working-set slide right before this one.
+       the working-set slide in the opening (s07).
     2. V1 REALITY CHECK. Then a separate pass read the v1 codebase and
        confirmed that the capability layer as specified really covers the
        expectations v1 poses. v1 was the ground truth: if the layer could not
        carry what v1 already demanded, the layer boundary was wrong, not v1.
   The bracket note "one layer = one working set" is the quiet callback to the
-  7 plus or minus 2 bound from the previous slide. Do not belabour it; if
+  7 plus or minus 2 bound from s07 in the opening. Do not belabour it; if
   someone asks, that IS the sizing rule for a layer.
 
   CROSS-SLIDE ARC (updated 2026-08-25, owner call): the dashed red back-arrow
@@ -1998,23 +3156,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       display: flex; flex-direction: column; gap: 20px; justify-content: center;
     }
 
-    /* ---- the visual row: transformation (left) + the test (right) -------- */
-    /* fixed px split (was 1.28fr/0.72fr with 28px gap, ~914/514 at the
-       1600px canvas): the right column is 70px narrower, its left edge
-       (the transform column's width) unchanged, gap absorbing the freed
-       space so both edges land clean. */
+    /* ---- the visual row: the transformation, alone and centered ---------- */
+    /* the diagram keeps its earlier 914px column width (same render size);
+       the row just centers it now that it is the only visual. */
     #s08 .viz {
       height: 396px; flex: none;
-      display: grid; grid-template-columns: 914px 444px; gap: 98px;
-      align-items: stretch;
+      display: flex; justify-content: center; align-items: stretch;
     }
     #s08 .viz > * { min-width: 0; min-height: 0; }
     #s08 svg { width: 100%; height: 100%; display: block; }
     #s08 .transform {
+      width: 914px; flex: none;
       display: flex; align-items: center; justify-content: center;
       /* whole composition (knot, arrow, layer stack, captions, bracket)
-         nudged up 22px per owner feedback */
-      transform: translateY(-22px);
+         nudged up 22px per owner feedback; 42px left so the visible ink
+         (knot to "one working set"), not the viewBox, centers on the slide:
+         the viewBox carries more empty margin on its left than its right */
+      transform: translate(-42px, -22px);
     }
 
     /* the v1 tangle */
@@ -2047,38 +3205,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       font-size: 15px; font-weight: 700; letter-spacing: 0.02em; fill: var(--muted-2);
     }
 
-    /* ---- right card: the criterion, drawn ------------------------------- */
-    #s08 .test {
-      display: flex; flex-direction: column; gap: 12px; padding: 22px 24px 20px; height: 369px;
-      /* left border moved right so the left inset (up-arrow to border) matches
-         the right inset (X to border, see .test-svg crop below), then the
-         whole card shifted 110px left (70px, plus 40px more to balance the
-         wider transform diagram on the left); the grid gap absorbs it. Also
-         nudged up 5px per owner feedback. */
-      width: 403.66px; justify-self: end; transform: translate(-110px, -5px);
-    }
-    #s08 .test-head {
-      font-size: var(--fs-micro); font-weight: 850; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--muted-3); flex: none;
-    }
-    /* the diagram itself keeps its original size (content untouched); the
-       narrower card just crops its left margin so the two insets match. */
-    #s08 .test-svg { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: flex-end; }
-    #s08 .test-svg svg { width: 394px; flex: none; }
-
-    #s08 .m-layer { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.5; }
-    #s08 .m-new { fill: none; stroke: var(--cyan); stroke-width: 2.4; stroke-dasharray: 8 7; }
-    #s08 .m-label { font-size: 15px; font-weight: 830; fill: var(--cyan-on-dark); }
-    #s08 .m-sub { font-size: 14px; font-weight: 700; fill: var(--muted-2); }
-    #s08 .m-ok { stroke: var(--cyan); stroke-width: 5; stroke-linecap: round; fill: none; }
-    #s08 .m-ok-head { fill: var(--cyan); }
-    #s08 .m-back {
-      stroke: var(--series-flat); stroke-width: 3.6; fill: none;
-      stroke-dasharray: 9 8; stroke-linecap: round;
-    }
-    #s08 .m-back-head { fill: var(--series-flat); }
-    #s08 .m-cross { stroke: var(--series-flat); stroke-width: 5; stroke-linecap: round; }
-
     /* ---- how each layer landed: two chips, one line ---------------------- */
     #s08 .steps {
       flex: none; display: grid; grid-auto-flow: column; grid-auto-columns: auto;
@@ -2100,6 +3226,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s08 .pstep .txt b { font-weight: 850; color: var(--white); }
     #s08 .steps-arrow { font-size: 22px; font-weight: 800; color: var(--muted-3); }
   </style>
+
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok>Coherency load</div>
 
   <div class="title-block">
     <div class="kicker">Capability layers</div>
@@ -2172,35 +3301,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <text class="bracket-note" x="756" y="245">one working set</text>
         </svg>
       </div>
-
-      <div class="card test fade-up">
-        <div class="test-head">The test</div>
-        <div class="test-svg">
-          <svg viewBox="0 0 420 250" preserveAspectRatio="xMidYMid meet" role="img"
-            aria-label="A new layer arrives on top of an existing stack with a teal upward arrow. A dashed red arrow bends back down from the new layer into the bottom layer and is crossed out.">
-
-            <!-- the new layer arriving on top -->
-            <rect class="m-new" x="110" y="50" width="220" height="34" rx="8" />
-            <text class="m-label" x="220" y="72" text-anchor="middle">new layer</text>
-
-            <!-- the layers already in place -->
-            <rect class="m-layer" x="110" y="118" width="220" height="30" rx="8" />
-            <rect class="m-layer" x="110" y="156" width="220" height="30" rx="8" />
-            <rect class="m-layer" x="110" y="194" width="220" height="30" rx="8" />
-            <text class="m-sub" x="220" y="214" text-anchor="middle">lower layer</text>
-
-            <!-- enabling it: fine -->
-            <line class="m-ok" x1="76" y1="209" x2="76" y2="88" />
-            <path class="m-ok-head" d="M76 72 L66 92 L86 92 Z" />
-
-            <!-- forcing a fix below: must never happen -->
-            <path class="m-back" d="M334 67 C394 80, 396 186, 348 205" />
-            <path class="m-back-head" d="M337 209 L351 212 L345 197 Z" />
-            <line class="m-cross" x1="365" y1="118" x2="397" y2="150" />
-            <line class="m-cross" x1="397" y1="118" x2="365" y2="150" />
-          </svg>
-        </div>
-      </div>
     </div>
 
     <div class="steps fade-up">
@@ -2222,775 +3322,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </div>
 </section>
 
-<section class="slide slide--light" data-lane="story" id="s09" data-act="act2" data-owner="draft" data-minutes="1.75"
-  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
-
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Design-before-build decision; fresh-start folded in as color.
-
-  Spoken beats, moved here verbatim from the old bullet list:
-    - "I was sure: as my understanding deepens, it would influence the design."
-      (the emphasis sat on "it would influence the design")
-    - "It did, multiple times. Jumping to implementation would have created a
-      lot of waste."
-
-  The three input streams on the slide, in the order they are spoken:
-    1. Un-thought perspectives. THE main reason, so land it first and slowest.
-       Many viewpoints were still un-digested; writing code then would have
-       frozen the gaps into the implementation.
-    2. The v2 vision. Requirements that fell out of the abandoned v2 still had
-       to be carried over; v3 inherited them.
-    3. Other projects. 10-15 of them researched. Say the parenthesis out loud:
-       this kind of learning suddenly became cheap with LLMs.
-
-  Fresh start advantage, the old card text, verbatim; only the "researched
-  10-15 other projects" part survives on the slide, the rest is spoken color:
-    "Rethink the big picture, researched 10-15 other projects (easy with LLMs),
-     avoid analysis paralysis, a foundation open to future features."
-
-  Beats folded in from the old s10 ("It was clear: I would iterate a lot on
-  this plan"), now carried by the loop around the v3-plan node and by the
-  footnote:
-    - I needed structures to support my own understanding of the design space.
-    - Prose alone would have been hard to iterate on, even as a human.
-    - It is no accident we build models with flight levels, like C4.
-
-  Merged s09+s10 (owner call, 2026-08-25). The two-path visual was dropped;
-  the spoken punchline survives: the pivots come either way, the only question
-  is what they hit.
-
-  Punchline band and C4 footnote removed from the slide (owner call); both
-  survive as spoken beats: the goal is cheaper learning; and that much
-  iteration needs a structure to iterate on, prose will not carry it (C4
-  flight levels).
-  -->
-
-  <style>
-    #s09 .content {
-      flex: 1; min-height: 0;
-      display: flex; flex-direction: column; gap: 26px; justify-content: center;
-    }
-
-    /* ---- the converging diagram ----------------------------------------- */
-    #s09 .viz {
-      flex: none; height: 420px;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    /* Composition geometry (owner rework, 2026-08-26). Content column is
-       1454px wide. The row is 410 + 200 + 400 = 1010, so flex centering
-       leaves 222px on each side. The cards lost 230px off their LEFT edge
-       (640 to 410); the loop cluster moved left with them. The target box is
-       sized to HUG the loop (400 = 2 x rx 198 + stroke), so the box edges are
-       the visual edges and plain centering yields a symmetric composition:
-       content edge to card border = 222, loop stroke to content edge = 222.3. */
-
-    /* left: the three input streams */
-    #s09 .sources {
-      width: 410px; height: 100%;
-      display: flex; flex-direction: column; gap: 20px;
-    }
-    #s09 .sources .card {
-      flex: 1; min-height: 0;
-      display: flex; flex-direction: column; gap: 8px;
-      padding: 18px 22px; justify-content: center;
-    }
-    #s09 .sources h3 {
-      margin: 0; display: flex; align-items: baseline; gap: 12px;
-      font-size: 21px; font-weight: 820; letter-spacing: -0.015em;
-      color: var(--white); line-height: 1.15;
-    }
-    #s09 .sources p {
-      margin: 0; font-size: 17px; font-weight: 620;
-      line-height: 1.4; color: var(--muted-2);
-    }
-
-    /* middle: the three arrows converging into one */
-    #s09 .converge { width: 200px; height: 100%; flex: none; }
-    #s09 .converge svg { display: block; }
-    #s09 .feed {
-      fill: none; stroke: var(--muted-3); stroke-width: 3;
-      stroke-linecap: round;
-    }
-    #s09 .feed-head { fill: var(--muted-3); }
-
-    /* right: the v3 plan node, wrapped in the iterate loop */
-    #s09 .target {
-      width: 400px; flex: none;
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-    }
-    #s09 .node-block { position: relative; width: 400px; height: 300px; }
-    #s09 .node-block svg { position: absolute; inset: 0; }
-    #s09 .loop {
-      fill: none; stroke: var(--story); stroke-width: 3.4; stroke-linecap: round;
-    }
-    #s09 .loop-head { fill: var(--story); }
-    #s09 .node {
-      position: absolute; left: 50px; top: 90px; width: 300px; height: 120px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-card);
-      background: var(--card-bg-strong); border: 1px solid var(--hairline-blue);
-      font-size: 30px; font-weight: 830; letter-spacing: -0.025em;
-      color: var(--white);
-    }
-    #s09 .target .caption {
-      font-size: 20px; font-weight: 700; color: var(--muted-2);
-      text-align: center; line-height: 1.3;
-    }
-    #s09 .target .caption b { color: var(--story-on-dark); font-weight: 850; }
-  </style>
-
-  <div class="title-block">
-    <div class="kicker">Intensive iteration</div>
-    <h1>Why not just start building it?</h1>
-    <div class="accent-line"></div>
-  </div>
-
-  <div class="content">
-
-    <div class="viz fade-up">
-
-      <div class="sources">
-        <div class="card">
-          <h3>Un-thought perspectives</h3>
-          <p>Building a website versus building a web framework.</p>
-        </div>
-        <div class="card">
-          <h3>The v2 vision</h3>
-          <p>Those perspectives needed to be incorporated.</p>
-        </div>
-        <div class="card">
-          <h3>Fresh perspectives</h3>
-          <p>Researching other projects is cheap with LLMs.</p>
-        </div>
-      </div>
-
-      <div class="converge">
-        <svg width="200" height="420" viewBox="0 0 200 420" role="img"
-          aria-label="Three arrows, one from each source, converge into a single arrowhead pointing at the plan node.">
-          <!-- Card centres sit at y 63 / 210 / 357 (three flex:1 cards, 20px
-               gaps, 420px column) - unchanged by the narrowing. The three
-               curves merge at x 158 and the single head tips at x 176, which
-               leaves a 24px gap before the loop's left edge. -->
-          <path class="feed" d="M 4 63 C 77 63, 96 210, 158 210" />
-          <path class="feed" d="M 4 210 L 158 210" />
-          <path class="feed" d="M 4 357 C 77 357, 96 210, 158 210" />
-          <path class="feed-head" d="M 156 199 L 176 210 L 156 221 Z" />
-        </svg>
-      </div>
-
-      <div class="target">
-        <div class="node-block">
-          <svg width="400" height="300" viewBox="0 0 400 300" role="img"
-            aria-label="A near-complete circular arrow loops around the plan node, its head closing back on itself.">
-            <!-- Ellipse centred at (200, 150), rx 198, ry 112: it spans x 2 to
-                 398, so with the 3.4px stroke the loop fills the 400px box
-                 edge to edge. 345 degrees of it are drawn; the gap at the top
-                 is closed by the head pointing back at the start. -->
-            <path class="loop" d="M 177.9 38.7 A 198 112 0 1 1 127.9 45.7" />
-            <path class="loop-head" d="M 143.5 42.2 L 129.6 53.5 L 126.1 37.9 Z" />
-          </svg>
-          <div class="node">the v3 plan</div>
-        </div>
-        <div class="caption">I knew I would iterate on this. <b>A lot.</b></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="slide slide--light" data-lane="theory" id="s11" data-act="act3" data-owner="draft" data-minutes="1.25"
-  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
-
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  TODO board note: concrete examples for both sources.
-
-  Kicker "I was faced with both": both sources showed up inside the same
-  body of work, so this is not a taxonomy slide, it is a lived one.
-
-  SPOKEN BEATS, panel 1 (Problem / solution emergence). The on-slide lead,
-  the teal caption and the example chip were all removed from the slide so
-  the map can breathe; say them instead, verbatim:
-    lead:    "Even the problem space is unclear. Iteration is how
-              understanding is produced, not just managed."
-    caption: "the destination emerges as you walk"
-    example: "e.g. exploring a new product domain"
-
-  SPOKEN BEATS, panel 2 (Path uncertainty), same three lines to say:
-    lead:    "The goal is clear, the route is not. Designing how to get
-              there still needs iteration."
-    caption: "the destination is fixed; the route is discovered"
-    example: "e.g. pairflow v3: goal clear, route unknown"
-
-  The two ORIGINAL card paragraphs, kept verbatim from when the cards were
-  still text cards (the spoken leads above are trimmed versions of these):
-    1. "Sometimes even the problem space is not clear; iteration is how
-       understanding is produced, not just managed."
-    2. "The goal is clear, but the route is not. Designing how to get there
-       still needs iteration."
-
-  How to read the two mini-maps out loud:
-    LEFT, fog of war. There is no flag on this map. The destination is a
-    smudge with a question mark on it. The only part of the terrain that is
-    drawn in is the corridor BEHIND the walker: the mountain and the trees
-    exist on the map only because someone walked past them. You get the map
-    by walking. That is the point: the iteration does not merely manage
-    uncertainty, it produces the understanding.
-    RIGHT, a properly surveyed map: grid lines, compass, contour rings, and
-    a crisp flag. Nothing about the goal is in doubt. What is in doubt is
-    which of the braided routes gets you there, and you only find out by
-    trying. So the iteration is about the path, not the destination.
-
-  The closing band is the bridge to the next slide: whichever source you are
-  in, the learnings travel BOTH ways, top-down and bottom-up, and the
-  patterns are not designed up front, they show up while the work happens,
-  which is exactly what can force a corpus-wide change.
-  -->
-
-  <style>
-    #s11 .content {
-      flex: 1; min-height: 0;
-      display: flex; flex-direction: column; gap: 20px; justify-content: center;
-    }
-
-    /* ---- the two mini-maps ------------------------------------------------ */
-    #s11 .panels {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 34px;
-      align-items: stretch;
-      position: relative; top: -10px;
-    }
-    #s11 .panel {
-      padding: 18px 24px;
-      display: flex; flex-direction: column;
-    }
-    #s11 .panel h3 {
-      /* centered over its own panel; the numbering was dropped, the two
-         headers are now read as a pair, not as an ordered list */
-      margin: 0 0 10px; text-align: center;
-      font-size: 21px; font-weight: 820; letter-spacing: -0.015em;
-      line-height: 1.2; color: var(--white);
-    }
-
-    #s11 .map { display: block; width: 100%; height: auto; }
-
-    /* shared map chrome */
-    #s11 .map-bg { fill: var(--navy-0); }
-    #s11 .map-frame { fill: none; stroke: var(--hairline); stroke-width: 2; }
-    #s11 .map-label {
-      fill: var(--muted-2); font-size: 17px; font-weight: 720;
-      text-anchor: middle;
-    }
-
-    /* ---- left map: fog of war -------------------------------------------- */
-    #s11 .fog { fill: var(--chart-grid); }
-    #s11 .haze { fill: var(--muted-3); opacity: 0.10; }
-    #s11 .fog-dot { fill: var(--muted-3); opacity: 0.20; }
-    #s11 .corridor {
-      fill: none; stroke: var(--navy-0); stroke-width: 96;
-      stroke-linecap: round; stroke-linejoin: round;
-    }
-    /* landmark glyphs inside the revealed corridor: a two-peak mountain and
-       two trees (trunk + round crown). Quiet, but unambiguous as map icons. */
-    #s11 .landmark {
-      fill: none; stroke: var(--muted-2); stroke-width: 2.2;
-      stroke-linecap: round; stroke-linejoin: round; opacity: 0.55;
-    }
-    #s11 .walked {
-      fill: none; stroke: var(--theory); stroke-width: 3.4; stroke-linecap: round;
-    }
-    #s11 .ahead {
-      fill: none; stroke: var(--theory); stroke-width: 3;
-      stroke-dasharray: 5 10; stroke-linecap: round; opacity: 0.40;
-    }
-    #s11 .start-dot { fill: var(--muted-2); }
-    #s11 .traveler-ring { fill: var(--navy-0); }
-    #s11 .traveler { fill: var(--theory); }
-    #s11 .blob-glow { fill: var(--theory); opacity: 0.15; }
-    #s11 .blob-edge {
-      fill: none; stroke: var(--theory-on-dark); stroke-width: 2.6;
-      stroke-dasharray: 9 11; opacity: 0.62;
-    }
-    #s11 .blob-q {
-      fill: var(--theory-on-dark); font-size: 46px; font-weight: 850;
-      text-anchor: middle; opacity: 0.78;
-    }
-
-    /* ---- right map: fixed goal, uncertain route --------------------------- */
-    /* three cartographic cues so the surface reads as a MAP and not as decor:
-       a dashed graticule, closed nested contour rings, and a compass rose. */
-    #s11 .graticule {
-      fill: none; stroke: var(--chart-grid); stroke-width: 1.4;
-      stroke-dasharray: 3 9;
-    }
-    #s11 .contour {
-      fill: none; stroke: var(--chart-grid); stroke-width: 2.4;
-      stroke-linejoin: round;
-    }
-    #s11 .compass { fill: none; stroke: var(--muted-3); stroke-width: 1.8; }
-    #s11 .compass-n { fill: var(--muted-2); opacity: 0.55; }
-    #s11 .compass-s { fill: none; stroke: var(--muted-3); stroke-width: 1.8; }
-    #s11 .compass-label {
-      fill: var(--muted-2); font-size: 16px; font-weight: 800;
-      text-anchor: middle; opacity: 0.8;
-    }
-    #s11 .route-alt {
-      fill: none; stroke: var(--muted-3); stroke-width: 2.6;
-      stroke-dasharray: 8 9; stroke-linecap: round;
-    }
-    #s11 .route-found {
-      fill: none; stroke: var(--theory); stroke-width: 3.8; stroke-linecap: round;
-    }
-    #s11 .goal-ring { fill: var(--navy-0); stroke: var(--theory); stroke-width: 3; }
-    #s11 .goal-dot { fill: var(--theory); }
-    #s11 .pole { fill: none; stroke: var(--white); stroke-width: 3.2; stroke-linecap: round; }
-    #s11 .flag { fill: var(--theory); }
-    #s11 .legend-bg { fill: var(--navy-0); opacity: 0.88; }
-    #s11 .legend-text { font-size: 16px; font-weight: 720; fill: var(--muted-2); }
-    #s11 .legend-text--found { fill: var(--theory-on-dark); }
-
-    /* ---- closing band (s07 "Try it" pattern) ------------------------------- */
-    #s11 .band {
-      flex: none; align-self: center;
-      width: fit-content; min-width: 40%; max-width: 100%;
-      padding: 16px 48px; text-align: center;
-      display: flex; flex-direction: column; gap: 6px;
-    }
-    #s11 .band p {
-      margin: 0; font-size: 20px; font-weight: 620;
-      line-height: 1.4; color: var(--muted-2);
-    }
-    #s11 .band p b { font-weight: 820; color: var(--theory); }
-    #s11 .band p b.accent-word {
-      font-weight: 850; color: var(--theory); letter-spacing: 0.02em;
-    }
-  </style>
-
-  <div class="title-block">
-    <div class="kicker">I was faced with both</div>
-    <h1>Two sources of iteration</h1>
-    <div class="accent-line"></div>
-  </div>
-
-  <div class="content">
-
-    <div class="panels">
-
-      <!-- ============ problem / solution emergence ======================= -->
-      <div class="panel card fade-up">
-        <h3>Problem / solution emergence</h3>
-
-        <svg class="map" viewBox="0 -16 640 400" role="img"
-          aria-label="A fog of war map: the terrain is drawn in only along the corridor already walked, where a mountain and two trees are visible. Everything ahead is haze, and the destination is a blurred dashed blob marked with a question mark.">
-          <defs>
-            <filter id="s11-blur-soft" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur stdDeviation="9" />
-            </filter>
-            <filter id="s11-blur-blob" x="-45%" y="-45%" width="190%" height="190%">
-              <feGaussianBlur stdDeviation="15" />
-            </filter>
-            <filter id="s11-blur-edge" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="1.8" />
-            </filter>
-            <clipPath id="s11-map-clip">
-              <rect x="6" y="-10" width="628" height="384" rx="18" />
-            </clipPath>
-          </defs>
-
-          <rect class="map-bg" x="6" y="-10" width="628" height="384" rx="18" />
-
-          <g clip-path="url(#s11-map-clip)">
-            <!-- unrevealed ground -->
-            <rect class="fog" x="6" y="-10" width="628" height="384" />
-
-            <!-- the corridor revealed BEHIND the traveler -->
-            <path class="corridor" filter="url(#s11-blur-soft)"
-              d="M 58 322 C 100 316, 108 286, 148 278 C 190 269, 206 306, 246 296 C 288 285, 286 226, 328 216 C 348 211, 360 208, 374 202" />
-
-            <!-- terrain that only exists because it was walked past:
-                 a two-peak mountain and two trees (trunk + crown) -->
-            <g class="landmark">
-              <path d="M 84 288 L 110 254 L 124 272 L 136 260 L 156 288 Z" />
-              <path d="M 110 254 L 119 288" />
-              <path d="M 205 282 L 205 268" />
-              <circle cx="205" cy="259" r="10" />
-              <path d="M 240 290 L 240 277" />
-              <circle cx="240" cy="268" r="9" />
-            </g>
-
-            <!-- everything ahead is haze -->
-            <g filter="url(#s11-blur-soft)">
-              <ellipse class="haze" cx="500" cy="170" rx="185" ry="205" />
-              <circle class="fog-dot" cx="390" cy="60" r="24" />
-              <circle class="fog-dot" cx="452" cy="272" r="28" />
-              <circle class="fog-dot" cx="524" cy="322" r="22" />
-              <circle class="fog-dot" cx="596" cy="248" r="26" />
-              <circle class="fog-dot" cx="612" cy="86" r="20" />
-              <circle class="fog-dot" cx="360" cy="150" r="18" />
-              <circle class="fog-dot" cx="470" cy="8" r="22" />
-              <circle class="fog-dot" cx="606" cy="348" r="24" />
-              <circle class="fog-dot" cx="150" cy="40" r="26" />
-              <circle class="fog-dot" cx="96" cy="140" r="20" />
-            </g>
-
-            <!-- the destination: no flag, a smudge with a question on it -->
-            <ellipse class="blob-glow" cx="498" cy="148" rx="90" ry="70" filter="url(#s11-blur-blob)" />
-            <ellipse class="blob-edge" cx="498" cy="148" rx="82" ry="62" filter="url(#s11-blur-edge)" />
-            <text class="blob-q" x="498" y="165">?</text>
-
-            <!-- the walk itself -->
-            <path class="walked"
-              d="M 58 322 C 100 316, 108 286, 148 278 C 190 269, 206 306, 246 296 C 288 285, 286 226, 328 216 C 348 211, 360 208, 374 202" />
-            <path class="ahead" d="M 382 200 C 404 195, 424 192, 448 192" />
-            <circle class="start-dot" cx="58" cy="322" r="6.5" />
-            <circle class="traveler-ring" cx="374" cy="202" r="14" />
-            <circle class="traveler" cx="374" cy="202" r="9.5" />
-          </g>
-
-          <text class="map-label" x="58" y="356">start</text>
-          <rect class="map-frame" x="6" y="-10" width="628" height="384" rx="18" />
-        </svg>
-      </div>
-
-      <!-- ============ path uncertainty =================================== -->
-      <div class="panel card fade-up">
-        <h3>Path uncertainty</h3>
-
-        <svg class="map" viewBox="0 -16 640 400" role="img"
-          aria-label="A fully surveyed map with a dashed grid, nested contour rings, a compass rose, and a crisp goal flag at a fixed point. Three braided candidate routes lead to it, two dashed, one solid: the route that was actually discovered.">
-          <defs>
-            <clipPath id="s11-map-clip-2">
-              <rect x="6" y="-10" width="628" height="384" rx="18" />
-            </clipPath>
-          </defs>
-
-          <rect class="map-bg" x="6" y="-10" width="628" height="384" rx="18" />
-
-          <g clip-path="url(#s11-map-clip-2)">
-            <!-- graticule hint: a surveyed sheet has a grid -->
-            <g class="graticule">
-              <path d="M 164 -10 L 164 374" />
-              <path d="M 320 -10 L 320 374" />
-              <path d="M 476 -10 L 476 374" />
-              <path d="M 6 88 L 634 88" />
-              <path d="M 6 192 L 634 192" />
-              <path d="M 6 296 L 634 296" />
-            </g>
-
-            <!-- contour rings: closed, nested, irregular. Elevation islands. -->
-            <g class="contour">
-              <path d="M 318 58 C 322 18, 374 0, 424 6 C 476 12, 506 36, 500 66 C 494 96, 440 116, 390 108 C 346 101, 314 92, 318 58 Z" />
-              <path d="M 348 60 C 352 34, 384 22, 422 28 C 462 34, 480 48, 474 68 C 468 88, 432 98, 396 92 C 366 87, 345 82, 348 60 Z" />
-              <path d="M 378 62 C 382 48, 400 42, 424 46 C 448 50, 456 58, 452 70 C 448 82, 426 86, 406 82 C 390 79, 376 76, 378 62 Z" />
-
-              <path d="M 196 306 C 198 268, 246 250, 296 256 C 348 262, 380 286, 374 316 C 368 346, 314 366, 264 358 C 220 351, 192 344, 196 306 Z" />
-              <path d="M 226 308 C 228 282, 260 270, 298 276 C 338 282, 356 296, 350 316 C 344 336, 308 346, 272 340 C 242 335, 224 330, 226 308 Z" />
-              <path d="M 256 310 C 258 296, 276 290, 300 294 C 324 298, 332 306, 328 318 C 324 330, 302 334, 282 330 C 266 327, 254 324, 256 310 Z" />
-
-              <path d="M 30 180 C 32 154, 62 142, 96 148 C 132 154, 150 172, 144 194 C 138 216, 100 228, 66 220 C 38 214, 28 202, 30 180 Z" />
-              <path d="M 58 182 C 60 168, 78 162, 100 166 C 122 170, 130 180, 126 192 C 122 204, 96 210, 78 206 C 62 203, 56 194, 58 182 Z" />
-            </g>
-
-            <!-- compass rose, top right -->
-            <g class="compass">
-              <circle cx="580" cy="54" r="30" />
-              <path d="M 546 54 L 614 54" />
-            </g>
-            <path class="compass-s" d="M 580 86 L 589 54 L 571 54 Z" />
-            <path class="compass-n" d="M 580 22 L 589 54 L 571 54 Z" />
-            <text class="compass-label" x="580" y="14">N</text>
-
-            <!-- candidate routes, braiding toward one fixed point -->
-            <path class="route-alt"
-              d="M 66 258 C 156 240, 178 124, 276 116 C 366 108, 392 172, 464 180 C 508 185, 530 204, 566 214" />
-            <path class="route-alt"
-              d="M 66 258 C 150 300, 200 330, 286 318 C 358 306, 380 254, 458 244 C 504 238, 530 220, 566 214" />
-            <path class="route-found"
-              d="M 66 258 C 150 248, 180 206, 262 200 C 334 195, 372 232, 440 226 C 490 221, 528 216, 566 214" />
-
-            <circle class="start-dot" cx="66" cy="258" r="7" />
-
-            <!-- the goal: fixed, crisp, never in doubt -->
-            <path class="pole" d="M 566 118 L 566 214" />
-            <path class="flag" d="M 569 122 L 618 141 L 569 160 Z" />
-            <circle class="goal-ring" cx="566" cy="214" r="10" />
-            <circle class="goal-dot" cx="566" cy="214" r="3.6" />
-
-            <!-- legend -->
-            <g>
-              <rect class="legend-bg" x="16" y="8" width="204" height="64" rx="12" />
-              <path class="route-found" d="M 28 26 L 62 26" />
-              <text class="legend-text legend-text--found" x="72" y="32">discovered route</text>
-              <path class="route-alt" d="M 28 54 L 62 54" />
-              <text class="legend-text" x="72" y="60">candidates</text>
-            </g>
-          </g>
-
-          <text class="map-label" x="66" y="300">start</text>
-          <text class="map-label" x="566" y="250">goal</text>
-          <rect class="map-frame" x="6" y="-10" width="628" height="384" rx="18" />
-        </svg>
-      </div>
-    </div>
-
-    <div class="card band fade-up">
-      <p><b class="accent-word">In both:</b> learnings transfer top-down AND bottom-up.</p>
-      <p>Patterns emerge during the work, <b>potentially inducing corpus-wide changes.</b></p>
-    </div>
-  </div>
-</section>
-
-<section class="slide slide--light" data-lane="theory" id="s12" data-act="act3" data-owner="draft" data-minutes="1.25"
-  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
-
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  The spatial twin of drift: the parts must stay mutually coherent.
-
-  The two dimension cards, moved here verbatim when the grid visual replaced
-  them (the legend chips on the slide are the trimmed form):
-    1 &middot; Iterate in time
-       "Every change lands in a growing corpus, and the whole corpus must stay
-        coherent after every round."
-    2 &middot; Divide in space
-       "Partitioning into levels / layers / components creates its own
-        consistency load: boundary contracts, cross-part alignment."
-
-  How to read the grid out loud:
-    - Left to right: corpus versions v1 to v4. Each column is the corpus at
-      that version, and the columns GROW TWICE OVER: in part count (2, then 3,
-      then 4, then 5) and in width (each version is a bigger corpus than the
-      one before it).
-    - The space axis runs bottom to top: the partitioning into levels and
-      components. Its arrow points up, against the reading order of the row
-      labels, so the two axes fan out from the same origin corner.
-    - The links are the coherence obligations. Horizontal: a part must stay
-      coherent with its own past. Vertical: the parts must stay coherent with
-      each other inside the same version.
-    - The two dimensions MULTIPLY: the number of links you must keep true grows
-      on both axes at once.
-    - The red breaks are the two failure modes. "drift" is a part that lost the
-      thread of its own history. "misalignment" is two parts that no longer
-      agree at their boundary, here the newest component against its neighbour.
-
-  ABSORBED into the bottom band (2026-08-25): the old centered caption
-  ("coherence must hold along both axes") and the old footnote ("Drift risk on
-  both dimensions: enormous pressure on coherence.") are now the two halves of
-  the single band card, the second half in the break color, split across two
-  lines (2026-08-26: band narrowed to fit-content, matching the deck's other
-  closing bands, and the diagram above it nudged up 10px to compensate).
-  -->
-
-  <style>
-    #s12 .content {
-      flex: 1; min-height: 0;
-      display: flex; flex-direction: column; gap: 18px; justify-content: center;
-    }
-
-    /* ---- the two dimensions + grid, nudged as one unit ------------------- */
-    /* translateY(-5px): vertical nudge (was -10px). translateX(-50px):
-       re-centers the composition after the space axis moved 110px right,
-       toward the grid, which shifted the visual balance rightward. */
-    #s12 .diagram-group {
-      flex: none; display: flex; flex-direction: column; gap: 18px;
-      transform: translate(-50px, -5px);
-    }
-
-    #s12 .legend {
-      flex: none; display: flex; gap: 16px; justify-content: center; align-items: stretch;
-    }
-    #s12 .dim {
-      display: inline-flex; align-items: center; gap: 14px; white-space: nowrap;
-      padding: 12px 24px 12px 14px; border-radius: var(--radius-chip);
-      background: var(--card-bg); border: 1px solid var(--hairline);
-    }
-    #s12 .dim .num {
-      flex: none; width: 28px; height: 28px; border-radius: 50%;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: var(--theory); color: var(--navy-0);
-      font-size: 16px; font-weight: 900; line-height: 1;
-    }
-    #s12 .dim .txt { font-size: 19px; font-weight: 640; color: var(--muted-2); }
-    #s12 .dim .txt b { font-weight: 850; color: var(--white); }
-
-    /* ---- the time x space grid ------------------------------------------ */
-    #s12 .grid-wrap { flex: none; height: 400px; }
-    #s12 .grid-wrap svg { display: block; width: 100%; height: 100%; }
-
-    #s12 .axis { stroke: var(--chart-axis); stroke-width: 2; }
-    #s12 .axis-head { fill: var(--chart-axis); }
-    #s12 .axis-label {
-      font-size: 17px; font-weight: 830; letter-spacing: 0.05em;
-      fill: var(--theory-on-dark);
-    }
-    #s12 .round {
-      font-size: 17px; font-weight: 850; letter-spacing: 0.04em;
-      fill: var(--theory-on-dark);
-    }
-    #s12 .part {
-      font-size: 16px; font-weight: 700; fill: var(--muted-2);
-    }
-
-    #s12 .block { fill: var(--card-bg-strong); stroke: var(--hairline); stroke-width: 1.6; }
-
-    #s12 .link {
-      stroke: var(--theory); stroke-width: 3; stroke-linecap: round;
-      opacity: 0.55; fill: none;
-    }
-
-    #s12 .break { stroke: var(--series-flat); stroke-width: 3.4; stroke-linecap: round; }
-    #s12 .break-x { stroke: var(--series-flat); stroke-width: 4.4; stroke-linecap: round; }
-    #s12 .break-label {
-      font-size: 17px; font-weight: 850; letter-spacing: 0.01em;
-      fill: var(--series-flat);
-    }
-
-    /* ---- closing band (s07 "Try it" / s11 / s23b pattern) ---------------- */
-    /* Two lines now instead of one: the box is 28px taller than the old
-       one-line band (one extra line at font-size 20 / line-height 1.4).
-       That growth fits inside the slide's existing slack with no
-       compensating margin needed; a negative margin-bottom hack was tried
-       here and removed because it fought div.content's scroll height
-       instead of fixing it (overflowcheck got worse, not better, as the
-       margin was made more negative). */
-    #s12 .band {
-      flex: none; align-self: center;
-      width: fit-content; min-width: 40%; max-width: 100%;
-      padding: 16px 48px; text-align: center;
-    }
-    #s12 .band p {
-      margin: 0; font-size: 20px; font-weight: 700;
-      line-height: 1.4; color: var(--muted);
-    }
-    #s12 .band p b.danger {
-      font-weight: 850; color: var(--series-flat); letter-spacing: 0.01em;
-    }
-    #s12 .band p b { font-weight: 850; color: var(--theory); }
-  </style>
-
-  <div class="title-block">
-    <div class="kicker">Coherency load</div>
-    <h1>Two dimensions of iteration</h1>
-    <div class="accent-line"></div>
-  </div>
-
-  <div class="content">
-
-    <div class="diagram-group">
-    <div class="legend fade-up">
-      <div class="dim">
-        <span class="num" aria-hidden="true">1</span>
-        <span class="txt"><b>Iterate in time:</b> every change must leave the corpus coherent</span>
-      </div>
-      <div class="dim">
-        <span class="num" aria-hidden="true">2</span>
-        <span class="txt"><b>Divide in space:</b> contracts must stay aligned</span>
-      </div>
-    </div>
-
-    <div class="grid-wrap fade-up">
-      <svg viewBox="0 0 1456 400" preserveAspectRatio="xMidYMid meet" role="img"
-        aria-label="A grid of corpus versions v1 to v4 across the horizontal axis labelled iterate in time, and parts level A, level B, level C, component D, component E along the vertical axis labelled divide in space, whose arrow points upward. Each version is a column of blocks; the columns grow both in block count, from two to five, and in width, so v4 is the widest. Links join each block to its predecessor in the previous version and to its neighbour in the same version. One horizontal link is broken and marked drift, one vertical link is broken and marked misalignment.">
-
-        <!-- version labels, centered on their (widening) columns -->
-        <g transform="translate(35 0)">
-        <text class="round" x="336" y="28" text-anchor="middle">v1</text>
-        <text class="round" x="584" y="28" text-anchor="middle">v2</text>
-        <text class="round" x="872" y="28" text-anchor="middle">v3</text>
-        <text class="round" x="1200" y="28" text-anchor="middle">v4</text>
-        </g>
-
-        <!-- the space axis: arrow points UP (stays put, not shifted) -->
-        <line class="axis" x1="158" y1="338" x2="158" y2="62" />
-        <path class="axis-head" d="M150 62 L166 62 L158 44 Z" />
-        <text class="axis-label" x="188" y="189" text-anchor="middle"
-          transform="rotate(-90 160 217)">divide in space</text>
-
-        <!-- everything else (row labels, columns, links, breaks, time axis)
-             shifted 35px right; the space axis above is the only exception -->
-        <g transform="translate(35 0)">
-
-        <!-- part labels -->
-        <text class="part" x="246" y="69" text-anchor="end">level A</text>
-        <text class="part" x="246" y="132" text-anchor="end">level B</text>
-        <text class="part" x="246" y="195" text-anchor="end">level C</text>
-        <text class="part" x="246" y="258" text-anchor="end">component D</text>
-        <text class="part" x="246" y="321" text-anchor="end">component E</text>
-
-        <!-- horizontal links: a part against its own past -->
-        <line class="link" x1="406" y1="63" x2="494" y2="63" />
-        <line class="link" x1="674" y1="63" x2="762" y2="63" />
-        <line class="link" x1="982" y1="63" x2="1070" y2="63" />
-        <line class="link" x1="406" y1="126" x2="494" y2="126" />
-        <line class="link" x1="982" y1="126" x2="1070" y2="126" />
-        <line class="link" x1="674" y1="189" x2="762" y2="189" />
-        <line class="link" x1="982" y1="189" x2="1070" y2="189" />
-        <line class="link" x1="982" y1="252" x2="1070" y2="252" />
-
-        <!-- vertical links: the parts against each other -->
-        <line class="link" x1="336" y1="82" x2="336" y2="107" />
-        <line class="link" x1="584" y1="82" x2="584" y2="107" />
-        <line class="link" x1="584" y1="145" x2="584" y2="170" />
-        <line class="link" x1="872" y1="82" x2="872" y2="107" />
-        <line class="link" x1="872" y1="145" x2="872" y2="170" />
-        <line class="link" x1="872" y1="208" x2="872" y2="233" />
-        <line class="link" x1="1200" y1="82" x2="1200" y2="107" />
-        <line class="link" x1="1200" y1="145" x2="1200" y2="170" />
-        <line class="link" x1="1200" y1="208" x2="1200" y2="233" />
-
-        <!-- v1: two parts, the narrowest corpus -->
-        <rect class="block" x="266" y="44" width="140" height="38" rx="8" />
-        <rect class="block" x="266" y="107" width="140" height="38" rx="8" />
-
-        <!-- v2: a third part arrives, and every block is wider -->
-        <rect class="block" x="494" y="44" width="180" height="38" rx="8" />
-        <rect class="block" x="494" y="107" width="180" height="38" rx="8" />
-        <rect class="block" x="494" y="170" width="180" height="38" rx="8" />
-
-        <!-- v3: a fourth part arrives, wider again -->
-        <rect class="block" x="762" y="44" width="220" height="38" rx="8" />
-        <rect class="block" x="762" y="107" width="220" height="38" rx="8" />
-        <rect class="block" x="762" y="170" width="220" height="38" rx="8" />
-        <rect class="block" x="762" y="233" width="220" height="38" rx="8" />
-
-        <!-- v4: a fifth part arrives, the widest corpus -->
-        <rect class="block" x="1070" y="44" width="260" height="38" rx="8" />
-        <rect class="block" x="1070" y="107" width="260" height="38" rx="8" />
-        <rect class="block" x="1070" y="170" width="260" height="38" rx="8" />
-        <rect class="block" x="1070" y="233" width="260" height="38" rx="8" />
-        <rect class="block" x="1070" y="296" width="260" height="38" rx="8" />
-
-        <!-- BREAK 1: level B lost the thread of its own past (v2 to v3) -->
-        <line class="break" x1="674" y1="126" x2="706" y2="126" />
-        <line class="break" x1="730" y1="126" x2="762" y2="126" />
-        <line class="break-x" x1="710" y1="118" x2="726" y2="134" />
-        <line class="break-x" x1="726" y1="118" x2="710" y2="134" />
-        <text class="break-label" x="718" y="101" text-anchor="middle">drift</text>
-
-        <!-- BREAK 2: the newest component disagrees with its neighbour -->
-        <line class="break" x1="1200" y1="271" x2="1200" y2="277" />
-        <line class="break" x1="1200" y1="290" x2="1200" y2="296" />
-        <line class="break-x" x1="1192" y1="276" x2="1208" y2="292" />
-        <line class="break-x" x1="1208" y1="276" x2="1192" y2="292" />
-        <text class="break-label" x="1180" y="289" text-anchor="end">misalignment</text>
-
-        <!-- the time axis, arrowhead pulled in to sit just past the v4 boxes (right edge 1330) -->
-        <line class="axis" x1="266" y1="360" x2="1327" y2="360" />
-        <path class="axis-head" d="M1327 352 L1345 360 L1327 368 Z" />
-        <text class="axis-label" x="798" y="386" text-anchor="middle">iterate in time</text>
-        </g>
-      </svg>
-    </div>
-    </div>
-
-    <div class="card band fade-up">
-      <p><b class="danger">Drift risk on both dimensions:</b> enormous pressure on coherence.<br>
-        <b>Coherence must hold along both axes.</b></p>
-    </div>
-  </div>
-</section>
-
 <section class="slide slide--light" data-lane="theory" id="s13" data-act="act3" data-owner="draft" data-minutes="1.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
+  <!-- POSITION (board pass 2026-10-28): this slide now follows s08 (the
+  layers) directly; s09 and s11 are no longer between them. The turn that
+  connects the two, spoken as the first line here, is the one the kicker
+  asks: "Layers help the head: reason one, handled. But every round had to
+  leave all of them coherent: that is the load from the opening. Who
+  carries it? The substrate does. And this is what the substrate was." Then
+  the page and the four groups. Without that opening line the jump from
+  the layer diagram to a prose page is not evident.
+
+  SPEAKER-NOTE (draft, from the Miro board):
   Seven board categories, regrouped into FOUR failure modes. Grouping approved
   by the owner on 2026-08-25.
 
@@ -3014,7 +3358,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       "Harder to keep only the relevant information in context
        (Context economy)"
       "Harder for an LLM to deal with a big chunk of text (Context economy)"
-      NOTE: this group mirrors the s07 "both minds are bounded" beat. The
+      NOTE: this group mirrors s07's "both minds are bounded" line (now in
+      the opening block). The
       first two lines are the human side, the last two are the LLM side, and
       the card text says "both minds" on purpose. Call the callback out loud.
       On the page, pin 1 covers the whole first paragraph and carries two
@@ -3061,7 +3406,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   properties. Do not read them out, they are for the eye.
 
   Close on the band, not on any single group: none of these is a writing
-  problem. They are all substrate problems.
+  problem. They are all substrate problems. KICKER (2026-10-28) "Who carries
+  the load?": answer it out loud on the band: the substrate has to carry it,
+  and prose is the wrong substrate. (The old kicker "Coherency load
+  strikes" is gone; s16, where the load actually hits, carries the theory
+  stamp "Coherency load" instead.)
   -->
 
   <style>
@@ -3195,7 +3544,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Coherency load strikes</div>
+    <div class="kicker">Who carries the load?</div>
     <h1>Prose alone fails as a substrate</h1>
     <div class="accent-line"></div>
   </div>
@@ -3348,7 +3697,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <div class="card band fade-up">
           <p>Prose can describe the design.
-            <br><b>Changing it coherently is where the pain starts.</b></p>
+            <br><b>It cannot carry the load of changing it.</b></p>
         </div>
       </div>
     </div>
@@ -3452,13 +3801,13 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <div class="title-block">
     <div class="kicker">Let's experiment!</div>
-    <h1>The original building blocks</h1>
+    <h1>Structured building blocks in HTML</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
     <svg viewBox="0 0 1456 640" preserveAspectRatio="xMidYMid meet" role="img"
-      aria-label="One mock page from a structured design corpus, drawn centre-left and dissected into six labelled organs. The page carries a small browser chrome strip with three dots and the address corpus slash units slash run-lifecycle dot html, then a header reading Unit: run lifecycle with the id PF-004. Below it, a mono pseudo-code block with five short lines about a gate passing a run, and beside it a narrow sidebar of domain terms holding the chips bubble, run and gate. Under both, a boxed invariants region with three rows, INV-3 a run never loses its record, INV-7 a sealed run is never reopened, INV-9 every gate decision names an actor. Below that an absent region listing two struck-out items, multi-tenant mode and plugin system. A footer strip closes the page with two golden traces written as given, when, then rows. Six chips in the margins are joined to the organs by thin leader lines: on the left Pseudo-code, Invariants and Absent list; on the right HTML over markdown pointing at the browser address, DDD lite pointing at the domain-term sidebar, and Golden traces pointing at the footer strip.">
+      aria-label="One mock page from a structured design corpus, drawn centre-left and dissected into six labelled organs. The page carries a small browser chrome strip with three dots and the address corpus slash units slash run-lifecycle dot html, then a header reading Unit: run lifecycle with the id PF-004. Below it, a mono pseudo-code block with five short lines about a gate passing a run, and beside it a narrow sidebar of domain terms holding the chips actor, run and gate. Under both, a boxed invariants region with three rows, INV-3 a run never loses its record, INV-7 a sealed run is never reopened, INV-9 every gate decision names an actor. Below that an absent region listing two struck-out items, multi-tenant mode and plugin system. A footer strip closes the page with two golden traces written as given, when, then rows. Six chips in the margins are joined to the organs by thin leader lines: on the left Pseudo-code, Invariants and Absent list; on the right HTML over markdown pointing at the browser address, DDD lite pointing at the domain-term sidebar, and Golden traces pointing at the footer strip.">
 
       <!-- ================= the page ====================================== -->
       <rect class="page-bg" x="356" y="6" width="644" height="628" rx="16" />
@@ -3497,8 +3846,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <text class="region-label" x="802" y="116">DOMAIN TERMS</text>
       <rect class="region" x="802" y="130" width="172" height="154" rx="10" />
 
-      <rect class="term" x="820" y="144" width="84" height="26" rx="13" />
-      <text class="term-t" x="862" y="162" text-anchor="middle">bubble</text>
+      <rect class="term" x="820" y="144" width="74" height="26" rx="13" />
+      <text class="term-t" x="857" y="162" text-anchor="middle">actor</text>
       <rect class="bar" x="820" y="174" width="136" height="6" rx="3" />
 
       <rect class="term" x="820" y="190" width="62" height="26" rx="13" />
@@ -3868,6 +4217,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (rebuilt 2026-08-25, reframed):
+  STAMP (board pass 2026-10-28): the slide carries the theory stamp
+  "Coherency load" (class="stamp", top right, shared component in
+  theme/components.css, same device as s05 and s06). It is visible from
+  the start (no in-slide reveals for now, owner call 2026-10-28); point at
+  it AFTER the bar chart has been read: the chart is the symptom, the
+  stamp names it. The kicker went back to the story role, "The
+  crisis" (the earlier 2026-10-28 kicker "Coherency load strikes" would
+  have said the same thing as the stamp, twice on one slide).
+
   The crisis scene: substrate failure and agent overload in one event. The
   centerpiece is the review-rounds bar chart, because the pain is
   measurable: review effort tracked corpus size, not difficulty.
@@ -3880,6 +4238,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     - "Every layer above is written against the low ones, so one lower
        change had to be reflected everywhere above it."
     - "The LLM could do it, but it became very painful:" (then read the quote)
+    - STAMP, last (point at it): "Remember the grid from the opening: more parts,
+       more rounds, the links multiply. This is that, happening."
 
   CAPTION MOVED TO SPOKEN WORD (2026-08-25): the mini-diagram used to carry a
   printed caption, "not a layering mistake: learning adds and adjusts low
@@ -4032,8 +4392,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
   </style>
 
+  <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
+  <div class="stamp" data-overflow-ok><span class="eyebrow">The price</span>Coherency load</div>
+
   <div class="title-block">
-    <div class="kicker">The &ldquo;crisis&rdquo;</div>
+    <div class="kicker">The crisis</div>
     <h1>The giant monolith corpus failed to scale</h1>
     <div class="accent-line"></div>
   </div>
@@ -5458,7 +5821,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   THE TWO TRENDS (the parenthetical explanations, kept out of the slide):
     - "cost of structure" falls: better models increasingly maintain the
       structure for you, so the price of building and keeping it drops.
-    - "coherency load on the model" grows: the better the models get, the
+    - "coherency load on the model" grows (same load as the opening grid on
+      s02b, now on the model's side; say it as a callback, not a definition):
+      the better the models get, the
       more ambition you hand them and the more you delegate, so the amount
       of coherence they have to hold at once keeps rising. That is exactly
       why the right-hand pile gets MORE valuable, not less.
@@ -8489,6 +8854,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   The closing takeaways. Light canvas, lane-less on purpose: this is a meta
   slide that speaks for both lanes at once, so it carries no lane stripe.
 
+  KICKER (2026-10-28) "How I carry the load": closes the promise s02b's
+  band made ("This talk: how to carry it"). Closing line, after row 5:
+  "Those are the five ways I carry the coherency load. The harness is one
+  instance; the five travel."
   Delivery: one beat per row, and do not read the rows verbatim; the audience
   can read. Point at the glyph, name the moment in the talk it comes from,
   then say the takeaway in your own words.
@@ -8647,7 +9016,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Takeaways</div>
+    <div class="kicker">How I carry the load</div>
     <h1>Five things to take home</h1>
     <div class="accent-line"></div>
   </div>
