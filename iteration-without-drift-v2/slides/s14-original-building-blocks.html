@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -653,14 +658,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   So I started to experiment with using HTML and structured entities.
 
-
   So the first concept I wanted to try out is pseudocode. The idea is kind of
   simple, that in a pseudocode we can store a lot of information in a very
   talk dance way. This is very expressive. It is easier to understand even for
   me than reading a bunch of tests. And I also assume that even for LM kinda
   finding issues in a pseudocode is much easier than finding issues in a
   prose, as LLMs were highly optimized to deal with the code.
-
 
   I wanted to use clear domain terms. I'm using here the domain driven design
   memory, but I was mainly leveraging it from the perspective to make very
@@ -669,19 +672,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   we are referring to the same thing with different words, so then this can
   introduce clarity.
 
-
   In multiple projects in the past I used clear invariants in the system I was
   building, and I wanted to make in this project even those separate entities,
   so this way I can refer to them and I can make sure that those invariants
   are very clearly defined and they are not kinda hidden inside the prose.
-
 
   I guess you have the experience that in many cases an LLM tend to over
   engineer repeat, or wants to build stuff which are not necessary. So from
   this perspective, I found very useful to have a very specific absent list.
   So I always wanted to clearly define which are the parts or which are some
   functionalities that I definitely don't want to implement.
-
 
   And finally for each capability layer, I used these: traces, which were
   kinda the most important acceptance criteria covering the key happy passes,
@@ -871,9 +871,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

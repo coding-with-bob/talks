@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -659,7 +664,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   and how they are connected with each other enables many different ways to
   traverse that information graph.
 
-
   Example one that I mentioned, that for example if I'm changing a function,
   then I can clearly see how that function or how that unit of information is
   connected with some other information. So if I want to check whether that,
@@ -671,7 +675,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   change that invariant, it provides me a much better understanding and a very
   clear understanding of which items might be impacted. So even I as a human
   can better think through whether my change is correct or not.
-
 
   And another very interesting benefit is that this way I can even iterate on
   the structure itself. And I can have a CI/CD pipeline on the, on the design
@@ -971,9 +974,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

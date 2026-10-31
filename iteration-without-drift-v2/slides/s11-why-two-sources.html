@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -665,22 +670,22 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  És akkor itt megint egy ilyen kis elméleti morzsa, hogy általában amikor
-  iterálunk valamin, akkor ugye két fő szempont van. Ugye az egyik az, amikor
-  azt se tudom, hogy hova akarok eljutni, amikor a cél maga is homályos, és
-  magát az útvonalat is fel kell fedezni. Vagy maga a problématér is homályos,
-  és az iteráció alapvető része a megértési folyamatnak. De lehet az is, hogy
-  a cél nagyjából tiszta, de akkor se tiszta, hogy milyen úton tudok oda
-  eljutni. És az esetemben[, ahogy majd a sztoriban látni fogjátok,] mind a
-  kettő helyzet fönnállt, mert az a cél sem volt teljesen kristálytiszta, de
-  az, hogy mi lesz a konkrét megvalósítás, azt nem tudtam.
+  And then here again a small theoretical crumb: usually when we iterate on
+  something, there are two main aspects. One is when I do not even know where
+  I want to get to, when the goal itself is vague, and the route itself has to
+  be discovered too. Or the problem space itself is vague, and iteration is a
+  fundamental part of the understanding process. But it can also be that the
+  goal is roughly clear, but it is still not clear which way I can get there.
+  And in my case[, as you will see in the story,] both situations held,
+  because the goal was not completely crystal clear either, but what the
+  concrete implementation would be, that I did not know.
 
-  És ami ebből a szempontból szerintem fontos, hogy mind a kettő azt jelenti,
-  hogy valószínűleg sokat kell iterálni. Meg ami ilyen gyakori tapasztalat az
-  élő munkában, hogy mondjuk egy részét tervezem a rendszernek, ott lehet,
-  hogy adódik egy olyan tanulás, amit szeretnék az egész rendszerbe
-  visszavezetni, és akkor mégiscsak azt jelenti, hogy helyi vagy kisebb részén
-  dolgozom, mégis a teljes rendszert kell megváltoztatni.
+  And what I think is important from this perspective is that both mean that
+  you probably have to iterate a lot. And what is a frequent experience in
+  live work: say I am designing one part of the system, and there a learning
+  may come up that I would like to feed back into the whole system, and then
+  it still means that I am working on a local or smaller part, yet the whole
+  system has to change.
   -->
 
   <style>
@@ -981,9 +986,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

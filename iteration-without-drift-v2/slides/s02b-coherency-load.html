@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -651,23 +656,21 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  Itt lehet egy kérdéssel kezdeni: kinek volt már olyan tapasztalata, hogy
-  megváltoztatott egy tervet, és az első változtatás nem volt teljes?
+  Here you can start with a question: who has had the experience of changing a
+  plan, and the first change was not complete?
 
-  Ez itt a legfontosabb fogalom, amit bevezetünk. Az egész előadás arról fog
-  szólni, hogy ezt hogyan kezeljük.
+  This is the most important concept we introduce here. The whole talk is
+  going to be about how we handle this.
 
+  As the system grows, and smaller and larger building blocks start to form,
+  the connections and contracts between them also have to stay coherent. And
+  as I iterate over time and the modules change, these changes also have to be
+  logically coherent edits.
 
-  Ahogy a rendszer bővül, és elkezdenek kisebb-nagyobb építőblokkok
-  kialakulni, akkor az ezek közötti kapcsolatok, kontraktok is koherensek kell
-  maradjanak. És ahogy időben iterálok, és a modulok változnak, akkor ezek a
-  változtatások is logikailag koherens szerkesztések kell legyenek.
-
-
-  És itt futunk bele ebbe a limitációba, hogy elvileg ez egyszerű, csak
-  megkérem az LLM-et, megváltoztatja, átírja ezeket a dolgokat, de hogy ez egy
-  koherens változtatás lesz, az korántsem biztos. És itt majd látni fogtok
-  konkrét horror story-kat is.
+  And this is where we run into this limitation: in theory it is simple, I
+  just ask the LLM, it changes and rewrites these things, but whether it is
+  going to be a coherent change is far from certain. And you will see concrete
+  horror stories here too.
   -->
 
   <style>
@@ -887,9 +890,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

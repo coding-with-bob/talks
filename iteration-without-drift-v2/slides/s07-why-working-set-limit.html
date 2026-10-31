@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -660,20 +665,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  Mondtam azt, hogy az is egy probléma, hogy én mint ember, akár egy LLM is,
-  nagyon nehezen tudok egy ilyen [nagy] feladatot végiggondolni. És ennek
-  megvan az elméleti háttere is, hogy emberként is van working memory. Itt még
-  a 7±2 van, de van újabb kutatás, ami szerint még ennél is korlátozottabb a
-  munkamemóriánk.
+  I said that it is also a problem that I as a human, or even an LLM, find it
+  very hard to think through such a [big] task. And this has a theoretical
+  background too: as humans we have a working memory. Here it still says 7±2,
+  but there is newer research according to which our working memory is even
+  more limited than that.
 
-  És ami érdekes, hogy az LLM-eknek is, ha nem is pontosan ugyanaz, de az
-  LLM-eknél is van egyfajta korlátozottság. Beraktam egy research paper-t, ami
-  kb. azt mutatta, hogyha mondjuk elkezdesz egy LLM-nek minél több szempontot
-  adni, egy ponton túl elkezd nagyon leromlani, hogy hányat tud szem előtt
-  tartani. Tehát mondjuk száz féle szempontot kérek tőle, akkor még elég jó,
-  de hogyha mondjuk ötszáz félét, akkor lehet, hogy megközelítőleg csak a
-  felét tartja be. És ez is nagyon megnehezíti azt, hogy mondjuk egy ilyen
-  dizájn korpuszon tudjunk LLM-ekkel dolgozni.
+  And what is interesting is that LLMs too, even if not exactly the same, LLMs
+  also have a kind of limitation. I put in a research paper which showed
+  roughly that if, say, you start giving an LLM more and more aspects, beyond
+  a point it starts to degrade badly in how many it can keep in mind. So if,
+  say, I ask it for a hundred kinds of aspects, it is still quite good, but
+  if, say, five hundred kinds, then it may follow only about half of them. And
+  this also makes it very hard to work with LLMs on a design corpus like this.
   -->
 
   <style>
@@ -784,9 +788,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

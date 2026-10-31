@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -653,7 +658,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   So now let's talk about a bit the key takeaways.
 
-
   As I was going through this journey, for me the biggest aha moment was that
   the structure itself creates information. And in the inside, this is kinda
   obvious because we know that when we describe a system, a system is a
@@ -661,12 +665,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   and if you make those relationships kinda explicit, then this is something
   that we can leverage from multiple direction.
 
-
   It is important to keep in mind that this is not something that we are only
   doing to kinda help ellums. As I mentioned, this structure helped me as well
   in several cases. So this helps me to better understand and to better
   navigate the design space as well.
-
 
   And this is very important because if you remember for example the S
   project, this was kinda like a very very early product discovery story, but
@@ -675,14 +677,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   structure which support that you can easily change the corpus and you have a
   structure that make those changes safe and makes the result checkable.
 
-
   Another very interesting perspective is that if you have a structure like
   this, then you can leverage from the perspective to make sure that your
   attention is used when it is really important. So if you, if you do your job
   properly, then you can, you can provide more autonomy to the agents in a
   safe way, and those cases when your attention is needed can be surfaced by
   the system.
-
 
   And my last key point is that it is important to design for the LLM's
   characteristics. This is especially true, for example, in the case of the
@@ -972,9 +972,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

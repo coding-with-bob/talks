@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -655,14 +660,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   big topic, so I only highlight a few important perspective. Actually, this
   just, this topic could be turned into a talk itself.
 
-
   By default the lenses are running in a fresh context. So the main reason is
   that we want to make sure that the reviewer is not biased by the author. On
   the other hand, there is another perspective here, so if the reviewer with a
   fresh context finds some ambiguity, then there is a high chance that the
   implementer will also find that ambiguity. So this way, with a fresh
   context, we can also somewhat test the intent transfer in some cases.
-
 
   Another important issue is that when you have the findings, you need to have
   a disposition process. Here we can see an example. So in a project I didn't
@@ -679,7 +682,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   really want to fix something that you might want to investigate, and the
   third is that you just decline because it is not really meaningful.
 
-
   And the third topic, which is kinda highly related to the previous one, is
   that you need to think about when the loop should stop. Because as I
   mentioned, LLMs are great at, so they're much better at finding something
@@ -689,7 +691,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   which are on the right abstraction level. So, for example, when I was doing
   some review for the architecture and the reviewer might return some
   implementation details, and it's very important that those are declined.
-
 
   It is important to keep in mind that LLMs were trained or were mainly
   trained for finishing a task so they are not necessarily good at reasoning
@@ -911,9 +912,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -667,7 +672,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   So with this image I kinda tried to explain some of the issues that we can
   run into when we use just the pros.
 
-
   So one issue is around how easy to understand this something. Here the
   problem could be that there might be some underlying decisions which are not
   highlighted in the text. Some concepts might overlap, even this is an issue,
@@ -680,7 +684,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   harder when you have some derived concepts like green. And it's not
   necessarily easy to remove blue from green. And this is where you might run
   into some problems.
-
 
   Another issue is that some concepts are not clearly defined, so it's much
   harder to address them if they are kinda hidden inside the text. Which also
@@ -695,7 +698,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   And last issue is that it's quite hard to validate whether a document is
   correct or not. And even from this perspective, just one markdown file is
   not super easy to deal with.
-
 
   So all of these issues are related to the substrate itself, because a
   markdown file is just limited to provide structure, which can help from the
@@ -999,9 +1001,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

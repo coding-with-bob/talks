@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -662,20 +667,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   with too many questions then probably, so there's a good chance that the
   quality of the, of the result won't be great.
 
-
   And this is something that you can even test very easily. So you can run one
   subagent and you give them like 30 different perspectives to find issues,
   and then to run different experiments when you run each of those
   perspectives as separate subagents, and you will see that in the second case
   you will get much more findings.
 
-
   Here I just put some examples. I really like for example this Fossifier. I
   use it in multiple cases when it's kinda like an adversarial type of
   reviewer, which tries to find cases when a specific claim doesn't hold, and
   if there is a counterexample then it means that we need to, we need to
   resync the claim and maybe we need to find a different solution.
-
 
   So when you are working with lenses, it is important that you calibrate the
   lenses itself. So it is important to validate that they are working
@@ -686,7 +688,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   you can create like a testing pipeline so whenever you change your lenses
   then you can, so those changes go through kind of the same CI/CD pipeline
   that we use for the code.
-
 
   And the third topic is that in most of the cases it is quite essential that
   you make sure that the reviewer provides evidence for the findings. Because
@@ -701,7 +702,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   we are running the disposition process, then those evidences will help to
   decide whether the findings are correct or not, and whether those findings
   are meaningful or not.
-
 
   So you really need to consider those lenses that they are artifact, so you
   need to design it, you need to validate it, you need to version it, and even
@@ -924,9 +924,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

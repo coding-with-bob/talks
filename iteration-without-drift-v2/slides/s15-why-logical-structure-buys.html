@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -651,22 +656,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  Hát erről szerintem már nagyrészt beszéltünk, de egyrészt maga az, hogy ez a
-  domain space is szét lett vágva konkrétabb dolgokra. Ezeken is adott
-  fogózkodókat, hogy hogyan érdemes dolgokat végiggondolni. Például végig
-  tudtam menni csak az invariánsokon. Hiányzik onnan valami szerintem, igen,
-  nem. Megint csak egy nagy szöveget olvasgatva nem biztos, hogy beugrik.
-  Ezáltal az én working memory-mat is jobban ki tudtam használni, kerülni.
+  Well, I think we have mostly talked about this already, but for one, the
+  domain space itself was cut up into more concrete things. These also gave
+  handholds for how it is worth thinking things through. For example, I could
+  go through just the invariants. Is something missing from there, I think,
+  yes, no. Again, just reading through a big text, it is not certain that it
+  comes to mind. This way I could also make better use of my own working
+  memory, avoid it.
 
-  Ahogy mondtam, bekerült már ez, hogy címezhetőek az egyes entitások, és már
-  ez például behozta azt, hogy nem tudok mondjuk olyan invariánsra hivatkozni,
-  ami nem létezik, vagy nincsen definiálva. Tehát ezen a ponton már létrejött
-  egy kis CI script, ami nyilván nem túl mélyen, de elkezd ellenőrzéseket
-  végezni a doksin, és hozott is találatokat, tehát segített az építkezésben.
+  As I said, it was already in that the individual entities are addressable,
+  and that alone already brought in, for example, that I cannot refer to, say,
+  an invariant that does not exist or is not defined. So at this point a small
+  CI script already came into being, which, obviously not very deeply, starts
+  running checks on the doc, and it did bring hits, so it helped in the
+  building.
 
-  A struktúra is sokkal tömörebb token szempontból, mint ha ezt mind szerettem
-  volna leírni.
-
+  The structure is also much more compact token-wise than if I had wanted to
+  write all of that down.
 
   And this is something that can really help. So even outside of this context,
   I had many examples when I was working on a design document and I just kept
@@ -680,7 +686,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   So this is something that you need to remember, that it really matters in
   which format do you store given information, because it impacts a lot how
   easy it is for LLM to work with that information.
-
 
   And my original thesis that HTML might help worked out pretty well. And it
   also enabled some kinda document related innovation. For example, I built in
@@ -975,9 +980,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

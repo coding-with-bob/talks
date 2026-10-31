@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,62 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
+/* ---- speaker-notes panel (2026-10-31) ----------------------------------------
+   Combined deck only. Typing "idkfa" toggles body.notes-mode; "?idkfa" in the
+   URL turns it on at load. The slide stays the main area: --notes-w (landscape,
+   panel on the right) or --notes-h (portrait, panel at the bottom) is the
+   space the panel takes, the active slide centres in what is left, and the fit
+   script scales the canvas to that remainder by measuring the panel. */
+.notes-panel { display: none; }
+@media screen {
+  body.notes-mode { --notes-w: clamp(320px, 30vw, 560px); --notes-h: 0px; }
+  body.notes-mode .deck .slide.active {
+    left: calc((100vw - var(--notes-w)) / 2);
+    top: calc((100vh - var(--notes-h)) / 2);
+  }
+  body.notes-mode .deck-counter {
+    right: calc(var(--notes-w) + 20px);
+    bottom: calc(var(--notes-h) + 14px);
+  }
+  body.notes-mode .notes-panel {
+    display: block;
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
+    width: var(--notes-w);
+    box-sizing: border-box;
+    padding: 22px 26px 28px;
+    overflow: auto; overscroll-behavior: contain;
+    background: #0b1220;
+    border-left: 1px solid rgba(247,251,255,0.12);
+    color: rgba(247,251,255,0.90);
+    font: 400 17px/1.5 Inter, sans-serif;
+    touch-action: auto;
+  }
+  .notes-head {
+    margin: 0 0 14px;
+    color: rgba(247,251,255,0.45);
+    font: 650 13px/1.3 Inter, sans-serif; letter-spacing: 0.04em;
+  }
+  .notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .notes-text:empty::before { content: "No speaker note."; color: rgba(247,251,255,0.45); font-style: italic; }
+  body[data-active-theme="light"] .notes-panel {
+    background: #f4f7fb;
+    border-color: rgba(7,21,47,0.14);
+    color: #07152f;
+  }
+  body[data-active-theme="light"] .notes-head,
+  body[data-active-theme="light"] .notes-text:empty::before { color: rgba(7,21,47,0.50); }
+}
+@media screen and (orientation: portrait) {
+  body.notes-mode { --notes-w: 0px; --notes-h: 42vh; }
+  body.notes-mode .notes-panel {
+    top: auto; left: 0; width: auto; height: var(--notes-h);
+    border-left: 0; border-top: 1px solid rgba(247,251,255,0.12);
+    padding: 16px 18px 22px;
+  }
+  body[data-active-theme="light"].notes-mode .notes-panel { border-top-color: rgba(7,21,47,0.14); }
+}
+
 </style>
 </head>
 <body class="deck-mode">
@@ -650,9 +710,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide" id="s01" data-act="act0" data-owner="draft" data-minutes="0.5"
   data-theme="dark" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Visual-language foundation: one color for the personal story, another for
-  the theoretical framing (established silently by the deck's own design).
+  <!-- SPEAKER-NOTE:
   -->
 
   <style>
@@ -752,7 +810,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       font-weight: 600;
     }
     /* the conference is the one highlighted phrase on the slide */
-    #s01b .row-text b { color: var(--cyan-on-dark); font-weight: 800; }
+    #s01b .row-text b { color: var(--craft-orange); font-weight: 800; }
+    #s01b .row-text a { color: inherit; text-decoration: none; }
 
     #s01b .closing {
       margin-top: 44px;
@@ -878,7 +937,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             </g>
           </svg>
         </div>
-        <div class="row-text">Organizer of <b>Craft Conference</b>, Budapest, June 3-4</div>
+        <div class="row-text">Organizer of <b><a href="https://craft-conf.com" target="_blank" rel="noopener">Craft Conference</a></b>, Budapest, June 3-4</div>
       </div>
     </div>
 
@@ -957,13 +1016,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  - 1. kártya: So this is an ever existing problem. This is why we invented
-  modularity and this is why we have architecture planning approaches like C4.
-  So we try to design the system in layers so we can always focus on a limited
-  number of items at a given time.
-  - 2. kártya: and the other aspect is that we just have many unknowns and we
-  need to iterate to resolve those in different ways, depending on the nature
-  of the given unknowns.
+  So this is an ever existing problem. This is why we invented modularity and
+  this is why we have architecture planning approaches like C4. So we try to
+  design the system in layers so we can always focus on a limited number of
+  items at a given time.
+
+  and the other aspect is that we just have many unknowns and we need to
+  iterate to resolve those in different ways, depending on the nature of the
+  given unknowns.
   -->
 
   <style>
@@ -1075,20 +1135,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  Mondtam azt, hogy az is egy probléma, hogy én mint ember, akár egy LLM is,
-  nagyon nehezen tudok egy ilyen [nagy] feladatot végiggondolni. És ennek
-  megvan az elméleti háttere is, hogy emberként is van working memory. Itt még
-  a 7±2 van, de van újabb kutatás, ami szerint még ennél is korlátozottabb a
-  munkamemóriánk.
+  I said that it is also a problem that I as a human, or even an LLM, find it
+  very hard to think through such a [big] task. And this has a theoretical
+  background too: as humans we have a working memory. Here it still says 7±2,
+  but there is newer research according to which our working memory is even
+  more limited than that.
 
-  És ami érdekes, hogy az LLM-eknek is, ha nem is pontosan ugyanaz, de az
-  LLM-eknél is van egyfajta korlátozottság. Beraktam egy research paper-t, ami
-  kb. azt mutatta, hogyha mondjuk elkezdesz egy LLM-nek minél több szempontot
-  adni, egy ponton túl elkezd nagyon leromlani, hogy hányat tud szem előtt
-  tartani. Tehát mondjuk száz féle szempontot kérek tőle, akkor még elég jó,
-  de hogyha mondjuk ötszáz félét, akkor lehet, hogy megközelítőleg csak a
-  felét tartja be. És ez is nagyon megnehezíti azt, hogy mondjuk egy ilyen
-  dizájn korpuszon tudjunk LLM-ekkel dolgozni.
+  And what is interesting is that LLMs too, even if not exactly the same, LLMs
+  also have a kind of limitation. I put in a research paper which showed
+  roughly that if, say, you start giving an LLM more and more aspects, beyond
+  a point it starts to degrade badly in how many it can keep in mind. So if,
+  say, I ask it for a hundred kinds of aspects, it is still quite good, but
+  if, say, five hundred kinds, then it may follow only about half of them. And
+  this also makes it very hard to work with LLMs on a design corpus like this.
   -->
 
   <style>
@@ -1212,22 +1271,22 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  És akkor itt megint egy ilyen kis elméleti morzsa, hogy általában amikor
-  iterálunk valamin, akkor ugye két fő szempont van. Ugye az egyik az, amikor
-  azt se tudom, hogy hova akarok eljutni, amikor a cél maga is homályos, és
-  magát az útvonalat is fel kell fedezni. Vagy maga a problématér is homályos,
-  és az iteráció alapvető része a megértési folyamatnak. De lehet az is, hogy
-  a cél nagyjából tiszta, de akkor se tiszta, hogy milyen úton tudok oda
-  eljutni. És az esetemben[, ahogy majd a sztoriban látni fogjátok,] mind a
-  kettő helyzet fönnállt, mert az a cél sem volt teljesen kristálytiszta, de
-  az, hogy mi lesz a konkrét megvalósítás, azt nem tudtam.
+  And then here again a small theoretical crumb: usually when we iterate on
+  something, there are two main aspects. One is when I do not even know where
+  I want to get to, when the goal itself is vague, and the route itself has to
+  be discovered too. Or the problem space itself is vague, and iteration is a
+  fundamental part of the understanding process. But it can also be that the
+  goal is roughly clear, but it is still not clear which way I can get there.
+  And in my case[, as you will see in the story,] both situations held,
+  because the goal was not completely crystal clear either, but what the
+  concrete implementation would be, that I did not know.
 
-  És ami ebből a szempontból szerintem fontos, hogy mind a kettő azt jelenti,
-  hogy valószínűleg sokat kell iterálni. Meg ami ilyen gyakori tapasztalat az
-  élő munkában, hogy mondjuk egy részét tervezem a rendszernek, ott lehet,
-  hogy adódik egy olyan tanulás, amit szeretnék az egész rendszerbe
-  visszavezetni, és akkor mégiscsak azt jelenti, hogy helyi vagy kisebb részén
-  dolgozom, mégis a teljes rendszert kell megváltoztatni.
+  And what I think is important from this perspective is that both mean that
+  you probably have to iterate a lot. And what is a frequent experience in
+  live work: say I am designing one part of the system, and there a learning
+  may come up that I would like to feed back into the whole system, and then
+  it still means that I am working on a local or smaller part, yet the whole
+  system has to change.
   -->
 
   <style>
@@ -1527,23 +1586,21 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  Itt lehet egy kérdéssel kezdeni: kinek volt már olyan tapasztalata, hogy
-  megváltoztatott egy tervet, és az első változtatás nem volt teljes?
+  Here you can start with a question: who has had the experience of changing a
+  plan, and the first change was not complete?
 
-  Ez itt a legfontosabb fogalom, amit bevezetünk. Az egész előadás arról fog
-  szólni, hogy ezt hogyan kezeljük.
+  This is the most important concept we introduce here. The whole talk is
+  going to be about how we handle this.
 
+  As the system grows, and smaller and larger building blocks start to form,
+  the connections and contracts between them also have to stay coherent. And
+  as I iterate over time and the modules change, these changes also have to be
+  logically coherent edits.
 
-  Ahogy a rendszer bővül, és elkezdenek kisebb-nagyobb építőblokkok
-  kialakulni, akkor az ezek közötti kapcsolatok, kontraktok is koherensek kell
-  maradjanak. És ahogy időben iterálok, és a modulok változnak, akkor ezek a
-  változtatások is logikailag koherens szerkesztések kell legyenek.
-
-
-  És itt futunk bele ebbe a limitációba, hogy elvileg ez egyszerű, csak
-  megkérem az LLM-et, megváltoztatja, átírja ezeket a dolgokat, de hogy ez egy
-  koherens változtatás lesz, az korántsem biztos. És itt majd látni fogtok
-  konkrét horror story-kat is.
+  And this is where we run into this limitation: in theory it is simple, I
+  just ask the LLM, it changes and rewrites these things, but whether it is
+  going to be a coherent change is far from certain. And you will see concrete
+  horror stories here too.
   -->
 
   <style>
@@ -1762,14 +1819,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  És most vissza a sztorihoz. Az én régi rendszerem annyit tudott igazából,
-  hogyha megállapodtam egy tervben, utána tudtam delegálni ennek a kis
-  harnessnek, és akkor egy implementáló elkezdte megcsinálni, a reviewer
-  review-t adott, feedbacket adott, és közben pörögtek egymás között. A cél a
-  konvergencia volt: amikor a reviewer nem talál adott thresholdnak feletti
-  problémát.  So nowadays we would say that this is a small factory. But it,
-  but Perflu itself it is not relevant from the perspective of the talk. What
-  is important that this was one very specific workflow baked into a code.
+  And now back to the story. My old system could really only do this much:
+  once I had agreed on a plan, I could delegate it to this little harness, and
+  then an implementer started doing it, the reviewer gave a review, gave
+  feedback, and the two kept spinning between each other. The goal was
+  convergence: when the reviewer finds no problem above a given threshold.  So
+  nowadays we would say that this is a small factory. But it, but Perflu
+  itself it is not relevant from the perspective of the talk. What is
+  important that this was one very specific workflow baked into a code.
   -->
 
   <style>
@@ -2453,7 +2510,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   significant changes on the whole design, so this is why first I wanted to
   rethink a bit the whole problem space before I'm start doing the coding.
 
-
   Also, I wanted to make sure that as I'm kinda creating now a foundational
   framework, then I just look around a bit and check many other projects which
   can help me to find some good ideas that I can leverage. And by the way, I'm
@@ -3004,7 +3060,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   So with this image I kinda tried to explain some of the issues that we can
   run into when we use just the pros.
 
-
   So one issue is around how easy to understand this something. Here the
   problem could be that there might be some underlying decisions which are not
   highlighted in the text. Some concepts might overlap, even this is an issue,
@@ -3017,7 +3072,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   harder when you have some derived concepts like green. And it's not
   necessarily easy to remove blue from green. And this is where you might run
   into some problems.
-
 
   Another issue is that some concepts are not clearly defined, so it's much
   harder to address them if they are kinda hidden inside the text. Which also
@@ -3032,7 +3086,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   And last issue is that it's quite hard to validate whether a document is
   correct or not. And even from this perspective, just one markdown file is
   not super easy to deal with.
-
 
   So all of these issues are related to the substrate itself, because a
   markdown file is just limited to provide structure, which can help from the
@@ -3337,14 +3390,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   So I started to experiment with using HTML and structured entities.
 
-
   So the first concept I wanted to try out is pseudocode. The idea is kind of
   simple, that in a pseudocode we can store a lot of information in a very
   talk dance way. This is very expressive. It is easier to understand even for
   me than reading a bunch of tests. And I also assume that even for LM kinda
   finding issues in a pseudocode is much easier than finding issues in a
   prose, as LLMs were highly optimized to deal with the code.
-
 
   I wanted to use clear domain terms. I'm using here the domain driven design
   memory, but I was mainly leveraging it from the perspective to make very
@@ -3353,19 +3404,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   we are referring to the same thing with different words, so then this can
   introduce clarity.
 
-
   In multiple projects in the past I used clear invariants in the system I was
   building, and I wanted to make in this project even those separate entities,
   so this way I can refer to them and I can make sure that those invariants
   are very clearly defined and they are not kinda hidden inside the prose.
-
 
   I guess you have the experience that in many cases an LLM tend to over
   engineer repeat, or wants to build stuff which are not necessary. So from
   this perspective, I found very useful to have a very specific absent list.
   So I always wanted to clearly define which are the parts or which are some
   functionalities that I definitely don't want to implement.
-
 
   And finally for each capability layer, I used these: traces, which were
   kinda the most important acceptance criteria covering the key happy passes,
@@ -3554,22 +3602,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  Hát erről szerintem már nagyrészt beszéltünk, de egyrészt maga az, hogy ez a
-  domain space is szét lett vágva konkrétabb dolgokra. Ezeken is adott
-  fogózkodókat, hogy hogyan érdemes dolgokat végiggondolni. Például végig
-  tudtam menni csak az invariánsokon. Hiányzik onnan valami szerintem, igen,
-  nem. Megint csak egy nagy szöveget olvasgatva nem biztos, hogy beugrik.
-  Ezáltal az én working memory-mat is jobban ki tudtam használni, kerülni.
+  Well, I think we have mostly talked about this already, but for one, the
+  domain space itself was cut up into more concrete things. These also gave
+  handholds for how it is worth thinking things through. For example, I could
+  go through just the invariants. Is something missing from there, I think,
+  yes, no. Again, just reading through a big text, it is not certain that it
+  comes to mind. This way I could also make better use of my own working
+  memory, avoid it.
 
-  Ahogy mondtam, bekerült már ez, hogy címezhetőek az egyes entitások, és már
-  ez például behozta azt, hogy nem tudok mondjuk olyan invariánsra hivatkozni,
-  ami nem létezik, vagy nincsen definiálva. Tehát ezen a ponton már létrejött
-  egy kis CI script, ami nyilván nem túl mélyen, de elkezd ellenőrzéseket
-  végezni a doksin, és hozott is találatokat, tehát segített az építkezésben.
+  As I said, it was already in that the individual entities are addressable,
+  and that alone already brought in, for example, that I cannot refer to, say,
+  an invariant that does not exist or is not defined. So at this point a small
+  CI script already came into being, which, obviously not very deeply, starts
+  running checks on the doc, and it did bring hits, so it helped in the
+  building.
 
-  A struktúra is sokkal tömörebb token szempontból, mint ha ezt mind szerettem
-  volna leírni.
-
+  The structure is also much more compact token-wise than if I had wanted to
+  write all of that down.
 
   And this is something that can really help. So even outside of this context,
   I had many examples when I was working on a design document and I just kept
@@ -3583,7 +3632,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   So this is something that you need to remember, that it really matters in
   which format do you store given information, because it impacts a lot how
   easy it is for LLM to work with that information.
-
 
   And my original thesis that HTML might help worked out pretty well. And it
   also enabled some kinda document related innovation. For example, I built in
@@ -3898,7 +3946,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   starts to break again, and probably, and probably I need to do something
   with it, because I just can't afford that. Such a modification takes like
   two, three hours just to go through all the review cycles.
-
 
   And by the way, this is a very good example when, so what you mentioned at
   the beginning, kind of the number of links or number of interrelated notes
@@ -4514,7 +4561,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   building blocks and put them into their own location, and then I just need a
   ledger which describe how they are related, and how the overall model should
   be constructed from these small building blocks.
-
 
   So based on this concept, I started to refactor the model. I started to
   factor out the building blocks from the HTML, type by type, and I started to
@@ -5315,7 +5361,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   and how they are connected with each other enables many different ways to
   traverse that information graph.
 
-
   Example one that I mentioned, that for example if I'm changing a function,
   then I can clearly see how that function or how that unit of information is
   connected with some other information. So if I want to check whether that,
@@ -5327,7 +5372,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   change that invariant, it provides me a much better understanding and a very
   clear understanding of which items might be impacted. So even I as a human
   can better think through whether my change is correct or not.
-
 
   And another very interesting benefit is that this way I can even iterate on
   the structure itself. And I can have a CI/CD pipeline on the, on the design
@@ -5662,13 +5706,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   kind of figure this out from the base text, it is probably not the best way
   to spending our tokens.
 
-
   And I think actually better models will be able to better leverage these
   type of structures. And if I consider that probably the more capable models
   we have, the more we will delegate, which means that the coherency level
   will be bigger, and I think this structure will be very useful even for
   future models as well.
-
 
   As you see, that another interesting tooth is that probably for smarter
   models maintaining these structures will be just much easier. So I can
@@ -6006,11 +6048,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   on the design corpus in one pass. Still I believe that there are some
   perspectives which might need human control or human in the loop.
 
-
   So one is entitlement, there are still many domains or many use cases where
   at least for now human has to make some type of entitlement rated decision
   just to carry the related responsibility.
-
 
   The other is that still the person kind of driving the process has to be
   able to understand what they are saying yes to. So this structure might just
@@ -6280,7 +6320,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   intensive brainstorming, and based on that we identified kinda the key
   capabilities of the system.
 
-
   And then I needed to create the architecture and it was very, very much the
   same experience or the same feeling that I had when I realized that okay, I
   just need to create that config. But then it was super overwhelming. So I
@@ -6290,7 +6329,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   probably I can kinda use the same concept. So I was thinking a bit, okay,
   what could be these building blocks in this case? And I come up with a
   structure that you can see on the image.
-
 
   It was very similar to the previous concept that I kind of created these
   capability layers called levels in this case. An interesting perspective was
@@ -6592,13 +6630,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   understand that how these technical capabilities are related to the product
   that he envisioned.
 
-
   And I was able to do this pretty quickly because I was able to kind of
   leverage the same building blocks. So first we went through the scenario
   ledger and we kind of identified which are the most important user journeys.
   And then I organized the onboarding document according to these stories and
   we selected stories which highlights different capabilities of the system.
-
 
   For each onboarding document, we defined, you know, which are those
   questions that the onboarding document should be able to answer. So then
@@ -6607,7 +6643,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   answer the questions. And then based on the answer, we use an LM as a judge
   to see whether the agent was able to answer the questions. This was kinda
   like the, a quality feedback loop for the documents.
-
 
   And for each of the onboarding documents, I included those claims which were
   related to that part of the system. And then I was able to discuss with the
@@ -6893,7 +6928,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   the non-goal section. So the structure actually helped driving the
   implementation itself.
 
-
   So the actual implementation of parts of the model were connected through
   git commit hashes. And based on this, I have a CI check which checks that if
   the model is changing and the related code is not changing, then this is
@@ -7146,7 +7180,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   called like contract document which contains all the important claims that
   the given implementation should deliver.
 
-
   So these claims were classified into three categories. One was decided in
   the model, one was that the claim is directly derived from the model, and
   the third was that this is new semantic decision. And what was really cool
@@ -7154,13 +7187,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   artifacts, and until it didn't run into a claim which was a new semantic
   decision, it was able to work autonomously.
 
-
   Of course I had a feedback loop. We checked whether the classification is
   correct, and that feedback loop was requested to be able to provide with
   clear evidence that the statement is, so there is a statement in the corpus
   which kind of proves that the claim is coming from the model or is derived
   from the model.
-
 
   And this claims structure was useful even after the implementation, because
   then I had a review loop which checked whether those claims were properly
@@ -7172,7 +7203,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   whether the relevant tests are failing. And if the tests were green, then it
   was a, it was a sign that the tests are not correct and we need to improve
   them.
-
 
   And this is something that I didn't plan in advance, but it was a very nice
   side effect that I can kinda drive my attention where it is really needed,
@@ -7561,11 +7591,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   learned a lot about how they can fail miserably. So I think, so I believe
   this part can be very handy for you.
 
-
   So when we are talking about an LLM review loop, then we need to think about
   two major perspective. One is the control loop itself, and the other is the
   lenses that we use for the actual review.
-
 
   So in the case of the loop, you need to consider how to deal with the
   findings, when do you want a human being involved? How you apply those
@@ -7826,14 +7854,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   big topic, so I only highlight a few important perspective. Actually, this
   just, this topic could be turned into a talk itself.
 
-
   By default the lenses are running in a fresh context. So the main reason is
   that we want to make sure that the reviewer is not biased by the author. On
   the other hand, there is another perspective here, so if the reviewer with a
   fresh context finds some ambiguity, then there is a high chance that the
   implementer will also find that ambiguity. So this way, with a fresh
   context, we can also somewhat test the intent transfer in some cases.
-
 
   Another important issue is that when you have the findings, you need to have
   a disposition process. Here we can see an example. So in a project I didn't
@@ -7850,7 +7876,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   really want to fix something that you might want to investigate, and the
   third is that you just decline because it is not really meaningful.
 
-
   And the third topic, which is kinda highly related to the previous one, is
   that you need to think about when the loop should stop. Because as I
   mentioned, LLMs are great at, so they're much better at finding something
@@ -7860,7 +7885,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   which are on the right abstraction level. So, for example, when I was doing
   some review for the architecture and the reviewer might return some
   implementation details, and it's very important that those are declined.
-
 
   It is important to keep in mind that LLMs were trained or were mainly
   trained for finishing a task so they are not necessarily good at reasoning
@@ -8092,20 +8116,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   with too many questions then probably, so there's a good chance that the
   quality of the, of the result won't be great.
 
-
   And this is something that you can even test very easily. So you can run one
   subagent and you give them like 30 different perspectives to find issues,
   and then to run different experiments when you run each of those
   perspectives as separate subagents, and you will see that in the second case
   you will get much more findings.
 
-
   Here I just put some examples. I really like for example this Fossifier. I
   use it in multiple cases when it's kinda like an adversarial type of
   reviewer, which tries to find cases when a specific claim doesn't hold, and
   if there is a counterexample then it means that we need to, we need to
   resync the claim and maybe we need to find a different solution.
-
 
   So when you are working with lenses, it is important that you calibrate the
   lenses itself. So it is important to validate that they are working
@@ -8116,7 +8137,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   you can create like a testing pipeline so whenever you change your lenses
   then you can, so those changes go through kind of the same CI/CD pipeline
   that we use for the code.
-
 
   And the third topic is that in most of the cases it is quite essential that
   you make sure that the reviewer provides evidence for the findings. Because
@@ -8131,7 +8151,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   we are running the disposition process, then those evidences will help to
   decide whether the findings are correct or not, and whether those findings
   are meaningful or not.
-
 
   So you really need to consider those lenses that they are artifact, so you
   need to design it, you need to validate it, you need to version it, and even
@@ -8355,7 +8374,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   So now let's talk about a bit the key takeaways.
 
-
   As I was going through this journey, for me the biggest aha moment was that
   the structure itself creates information. And in the inside, this is kinda
   obvious because we know that when we describe a system, a system is a
@@ -8363,12 +8381,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   and if you make those relationships kinda explicit, then this is something
   that we can leverage from multiple direction.
 
-
   It is important to keep in mind that this is not something that we are only
   doing to kinda help ellums. As I mentioned, this structure helped me as well
   in several cases. So this helps me to better understand and to better
   navigate the design space as well.
-
 
   And this is very important because if you remember for example the S
   project, this was kinda like a very very early product discovery story, but
@@ -8377,14 +8393,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   structure which support that you can easily change the corpus and you have a
   structure that make those changes safe and makes the result checkable.
 
-
   Another very interesting perspective is that if you have a structure like
   this, then you can leverage from the perspective to make sure that your
   attention is used when it is really important. So if you, if you do your job
   properly, then you can, you can provide more autonomy to the agents in a
   safe way, and those cases when your attention is needed can be surfaced by
   the system.
-
 
   And my last key point is that it is important to design for the LLM's
   characteristics. This is especially true, for example, in the case of the
@@ -8713,16 +8727,33 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </section>
 </main>
 <div class="deck-counter"></div>
+<aside class="notes-panel" aria-label="Speaker notes"><p class="notes-head"></p><p class="notes-text"></p></aside>
 <script>
 (() => {
   document.body.classList.add("js");
+  // ---- speaker notes (2026-10-31) ----
+  // NOTES is keyed by manifest id; the N-th .slide is the N-th manifest entry
+  // (build.mjs asserts one slide per fragment). The panel must be on before
+  // the first fit(), so "?idkfa" is read here, ahead of the fit script.
+  const NOTES = {"s01-title":"","s01b-intro":"So I'm in the camp who started to do engineering work again due to AI, and I'm pretty much interested in, you know, how it is possible to use LLMs in a proper way in the context of delivering real software to real customers. Even from the beginning I was kinda interested how can I get to close to the software factory level, so how can I create more end-to-end delivery, how can I delegate bigger task to LLMs?","s2b-legend":"So in this talk I will share the story of how I learned to, an effective way to work with LLMs on a, on a bigger design corpus, which you will see that it's not necessarily easy if you want to do it in an effective and reliable way. And I will also include some slides which are more theoretical generalization of my learnings. So you will, these two type of perspectives will be color coded on the slides.","s02-why-iterate":"So this is an ever existing problem. This is why we invented modularity and this is why we have architecture planning approaches like C4. So we try to design the system in layers so we can always focus on a limited number of items at a given time.\n\nand the other aspect is that we just have many unknowns and we need to iterate to resolve those in different ways, depending on the nature of the given unknowns.","s07-why-working-set-limit":"I said that it is also a problem that I as a human, or even an LLM, find it very hard to think through such a [big] task. And this has a theoretical background too: as humans we have a working memory. Here it still says 7±2, but there is newer research according to which our working memory is even more limited than that.\n\nAnd what is interesting is that LLMs too, even if not exactly the same, LLMs also have a kind of limitation. I put in a research paper which showed roughly that if, say, you start giving an LLM more and more aspects, beyond a point it starts to degrade badly in how many it can keep in mind. So if, say, I ask it for a hundred kinds of aspects, it is still quite good, but if, say, five hundred kinds, then it may follow only about half of them. And this also makes it very hard to work with LLMs on a design corpus like this.","s11-why-two-sources":"And then here again a small theoretical crumb: usually when we iterate on something, there are two main aspects. One is when I do not even know where I want to get to, when the goal itself is vague, and the route itself has to be discovered too. Or the problem space itself is vague, and iteration is a fundamental part of the understanding process. But it can also be that the goal is roughly clear, but it is still not clear which way I can get there. And in my case[, as you will see in the story,] both situations held, because the goal was not completely crystal clear either, but what the concrete implementation would be, that I did not know.\n\nAnd what I think is important from this perspective is that both mean that you probably have to iterate a lot. And what is a frequent experience in live work: say I am designing one part of the system, and there a learning may come up that I would like to feed back into the whole system, and then it still means that I am working on a local or smaller part, yet the whole system has to change.","s02b-coherency-load":"Here you can start with a question: who has had the experience of changing a plan, and the first change was not complete?\n\nThis is the most important concept we introduce here. The whole talk is going to be about how we handle this.\n\nAs the system grows, and smaller and larger building blocks start to form, the connections and contracts between them also have to stay coherent. And as I iterate over time and the modules change, these changes also have to be logically coherent edits.\n\nAnd this is where we run into this limitation: in theory it is simple, I just ask the LLM, it changes and rewrites these things, but whether it is going to be a coherent change is far from certain. And you will see concrete horror stories here too.","s03-pairflow-in-a-minute":"And now back to the story. My old system could really only do this much: once I had agreed on a plan, I could delegate it to this little harness, and then an implementer started doing it, the reviewer gave a review, gave feedback, and the two kept spinning between each other. The goal was convergence: when the reviewer finds no problem above a given threshold.  So nowadays we would say that this is a small factory. But it, but Perflu itself it is not relevant from the perspective of the talk. What is important that this was one very specific workflow baked into a code.","s04-v1-to-v3":"So the fact that the workflow was baked into code, one issue was that whenever I wanted to modify something, it took some time to add that feature to the code base, and this was like almost a year ago, and that time some small requests just took more time than nowadays with the more capable models. But my main goal was that I wanted to have a system where I can configure any type of workflows, and that would mean that this v1 workflow is just a configuration file, but I can write whatever workflow I want. By the way, don't ask me why I'm going from v1 to v3, it's a different topic. So originally I was thinking that okay, I just need to kind of figure out how the configuration should look like and then I can build this quite quickly.","s05-config-format-wall":"So when I started to do this exercise, I realized that okay, this is a bit more complicated than I was thinking. Because over time even we won developed a huge amount of functionality even I was not fully aware of all of them. And I was just unable to figure out in my head how this config should look like. It was just too complex to deal with. And I just realized that okay, probably this is a much bigger endeavor than what I originally expected.","s09-why-not-just-build":"So you might ask, okay, but why you didn't, wouldn't start doing some prototypes and you kinda figure out stuff as you go? So to me it was clear that this nature of problem is something that, says I'm, as I'm starting to understand the problem space better, those wheel generate some probably significant changes on the whole design, so this is why first I wanted to rethink a bit the whole problem space before I'm start doing the coding.\n\nAlso, I wanted to make sure that as I'm kinda creating now a foundational framework, then I just look around a bit and check many other projects which can help me to find some good ideas that I can leverage. And by the way, I'm not sure how frequently do you do this, but even this is something where an LLM can be super useful, because nowadays you can download many projects and you can ask URL, okay, check that project, let me know what might be useful from that project. So this is a very good way to learn.","s06-one-big-document":"So I started to do the design work, and back then the natural choice would have been to just use a giant markdown file, but I had some issues with it. Even for me, I'm not sure how about you, but sometimes when you need to read a long markdown file, it can be a bit depressing and it's not always easy to fully comprehend it.\n\nI also felt that as I've never designed such a system, I could leverage more visual to help me to better understand how the architecture or different concepts are kind of shaping up, and also I had the experience that even anonymys can fail with giant semantically unstructured documents, so I kind of wanted to have, or I wanted to experiment with a different solution.","s08-capability-layers":"So the solution was not super revolutionary. I split the system into different capability layers, and then I started to work out each capability one by one. And I decided to use HTML as the format of the document, because this way I can, I can use, so I can leverage the more visual expressiveness of HTML.\n\nAnd even inside designing one capability, I kinda had an iterative structure. So first we worked out that we called the small spec. This was more like a high-level perspective, the boundary contracts of that capability layer and the most important aspects, domain terms, and when we agreed on those terms then I also ran a V1 reality check, which meant that the agent was checking whether what we planned is capable to support all the related feature of V1. And only after that we created the draft for that specific layer.\n\nSo this partially solved some of my problems. But as we discussed about the price of the iteration, this kinda opened up the issue of coherence load. And this is something that I needed to deal with.","s13-why-prose-fails":"So the problem was that if you mainly use pros to describe your design, it is not an ideal substrate to have an LLM to deal with the coherency load.\n\nSo with this image I kinda tried to explain some of the issues that we can run into when we use just the pros.\n\nSo one issue is around how easy to understand this something. Here the problem could be that there might be some underlying decisions which are not highlighted in the text. Some concepts might overlap, even this is an issue, and this can overwhelm both a human and an LLM as well.\n\nIt is not easy to change such a document because now imagine that we have this document and I realize that I don't need the concept of blue. And I asked the LLM, okay, let's remove blue, then usually finding blue it usually works, but even in this case, the non-determinism can kick in. But it's much harder when you have some derived concepts like green. And it's not necessarily easy to remove blue from green. And this is where you might run into some problems.\n\nAnother issue is that some concepts are not clearly defined, so it's much harder to address them if they are kinda hidden inside the text. Which also means that for example if I want to list those concepts then I need to rely on an LLM to infer those from the text, which again, as LLMs are non-deterministic, it means that I can't fully rely on an LLM to do that. So again, this is a limitation. Another related issue is that if you keep those concepts in a prose, then kinda the way how they are visually displayed is kind of frozen. It's just the markdown, and if you need it to generate a different view, then you don't really have too much support to do that.\n\nAnd last issue is that it's quite hard to validate whether a document is correct or not. And even from this perspective, just one markdown file is not super easy to deal with.\n\nSo all of these issues are related to the substrate itself, because a markdown file is just limited to provide structure, which can help from the perspective of all of these issues.","s14-original-building-blocks":"So I started to experiment with using HTML and structured entities.\n\nSo the first concept I wanted to try out is pseudocode. The idea is kind of simple, that in a pseudocode we can store a lot of information in a very talk dance way. This is very expressive. It is easier to understand even for me than reading a bunch of tests. And I also assume that even for LM kinda finding issues in a pseudocode is much easier than finding issues in a prose, as LLMs were highly optimized to deal with the code.\n\nI wanted to use clear domain terms. I'm using here the domain driven design memory, but I was mainly leveraging it from the perspective to make very explicit which are the domain terms I want to introduce. It's a bit like having a very clear vocabulary, and this way I can avoid that in the plans we are referring to the same thing with different words, so then this can introduce clarity.\n\nIn multiple projects in the past I used clear invariants in the system I was building, and I wanted to make in this project even those separate entities, so this way I can refer to them and I can make sure that those invariants are very clearly defined and they are not kinda hidden inside the prose.\n\nI guess you have the experience that in many cases an LLM tend to over engineer repeat, or wants to build stuff which are not necessary. So from this perspective, I found very useful to have a very specific absent list. So I always wanted to clearly define which are the parts or which are some functionalities that I definitely don't want to implement.\n\nAnd finally for each capability layer, I used these: traces, which were kinda the most important acceptance criteria covering the key happy passes, even this is something that I found very useful to explicitly define and not something potentially buried inside the prose.","s15-why-logical-structure-buys":"Well, I think we have mostly talked about this already, but for one, the domain space itself was cut up into more concrete things. These also gave handholds for how it is worth thinking things through. For example, I could go through just the invariants. Is something missing from there, I think, yes, no. Again, just reading through a big text, it is not certain that it comes to mind. This way I could also make better use of my own working memory, avoid it.\n\nAs I said, it was already in that the individual entities are addressable, and that alone already brought in, for example, that I cannot refer to, say, an invariant that does not exist or is not defined. So at this point a small CI script already came into being, which, obviously not very deeply, starts running checks on the doc, and it did bring hits, so it helped in the building.\n\nThe structure is also much more compact token-wise than if I had wanted to write all of that down.\n\nAnd this is something that can really help. So even outside of this context, I had many examples when I was working on a design document and I just kept finding some issues that we fixed but then we find some other issues, and when I try to understand why this is happening, why we just, you know, create a coherent document, the issue was that we kind of wanted to describe a state machine in a prose, and this was very fragile for LLM-based editing. So then we decided, okay, let's put the state machine into a table, and after we did it in one or two rounds, we were able to make it coherent.\n\nSo this is something that you need to remember, that it really matters in which format do you store given information, because it impacts a lot how easy it is for LLM to work with that information.\n\nAnd my original thesis that HTML might help worked out pretty well. And it also enabled some kinda document related innovation. For example, I built in the ecode if view into the Sudocode, and this helped me to better understand how the kernel code is changing from capability layer to capability layer.","s16-monolith-fails":"So working with the structure went well. And the way I was working that, when I made the change or I added the new capable layer, I had a review loop which I ran, which provided some feedback, we fix those issues, then we still, we run the review cycle again, and usually after a few rounds the, there was a convergence, so there were no significant findings. So I was able to move on.\n\nBut then I noticed, so I ran into some very kind of bad issues. So as you can see on the image, at some point I needed to run 26 runs or 18 runs, and unfortunately usually the findings were quite significant. And the issue was that in these cases I needed to make, so I needed to change a lower layer, a lower cape layer, on many other layers we're building on top of, which meant that those changes impacted the whole document, because before that usually I was adding new stuff to the document that went much easier, but when I made it some, so when I changed some already existing layers, then the review round started to be very, very painful.\n\nSo this was a point where I started to feel that okay, my system kinda starts to break again, and probably, and probably I need to do something with it, because I just can't afford that. Such a modification takes like two, three hours just to go through all the review cycles.\n\nAnd by the way, this is a very good example when, so what you mentioned at the beginning, kind of the number of links or number of interrelated notes inside the document is kinda going growing more exponentially than the size of the corpus.","s17-why-llm-traits":"And what I experienced is kinda grounded in theory as well, at least there is a very good reason for it. So what we need to understand in this case is that even if you are working with a smaller document, we still have this phenomenon that LLMs are non-deterministic, which means that LMs, so even though they are kinda amazing to find issues, but usually we can't rely on that they find all of them. So you, so you kinda in any cases when we are working with documents, we really need to understand that we need to work in multiple rounds.\n\nAnd there is another perspective that we need to keep in mind, that as we already discussed, the Tel LMs have a limited attention budget. And that means that if we are working with a bunch of text, or we can turn that text into a more structured, more condensed format, then usually LLMs can be much more effective with this more structured data.\n\nSo kinda how many review runs usually we need to do a change? It kind of depends, of course it depends on the nature of the change. So it's a bit different when we want to make a bigger logical change on the overall corpus, but still it pretty much depends on the size and the structure of the document. So even though I kinda had a good structure which supported effective way of working with an LM, the overall size of the corpus started to be an issue.","s18-divide-and-conquer-2":"So I was thinking that what if the HTML wouldn't be the kind of final artifact of storing the information, but only just the presentation layer. And based on this idea I realized that I just need to break out all of the building blocks and put them into their own location, and then I just need a ledger which describe how they are related, and how the overall model should be constructed from these small building blocks.\n\nSo based on this concept, I started to refactor the model. I started to factor out the building blocks from the HTML, type by type, and I started to create a build process which can build the HTML view based on the ledger. And what was really cool that uh the original HTML became uh the actual acceptance criteria because I I I only needed to check that after each of these refactoring steps, I just have the same original HTML output.","s18b-pseudocode-to-units":"I also figured out a way how can I store the pseudocode in a way which is much more effective to be able to change by LLMs, so kind of every function in the pseudocode became a small unit. And what was kind of cool that I only store the unit the first time I define that piece of function, and then each layer which doesn't touch it, I don't store that function, so the pseudocode for that layer is built by the, by the build script. So I only store additional information related to that pseudocode unit if that, if it is, if it was modified by a new layer.","s19-the-breakdown":"So this structure provides a lot of benefits. Just a small interesting example: that for example if you want to find which are the, you, which are the units which introduced or changed the specific function, then you can query the file system, which means that you don't need to use an LLM to try to infer that from a huge chunk of text, but you can just simply query it and you can use deterministic tools to get that piece of information.\n\nAnd as of now, let's imagine that I want to edit this function, the original version. Then I know that only level 5 might be impacted by this change. So this is a very useful information for the LLM, because now the LLM knows that if I'm changing that pseudocode unit, then I only need to check level 5 to see whether it has an impact on that level. So this way, for example, for the specific change the LLM shouldn't check again a huge bunch of text, but it can kinda do the check on a much smaller, much more focused context, which means that the result will be much more.\n\nSo then I'm able to do a much more effective work, and the chance that this work is kind of fully effective increases a lot.","s20-why-physical-breakdown-added":"So with this physical breakdown, what we actually created is a knowledge graph. Which means that all of these small entities might be connected in different ways. And what is very important to understand and realize that this way the structure itself is information. So we don't just have like the small puzzles, the small puzzles of a big picture, but the actual metadata and how they are connected with each other enables many different ways to traverse that information graph.\n\nExample one that I mentioned, that for example if I'm changing a function, then I can clearly see how that function or how that unit of information is connected with some other information. So if I want to check whether that, whether the change induces some other changes in the corpus, then now I can create a much more focused smaller context for an LLM to check whether my modification has some impact on other parts of the knowledge graph. Or another example is that right now I can clearly see which parts of the design corpus depends, for example, on an invariant. So if I'm thinking to change that invariant, it provides me a much better understanding and a very clear understanding of which items might be impacted. So even I as a human can better think through whether my change is correct or not.\n\nAnd another very interesting benefit is that this way I can even iterate on the structure itself. And I can have a CI/CD pipeline on the, on the design model as well, because there are many, many checks I can do. I can check the dependencies between the parts, so this enables many innovation on the design layer as well.\n\nAnd you might think that this whole structure it needed a lot of time to figure out, but actually this was a quite quick organic process, so the whole journey until this point took like seven days starting from an empty paper to have this working structure. And this structure enabled me to move forward. So after this point, I kind of introduced like 10 more layers, and from that point working with the design corpus became again a very fluent experience, so usually I only had just a very few review cycles.","s21-bridge-better-models":"So nowadays there are many cases that they kinda try to create a structure, and then after a few months the frontier labs just adding that functionality to the core harness, and we don't need that structure or functionality or tool anymore. And even in this case, I think it is a very valid question: whether do we really need this structure if we assume that the models will be just better and better?\n\nAnd I was thinking about this topic a bit, and to me it seems that we have two major categories of this type of structures. One is that I call compensational, when we try to overcome a current limitation of or weakness of or missing functionality of a model. And this is a category where I would be very careful how much effort I invest, because usually this is where there is a high chance that the frontier labs will just remove that bottleneck from the base model or from the core harness.\n\nBut as you see, there are some parts of this structure where what I call information carrying structure. Is important to highlight here that some of this, so some of this information is not something that you could infer from the base text with a better model, because the issue is that the way how it was originally defined, or how would you, how you would define it in a prose or in a kind of normal document without the structure, that would introduce some ambiguity. So creating this structure is actually a very active aspect of creating the design corpus. So this is active work, this is not something that you just ask the LM, okay, try to figure out something. This is where we are actually creating additional information comparing to that initial text we started with.\n\nAnd even, or another issue might be that if you are not very specific that, okay, these are my invariants, then you always rely on whether the model can infer the same invariance from the text. And of course, I'm not 100% sure, you know, how the models will change, but still LLMs are non-deterministic and I think we shouldn't rely on the LLMs to infer this information from a text. And of course, even just from a cost perspective, if we always need to kind of figure this out from the base text, it is probably not the best way to spending our tokens.\n\nAnd I think actually better models will be able to better leverage these type of structures. And if I consider that probably the more capable models we have, the more we will delegate, which means that the coherency level will be bigger, and I think this structure will be very useful even for future models as well.\n\nAs you see, that another interesting tooth is that probably for smarter models maintaining these structures will be just much easier. So I can imagine that right now we might need more deterministic guardrails around dealing with the structure, and maybe that part will disappear at some point, but still the actual structure, so the structure itself will be still useful even in the future.","s22-irreducible-remainder":"And to finish this thought process, now let's imagine that we have the perfect agent, which is, for example, capable to do any logical modification on the design corpus in one pass. Still I believe that there are some perspectives which might need human control or human in the loop.\n\nSo one is entitlement, there are still many domains or many use cases where at least for now human has to make some type of entitlement rated decision just to carry the related responsibility.\n\nThe other is that still the person kind of driving the process has to be able to understand what they are saying yes to. So this structure might just simply help the human comprehension.\n\nAnd as we talked about, there are many problems where the, even the problem or the solution is emergent, which means that the information that we are creating during the process is not something that would be able to simply infer upfront, even if we have the perfect model.\n\nSo we can consider this structure as the human control interface.","s23-siphra":"So a few weeks after I created this structure, a friend of mine reached out to me and it asked my help to design the architecture of a system which supports the work of oil engineers, which was kind of funny because I had not much clue to that domain, and this was a heavy data engineering project. Even I had somewhat limited understanding how that should work. But I had some scripts from customer discussions and I had a basic understanding of how this system should work. So based on this information I sat down, I literally had like a 20 hours long discussion with Fable and it was a very intensive brainstorming, and based on that we identified kinda the key capabilities of the system.\n\nAnd then I needed to create the architecture and it was very, very much the same experience or the same feeling that I had when I realized that okay, I just need to create that config. But then it was super overwhelming. So I had like 30, 40 pages of kinda brainstorming. So I, it was absolutely not clear how to, how to turn that into an architecture. And then it kinda clicked that, okay, so this is pretty much the same situation. So now, so probably I can kinda use the same concept. So I was thinking a bit, okay, what could be these building blocks in this case? And I come up with a structure that you can see on the image.\n\nIt was very similar to the previous concept that I kind of created these capability layers called levels in this case. An interesting perspective was that as I was not sure about the domain, I captured all of my claims related to the domain in this domain claim register. We created something called the scenario ledger, which were kind of the user journeys that the customer of this system might have. And then I mapped those to the key concepts, and there were some other foundational building blocks like the invariants, the absent list, the vocabulary. So pretty much the same, and actually I was able to turn that, so I'm able to, I was able to work with this structure in a very effective way. I was able to turn those brainstorming into a very nice architecture. To be honest, I was kinda proud, especially as I mentioned, I was, I'm not an expert of creating a very data intensive application.\n\nSo there was only one small issue, that when I showed the architecture to my friend, he told me that hey, I don't understand it. so it was a very interesting realization that of course in his mind, as he was a business people, he kind of understood the big high-level capabilities of the system, but for him this more lower level capabilities, and of course this system on this level was much more complex than how he imagined the architecture, but it was a very interesting realization that he simply doesn't understand the architecture.","s23b-one-corpus-consumers":"So I realized that I kinda need to create an onboarding document to the architecture plan, which uses the same building blocks, but it kinda interprets them in a bit different way, which can help a business person to understand that how these technical capabilities are related to the product that he envisioned.\n\nAnd I was able to do this pretty quickly because I was able to kind of leverage the same building blocks. So first we went through the scenario ledger and we kind of identified which are the most important user journeys. And then I organized the onboarding document according to these stories and we selected stories which highlights different capabilities of the system.\n\nFor each onboarding document, we defined, you know, which are those questions that the onboarding document should be able to answer. So then when the first version of an onboarding document was created we passed that document and the questions to a fresh agent and we requested the agent to answer the questions. And then based on the answer, we use an LM as a judge to see whether the agent was able to answer the questions. This was kinda like the, a quality feedback loop for the documents.\n\nAnd for each of the onboarding documents, I included those claims which were related to that part of the system. And then I was able to discuss with the business owner whether those claims are correct or not. And if we changed and when we changed one of those claims, then we were able to track back to all the other parts of the, of the design corpus which were related to that claim. Another example that if you have the same information in a prose, then it would be very hard to go back to even just to identify those claims, and when you, and when you learned something about those claims, then changing the already existing documents based on that new learning.\n\nAnd what's also very cool in this example is that if your design corpus is kind of pure text, then the way how those building blocks are combined is kind of fixed. There's just the way how it was written down. But if you store those smaller building blocks, small entities, then and you have the links between the building blocks, then you can kinda render them in many different ways based on what your use case is or for what type of kind of customers you want to show that information.","s24-implementation-mapping":"And if we go back to my VC project, I was able to leverage this design corpus structure even from the perspective of the implementation. So the model description was the basis of when I started to create the specification task for implementation. The DDD terms were mapped into the domain types, and this is something where I had an actual CI script which checked whether all the domain terms are existing in the code. The golden traces became executable tests, the invariants were became behavior preservation rails, the absent list became part of the ADR of the ADRs in the non-goal section. So the structure actually helped driving the implementation itself.\n\nSo the actual implementation of parts of the model were connected through git commit hashes. And based on this, I have a CI check which checks that if the model is changing and the related code is not changing, then this is probably an issue. So even from this perspective, this structure provides many different ways how you can leverage it.","s25-claims-agent-autonomy":"Having a more structured, more detailed design corpus can also support agent autonomy. Because when I started the implementation, when I was working on a portion of the project, then usually first I created what we called like contract document which contains all the important claims that the given implementation should deliver.\n\nSo these claims were classified into three categories. One was decided in the model, one was that the claim is directly derived from the model, and the third was that this is new semantic decision. And what was really cool that this way I was able to let the agent working autonomously on this artifacts, and until it didn't run into a claim which was a new semantic decision, it was able to work autonomously.\n\nOf course I had a feedback loop. We checked whether the classification is correct, and that feedback loop was requested to be able to provide with clear evidence that the statement is, so there is a statement in the corpus which kind of proves that the claim is coming from the model or is derived from the model.\n\nAnd this claims structure was useful even after the implementation, because then I had a review loop which checked whether those claims were properly implemented and properly tested. So first this review loop was checking whether the implementation is correct from a semantical perspective. It checked whether the tests are covering those aspects which are important from the perspective of the given claim. And also there was one lens which did kind of mutation testing, so it changed the code and then it checked whether the relevant tests are failing. And if the tests were green, then it was a, it was a sign that the tests are not correct and we need to improve them.\n\nAnd this is something that I didn't plan in advance, but it was a very nice side effect that I can kinda drive my attention where it is really needed, and when the agent can make confident decisions then it can work autonomously.","s26e-two-things-to-design-v2":"So I already mentioned that I'm using LLM review loops frequently and I want to share a few learnings about them because I learned a lot. Sometimes I learned a lot about how they can fail miserably. So I think, so I believe this part can be very handy for you.\n\nSo when we are talking about an LLM review loop, then we need to think about two major perspective. One is the control loop itself, and the other is the lenses that we use for the actual review.\n\nSo in the case of the loop, you need to consider how to deal with the findings, when do you want a human being involved? How you apply those changes? What to do when you finished one round of review? For example, it is possible that in the first round you run all the lenses and then based on the findings in, the next round, you only run just a few of them, which seems meaningful based on the findings. There are many options here. What is important that you need to be very careful about how you design these perspectives, and also it might be important that you have a budget limit, so you say okay, oh, maximum five runs or maximum twenty sub agents, whatever makes sense in your specific case.\n\nAnd then you think about the lenses. One lens is kind of one perspective, which includes the questions that you want to use for the measurement. You need to think about the sensitivity. So for example, if you are looking for findings, you can classify them into like P1, P2, P3, whatever severity level makes sense to you, and you may say that by default I'm interested only in P1 and P2 level of findings. And from a process perspective, you should have a calibration attached to the lens, which means that you compare the results of the lens to some reference cases.","s26b-review-loops-v2":"So now let's go a bit deeper into the perspective of the loop. So this is a big topic, so I only highlight a few important perspective. Actually, this just, this topic could be turned into a talk itself.\n\nBy default the lenses are running in a fresh context. So the main reason is that we want to make sure that the reviewer is not biased by the author. On the other hand, there is another perspective here, so if the reviewer with a fresh context finds some ambiguity, then there is a high chance that the implementer will also find that ambiguity. So this way, with a fresh context, we can also somewhat test the intent transfer in some cases.\n\nAnother important issue is that when you have the findings, you need to have a disposition process. Here we can see an example. So in a project I didn't have that, and after a while I just realized that in many LLM review rounds I had 700 findings and zero was declined, and this was the main reason why some of my tasks became very bloated. Because for an LLM it's super easy to find something which can be improved, but if you add something to the document that you or to the artifact that you are reviewing, then in the next round there is a higher chance that you will find something, so this way you can get into a never-ending loop. So it is very important to think about how can you make sure that you only focus on the, on the really important findings. Idea that you can leverage here that you can, so you have to classify all the findings into three categories: one is that you really want to fix something that you might want to investigate, and the third is that you just decline because it is not really meaningful.\n\nAnd the third topic, which is kinda highly related to the previous one, is that you need to think about when the loop should stop. Because as I mentioned, LLMs are great at, so they're much better at finding something than just being done. So you might need to think about, you might give a maximum budget, like you can run maximum five rounds. Related to the disposition topic, it is very important that you only consider the topics which are on the right abstraction level. So, for example, when I was doing some review for the architecture and the reviewer might return some implementation details, and it's very important that those are declined.\n\nIt is important to keep in mind that LLMs were trained or were mainly trained for finishing a task so they are not necessarily good at reasoning about whether it is worth making a change or not. So when you design the loop, you really need to make sure that the loop is responsible for the value judgment.","s26d-designing-the-lenses-v2":"So now let's focus a bit on the lenses themselves. I highlighted three key topics here as well. One is that so I think it is very important to keep the lenses focused. Of course you don't necessarily want to run like 50 sub agents if you want to check 50 topics. So it makes sense to kinda group them together if there is a logical grouping.\n\nOn the other hand, you need to keep in your mind what we discussed that if you kind, so the LLM has this attention budget, so if you overload a lens with too many questions then probably, so there's a good chance that the quality of the, of the result won't be great.\n\nAnd this is something that you can even test very easily. So you can run one subagent and you give them like 30 different perspectives to find issues, and then to run different experiments when you run each of those perspectives as separate subagents, and you will see that in the second case you will get much more findings.\n\nHere I just put some examples. I really like for example this Fossifier. I use it in multiple cases when it's kinda like an adversarial type of reviewer, which tries to find cases when a specific claim doesn't hold, and if there is a counterexample then it means that we need to, we need to resync the claim and maybe we need to find a different solution.\n\nSo when you are working with lenses, it is important that you calibrate the lenses itself. So it is important to validate that they are working properly, which means that you can run the lens with a few known defects and the expected result is that it finds the issues, and of course you can pass some good examples which doesn't have an issue and the lens shouldn't create false alarms. And this is something that it makes sense to test, and even you can create like a testing pipeline so whenever you change your lenses then you can, so those changes go through kind of the same CI/CD pipeline that we use for the code.\n\nAnd the third topic is that in most of the cases it is quite essential that you make sure that the reviewer provides evidence for the findings. Because as you know, LMMs are amazing at being very confident, even in the case they are not right. So if the reviewer just providing a statement or an assertion then you can't be really sure that it is correct or not. So I think in most of the cases it is essential that you require that the reviewer has to provide some evidence which support the claims. This can be citations from the input materials, but even it can be like a small script. So for example, the reviewer writes a code to check something or to prove something or to disprove something, then the script itself should be returned. And then when we are running the disposition process, then those evidences will help to decide whether the findings are correct or not, and whether those findings are meaningful or not.\n\nSo you really need to consider those lenses that they are artifact, so you need to design it, you need to validate it, you need to version it, and even if you can add some observability to them. So for example, in some cases, I always capture the results of a reviewer, and from time to time we check whether a reviewer is still useful or not, what type of findings they can find, and based on those reviews we might figure out that we need to retire the reviewer or we need to change it. So it is important to very actively nurture those lenses.","s28-takeaways":"So now let's talk about a bit the key takeaways.\n\nAs I was going through this journey, for me the biggest aha moment was that the structure itself creates information. And in the inside, this is kinda obvious because we know that when we describe a system, a system is a composition of many smaller parts and the relationship is very important, and if you make those relationships kinda explicit, then this is something that we can leverage from multiple direction.\n\nIt is important to keep in mind that this is not something that we are only doing to kinda help ellums. As I mentioned, this structure helped me as well in several cases. So this helps me to better understand and to better navigate the design space as well.\n\nAnd this is very important because if you remember for example the S project, this was kinda like a very very early product discovery story, but even in other cases, it is quite frequent that your design will change a lot. So from this perspective, it is very important that you have a structure which support that you can easily change the corpus and you have a structure that make those changes safe and makes the result checkable.\n\nAnother very interesting perspective is that if you have a structure like this, then you can leverage from the perspective to make sure that your attention is used when it is really important. So if you, if you do your job properly, then you can, you can provide more autonomy to the agents in a safe way, and those cases when your attention is needed can be surfaced by the system.\n\nAnd my last key point is that it is important to design for the LLM's characteristics. This is especially true, for example, in the case of the feedback loops, because if you are not careful and you don't design the disposition perspective and when to stop the loop, then you can easily get a never ending nitpicking loop.","s29b-thank-you":"Closing slide (2026-10-31). Say thanks, point at the talks page: the deck is published there. The companion-site pointer (s29) was cut: the talk became about keeping the corpus coherent, the site would raise more questions than it answers; s29 stays in source."};
+  const noteIds = Object.keys(NOTES);
+  const notesPanel = document.querySelector(".notes-panel");
+  const notesHead = notesPanel.querySelector(".notes-head");
+  const notesText = notesPanel.querySelector(".notes-text");
+  if (new URLSearchParams(location.search).has("idkfa")) document.body.classList.add("notes-mode");
+  const reserve = () => {
+    if (!document.body.classList.contains("notes-mode")) return { w: 0, h: 0 };
+    const box = notesPanel.getBoundingClientRect();
+    return matchMedia("(orientation: portrait)").matches ? { w: 0, h: box.height } : { w: box.width, h: 0 };
+  };
 
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = reserve();
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();
@@ -8757,6 +8788,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     slides.forEach((s, j) => s.classList.toggle("active", j === i));
     counter.textContent = (i + 1) + " / " + slides.length;
     document.body.dataset.activeTheme = slides[i].dataset.theme || "dark";
+    const noteId = noteIds[i] || slides[i].id;
+    notesHead.textContent = String(i + 1).padStart(2, "0") + " / " + slides.length + " · " + noteId;
+    notesText.textContent = NOTES[noteId] || "";
+    notesPanel.scrollTop = 0;
     history.replaceState(null, "", "#" + slides[i].id);
   };
   const step = (d) => { i = Math.max(0, Math.min(slides.length - 1, i + d)); show(); };
@@ -8793,7 +8828,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   // shared next / back actions: keys and taps both go through these two
   const next = () => { if (!revealNext()) step(1); };
   const prev = () => { if (!unrevealLast()) step(-1); };
+  // typing "idkfa" toggles the notes panel: a rolling buffer of the last five
+  // single-character keys (no Ctrl/Meta/Alt), cleared after a match
+  let typed = "";
+  const toggleNotes = () => { document.body.classList.toggle("notes-mode"); fit(); };
   addEventListener("keydown", (e) => {
+    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      typed = (typed + e.key.toLowerCase()).slice(-5);
+      if (typed === "idkfa") { typed = ""; toggleNotes(); return; }
+    }
     if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); next(); }
     else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); prev(); }
     else if (e.key === "Home") { i = 0; show(); }
@@ -8801,8 +8844,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   });
   // ---- tap zones (2026-10-31) ----
   // The GitHub Pages build is also viewed on phones, which have no keys: a
-  // tap (or mouse click) on the right half of the viewport acts as next, on
-  // the left half as back, with the same step reveal semantics as the keys.
+  // tap on the right half of the viewport acts as next, on the left half as
+  // back, with the same step reveal semantics as the keys.
   // Registered on document, not .deck, because the scaled slide does not
   // cover the letterbox margins and taps there must navigate too. Taps on
   // interactive elements, non-primary buttons and modifier-key clicks are
@@ -8810,13 +8853,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   // (the browser cancels the click), but a mouse drag (text selection) still
   // ends in a click, so pointerdown records the start point and a click that
   // moved more than 10px is ignored.
+  // Touch and pen only (owner call, 2026-10-31): on a desktop the keys
+  // exist, and a mouse click that navigates fights text selection, so
+  // pointerdown also records the pointer type and mouse clicks are ignored.
   let down = null;
-  document.addEventListener("pointerdown", (e) => { down = { x: e.clientX, y: e.clientY }; });
+  document.addEventListener("pointerdown", (e) => { down = { x: e.clientX, y: e.clientY, type: e.pointerType }; });
   document.addEventListener("click", (e) => {
     if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    if (e.target.closest && e.target.closest("a, button, input, textarea, select, [contenteditable], summary")) return;
+    if (!down || (down.type !== "touch" && down.type !== "pen")) return;
+    if (e.target.closest && e.target.closest("a, button, input, textarea, select, [contenteditable], summary, .notes-panel")) return;
     if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 10) return;
-    if (e.clientX >= innerWidth / 2) next(); else prev();
+    // split at the middle of the slide area: with the notes panel on the
+    // right, that is left of the viewport middle
+    if (e.clientX >= (innerWidth - reserve().w) / 2) next(); else prev();
   });
   addEventListener("hashchange", () => { fromHash(); show(); });
   fromHash();

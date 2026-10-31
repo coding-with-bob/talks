@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -651,13 +656,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <!-- SPEAKER-NOTE:
 
-  - 1. kártya: So this is an ever existing problem. This is why we invented
-  modularity and this is why we have architecture planning approaches like C4.
-  So we try to design the system in layers so we can always focus on a limited
-  number of items at a given time.
-  - 2. kártya: and the other aspect is that we just have many unknowns and we
-  need to iterate to resolve those in different ways, depending on the nature
-  of the given unknowns.
+  So this is an ever existing problem. This is why we invented modularity and
+  this is why we have architecture planning approaches like C4. So we try to
+  design the system in layers so we can always focus on a limited number of
+  items at a given time.
+
+  and the other aspect is that we just have many unknowns and we need to
+  iterate to resolve those in different ways, depending on the nature of the
+  given unknowns.
   -->
 
   <style>
@@ -761,9 +767,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();

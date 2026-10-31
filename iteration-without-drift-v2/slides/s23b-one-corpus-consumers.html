@@ -52,6 +52,10 @@
   /* ---- alarm / warm accent (talk-1 light slides' --warning, kept) ------ */
   --coral: #ef6a5a;
 
+  /* ---- brand colour (2026-10-31): the craft-conf.com favicon orange, used
+     for the Craft Conference mention on the intro slide only ---------- */
+  --craft-orange: #e64210;
+
   /* ---- on-dark accent variants (1337 notes, idea 1) --------------------
      Base accents visually sink for SMALL UI on dark canvases. Small text
      (kickers, tag chips, footer labels) uses these brighter variants;
@@ -643,6 +647,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body.js.deck-mode .slide .step.revealed { animation: none; }
 }
 
+
 </style>
 </head>
 <body class="single-mode">
@@ -657,13 +662,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   understand that how these technical capabilities are related to the product
   that he envisioned.
 
-
   And I was able to do this pretty quickly because I was able to kind of
   leverage the same building blocks. So first we went through the scenario
   ledger and we kind of identified which are the most important user journeys.
   And then I organized the onboarding document according to these stories and
   we selected stories which highlights different capabilities of the system.
-
 
   For each onboarding document, we defined, you know, which are those
   questions that the onboarding document should be able to answer. So then
@@ -672,7 +675,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   answer the questions. And then based on the answer, we use an LM as a judge
   to see whether the agent was able to answer the questions. This was kinda
   like the, a quality feedback loop for the documents.
-
 
   And for each of the onboarding documents, I included those claims which were
   related to that part of the system. And then I was able to discuss with the
@@ -948,9 +950,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   const fit = () => {
     const w = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--slide-max-w")) || 1600;
     const h = (w * 9) / 16;
+    const r = ({ w: 0, h: 0 });
     document.documentElement.style.setProperty(
       "--deck-scale",
-      Math.min(innerWidth / w, innerHeight / h).toFixed(4)
+      Math.min((innerWidth - r.w) / w, (innerHeight - r.h) / h).toFixed(4)
     );
   };
   fit();
