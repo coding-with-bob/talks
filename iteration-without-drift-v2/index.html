@@ -678,11 +678,20 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     font: 400 17px/1.5 Inter, sans-serif;
     touch-action: auto;
   }
+  .notes-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 14px; }
   .notes-head {
-    margin: 0 0 14px;
+    margin: 0;
     color: rgba(247,251,255,0.45);
     font: 650 13px/1.3 Inter, sans-serif; letter-spacing: 0.04em;
   }
+  /* close button: back to the normal view without typing idkfa again */
+  .notes-close {
+    flex: none; width: 30px; height: 30px; padding: 0;
+    border-radius: 50%; border: 1px solid rgba(247,251,255,0.22);
+    background: transparent; color: rgba(247,251,255,0.70);
+    font: 400 20px/1 Inter, sans-serif; cursor: pointer;
+  }
+  .notes-close:hover { background: rgba(247,251,255,0.10); color: rgba(247,251,255,0.95); }
   .notes-text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
   .notes-text:empty::before { content: "No speaker note."; color: rgba(247,251,255,0.45); font-style: italic; }
   body[data-active-theme="light"] .notes-panel {
@@ -692,6 +701,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   }
   body[data-active-theme="light"] .notes-head,
   body[data-active-theme="light"] .notes-text:empty::before { color: rgba(7,21,47,0.50); }
+  body[data-active-theme="light"] .notes-close { border-color: rgba(7,21,47,0.22); color: rgba(7,21,47,0.65); }
+  body[data-active-theme="light"] .notes-close:hover { background: rgba(7,21,47,0.08); color: #07152f; }
 }
 @media screen and (orientation: portrait) {
   body.notes-mode { --notes-w: 0px; --notes-h: 42vh; }
@@ -8727,7 +8738,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </section>
 </main>
 <div class="deck-counter"></div>
-<aside class="notes-panel" aria-label="Speaker notes"><p class="notes-head"></p><p class="notes-text"></p></aside>
+<aside class="notes-panel" aria-label="Speaker notes"><div class="notes-bar"><p class="notes-head"></p><button type="button" class="notes-close" aria-label="Close speaker notes" title="Close speaker notes">&times;</button></div><p class="notes-text"></p></aside>
 <script>
 (() => {
   document.body.classList.add("js");
@@ -8832,6 +8843,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   // single-character keys (no Ctrl/Meta/Alt), cleared after a match
   let typed = "";
   const toggleNotes = () => { document.body.classList.toggle("notes-mode"); fit(); };
+  // the panel's close button; blur so a later Space/Enter advances the deck
+  // instead of re-clicking the button
+  notesPanel.querySelector(".notes-close").addEventListener("click", (e) => {
+    e.currentTarget.blur();
+    if (document.body.classList.contains("notes-mode")) toggleNotes();
+  });
   addEventListener("keydown", (e) => {
     if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       typed = (typed + e.key.toLowerCase()).slice(-5);
