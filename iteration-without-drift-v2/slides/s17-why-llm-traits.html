@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -735,7 +737,13 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s17 .k-coral--b { fill: var(--coral); opacity: 0.8; }
     #s17 .k-coral--c { fill: var(--coral); opacity: 0.62; }
 
-    /* ==== RIGHT: the five traits ========================================= */
+    /* ==== RIGHT: six cards in three groups =============================
+       2026-10-30: regrouped and the kicker dropped. Group A (cards 1-3)
+       pairs with the prose wall on the left, group B (cards 4-5) with the
+       extracted table, and card 6 is the closing statement. The stack is
+       centred (justify-content: center) in a column as tall as the doc
+       column; the SVG is xMidYMid meet, so the stack midpoint (card 1 top
+       to card 6 bottom) lands on the page-mock midpoint. */
     #s17 .traits {
       min-width: 0; min-height: 0;
       display: flex; flex-direction: column; justify-content: center; gap: 14px;
@@ -751,18 +759,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       background: color-mix(in srgb, var(--theory) 16%, var(--card-bg));
     }
 
-    /* two thought groups: cards 1-3 shift up, cards 4-5 shift down, opening
-       a clear gap between card 3 and card 4. */
-    #s17 .traits > .trait:nth-child(-n+3) {
-      transform: translateY(-20px);
-    }
-    #s17 .traits > .trait:nth-child(n+4) {
-      transform: translateY(20px);
-    }
+    /* 2026-10-30 group spacing: card 4 (group B) and card 6 (closing
+       statement) each open a new group with margin-top 38px on top of the
+       14px in-group gap, so both group breaks are an equal 52px. The
+       closing card keeps the same 16% trait--key tint as cards 1 and 4;
+       it is set apart by spacing only. */
+    #s17 .trait--group-start { margin-top: 38px; }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Structure pays off</div>
     <h1>LLM traits behind the pain</h1>
     <div class="accent-line"></div>
   </div>
@@ -936,9 +941,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         </svg>
       </div>
 
-      <!-- ============ RIGHT: the five traits ============================= -->
+      <!-- ============ RIGHT: six cards in three groups ================
+           2026-10-30: group A (1-3) <-> prose wall, group B (4-5) <->
+           extracted table, card 6 = closing statement. Both group breaks
+           are 52px; all three key cards share the 16% tint; the stack is
+           centred on the page mock's vertical midpoint. -->
       <div class="traits">
 
+        <!-- group A: the prose wall -->
         <div class="card trait trait--key fade-up">
           <p>LLMs are <b>non-deterministic</b>.</p>
         </div>
@@ -952,14 +962,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <p>So <b>multiple rounds</b> are needed to reach coherence.</p>
         </div>
 
-        <div class="card trait trait--key fade-up">
-          <p>LLMs have a limited <b>focus</b>: they find issues better in a
-            focused context.</p>
+        <!-- group B: the extracted table (echoes s07 "Limited attention budget.") -->
+        <div class="card trait trait--key trait--group-start fade-up">
+          <p>LLMs have a limited <b>attention budget</b>.</p>
         </div>
 
         <div class="card trait fade-up">
-          <p>The <b>round count depends</b> on the size and structure of the
-            document.</p>
+          <p>The <b>tighter</b> the context, the better the result.</p>
+        </div>
+
+        <!-- closing statement -->
+        <div class="card trait trait--key trait--group-start fade-up">
+          <p>The <b>round count depends</b> on the <b>size</b> and
+            <b>structure</b> of the document.</p>
         </div>
       </div>
     </div>

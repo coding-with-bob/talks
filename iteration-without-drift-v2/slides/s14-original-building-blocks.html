@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -747,7 +749,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <div class="content">
     <svg viewBox="0 0 1456 640" preserveAspectRatio="xMidYMid meet" role="img"
-      aria-label="One mock page from a structured design corpus, drawn centre-left and dissected into six labelled organs. The page carries a small browser chrome strip with three dots and the address corpus slash units slash run-lifecycle dot html, then a header reading Unit: run lifecycle with the id PF-004. Below it, a mono pseudo-code block with five short lines about a gate passing a run, and beside it a narrow sidebar of domain terms holding the chips actor, run and gate. Under both, a boxed invariants region with three rows, INV-3 a run never loses its record, INV-7 a sealed run is never reopened, INV-9 every gate decision names an actor. Below that an absent region listing two struck-out items, multi-tenant mode and plugin system. A footer strip closes the page with two golden traces written as given, when, then rows. Six chips in the margins are joined to the organs by thin leader lines: on the left Pseudo-code, Invariants and Absent list; on the right HTML over markdown pointing at the browser address, DDD lite pointing at the domain-term sidebar, and Golden traces pointing at the footer strip.">
+      aria-label="One mock page from a structured design corpus, drawn centre-left and dissected into six labelled organs. The page carries a small browser chrome strip with three dots and the address corpus slash sections slash run-lifecycle dot html, then a header reading Section: run lifecycle with the id PF-004. Below it, a mono pseudo-code block with five short lines about a gate check on a run, and beside it a narrow sidebar of domain terms holding the chips actor, run and gate. Under both, a boxed invariants region with three rows, INV-3 a run never loses its record, INV-7 a sealed run is never reopened, INV-9 every gate decision names an actor. Below that an absent region listing two struck-out items, multi-tenant mode and plugin system. A footer strip closes the page with two golden traces written as given, when, then rows. Six chips in the margins are joined to the organs by thin leader lines: on the left Pseudo-code, Invariants and Absent list; on the right HTML over markdown pointing at the browser address, DDD lite pointing at the domain-term sidebar, and Golden traces pointing at the footer strip.">
 
       <!-- ================= the page ====================================== -->
       <rect class="page-bg" x="356" y="6" width="644" height="628" rx="16" />
@@ -766,17 +768,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <circle class="dot" cx="400" cy="26" r="5" />
       <circle class="dot" cx="418" cy="26" r="5" />
       <rect class="pill" x="446" y="15" width="330" height="22" rx="11" />
-      <text class="url" x="462" y="31">corpus/units/run-lifecycle.html</text>
+      <text class="url" x="462" y="31">corpus/sections/run-lifecycle.html</text>
 
       <!-- ---- page header -------------------------------------------------- -->
-      <text class="doc-title" x="382" y="76">Unit: run lifecycle</text>
+      <text class="doc-title" x="382" y="76">Section: run lifecycle</text>
       <text class="doc-id" x="974" y="76" text-anchor="end">PF-004</text>
       <line class="page-rule" x1="382" y1="90" x2="974" y2="90" />
 
       <!-- ---- 2 . pseudo-code block ---------------------------------------- -->
       <text class="region-label" x="382" y="116">PSEUDO-CODE</text>
       <rect class="region" x="382" y="130" width="404" height="154" rx="10" />
-      <text class="code" x="402" y="156">on gate.pass(run):</text>
+      <text class="code" x="402" y="156">on gate.check(run):</text>
       <text class="code" x="422" y="182">if run.state != OPEN: reject</text>
       <text class="code" x="422" y="208">run.state = SEALED</text>
       <text class="code" x="422" y="234">append record(run.id, gate.id)</text>
@@ -818,7 +820,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <!-- ---- 6 . golden traces -------------------------------------------- -->
       <text class="region-label" x="382" y="552">GOLDEN TRACES</text>
-      <text class="trace" x="382" y="584"><tspan class="trace-k">GIVEN</tspan> a run open at gate 2 <tspan class="trace-k">WHEN</tspan> the gate passes <tspan class="trace-k">THEN</tspan> one record is appended</text>
+      <text class="trace" x="382" y="584"><tspan class="trace-k">GIVEN</tspan> a run open at gate 2 <tspan class="trace-k">WHEN</tspan> the gate check passes <tspan class="trace-k">THEN</tspan> one record is appended</text>
       <text class="trace" x="382" y="612"><tspan class="trace-k">GIVEN</tspan> a sealed run <tspan class="trace-k">WHEN</tspan> reopen is called <tspan class="trace-k">THEN</tspan> the call is rejected</text>
 
       <!-- ================= leaders, pins, chips =========================== -->

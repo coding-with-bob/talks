@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)

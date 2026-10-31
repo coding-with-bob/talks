@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -681,9 +683,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        so the gate<->cards gap can widen independently of the cloud<->gate
        gap; a single uniform column-gap can't do that. margin-left shifts the
        whole composition right so the narrower cards column still balances
-       against the content area instead of leaving dead space on the right. */
+       against the content area instead of leaving dead space on the right.
+       Fixed height (not flex: 1): the gate centres against the full row
+       span, so a taller box stretches row 2 and drops the gate below the
+       side columns. 509px is the box the composition was tuned in; the
+       auto block margins split any spare content height evenly above and
+       below it, and the band keeps its spot at the bottom. */
     #s22 .filter {
-      flex: 1; min-height: 0;
+      flex: none; height: 509px; margin: auto 0;
       display: grid;
       grid-template-columns: 300px 18px 300px 46px 595px;
       grid-template-rows: auto 1fr;
@@ -805,7 +812,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Not financial advice</div>
     <h1>The irreducible remainder</h1>
     <div class="accent-line"></div>
   </div>

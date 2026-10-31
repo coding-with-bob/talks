@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -644,7 +646,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" data-lane="story" id="s19" data-act="act6" data-owner="draft" data-minutes="1.75"
+<section class="slide slide--light" data-lane="story" id="s19" data-act="act6" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a five-bullet list):
@@ -725,7 +727,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        same hairline/card-bg vocabulary as the deck's tag-chip */
     #s19 .unit-header-bg {
       fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1;
-      rx: var(--radius-chip);
+      rx: 15px; /* half the 30px rect height, a true pill; --radius-chip (999px) turns an SVG rect into an ellipse (fixed 2026-10-30) */
     }
 
     #s19 .lcode {
@@ -809,8 +811,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Change becomes local</div>
-    <h1>Pseudocode units</h1>
+    <h1>Benefits of pseudocode units</h1>
     <div class="accent-line"></div>
   </div>
 

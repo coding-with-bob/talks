@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -710,6 +712,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   with. Do NOT present 26 and 161 as achievements; they are symptoms.
   -->
 
+  <!-- CHART + WAR STORY (2026-10-30): an L2 bar (9 rounds) was added, so the
+       jump between L1 and L3 is no longer a mystery gap and the war story can
+       point at a layer the audience can see. The war story's 11 is the L2
+       REVISION cycle (owner changed the already-approved L2 decision to
+       "group = member-set"; re-review took 11 rounds), source
+       raw/siphra-arch/commit-timeline.md lines 606 (L2 arm cycle closed: 9
+       rounds), 609 (Revise L2 anchor decision on owner review), 690 (L2
+       revision arm cycle closed: 11 rounds). That revision happened before L3
+       existed, so it is NOT the ripple-up cost: the mechanism diagram shows the
+       ripple. The slide prints only the 11; the comparison with the 9 (even an
+       un-rippled change to one layer outcost that layer's own approval) is
+       spoken, with the L2 bar carrying the 9 on screen. -->
+
   <style>
     #s16 .content {
       flex: 1; min-height: 0;
@@ -808,7 +823,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        whole length, which read as bold and flattened the emphasis on the
        number. The body now runs at the deck's normal card-body weight (620,
        as on s13 and s15), so only "11 LLM runs" carries weight and colour.
-       Size stepped 30 -> 34px to fill the now-wider card. */
+       Size stepped 30 -> 34px to fill the now-wider card.
+       2026-10-30 (owner call): rewritten to one sentence that points at L2.
+       The war story is now explicitly a REVISION of an already-approved layer
+       (11 review rounds). The slide does not print the comparison: the L2 bar
+       in the chart already shows the first-approval cost (9), and the "fix
+       cost more than the design" point is spoken. "11 LLM runs" is gone; the
+       emphasis now sits on "11 review rounds", the chart's own unit. The
+       single sentence sits higher in the fixed 210px card; that is accepted. */
     #s16 .quote-block {
       flex: none; height: 210px; max-width: none;
       padding: 24px 26px;
@@ -824,11 +846,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
-  <div class="stamp" data-overflow-ok><span class="eyebrow">The price</span>Coherency load</div>
+  <div class="stamp" data-overflow-ok>Coherency load++</div>
 
   <div class="title-block">
     <div class="kicker">The crisis</div>
-    <h1>The giant monolith corpus failed to scale</h1>
+    <h1>The monolith corpus started to fail at scale</h1>
     <div class="accent-line"></div>
   </div>
 
@@ -837,11 +859,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <div class="card chart-card fade-up">
         <div class="chart-head">
-          <div class="chart-title">Review rounds</div>
+          <div class="chart-title">Review rounds to approve a new layer</div>
         </div>
         <div class="chart-svg">
           <svg viewBox="0 0 734 420" preserveAspectRatio="xMidYMid meet" role="img"
-            aria-label="Bar chart of review rounds needed to approve one capability layer. L0 six rounds, L1 six rounds, L3 twenty six rounds, L4 eighteen rounds. The two later layers dwarf the two early ones.">
+            aria-label="Bar chart of review rounds needed to approve one capability layer. L0 six rounds, L1 six rounds, L2 nine rounds, L3 twenty six rounds, L4 eighteen rounds. The two latest layers dwarf the three early ones.">
 
             <!-- y grid: 0 / 10 / 20 / 30 rounds -->
             <line class="grid-line" x1="62" y1="84" x2="714" y2="84" />
@@ -864,27 +886,39 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
                  measures 586 and sits centred with 33px of air on each side.
                  The vertical scale is untouched: baseline 336, 8.4px per
                  round, so every bar top and every value stays exactly where
-                 the data puts it. -->
+                 the data puts it.
+
+                 2026-10-30: L2 (9 rounds) added between L1 and L3, so five
+                 bars now. Bars are 96 wide with 36px gaps, so the group of
+                 five measures 624 and sits centred in the 652px plot area
+                 with 14px of air on each side (x 76-700). Bar centres: 124,
+                 256, 388, 520, 652. Corner radius 7 and the vertical scale
+                 are unchanged; L2 top = 336 - 9 x 8.4 = 260.4. -->
 
             <!-- L0: 6 rounds -->
-            <path class="bar--calm" d="M95 336 L95 292.6 Q95 285.6 102 285.6 L200 285.6 Q207 285.6 207 292.6 L207 336 Z" />
-            <text class="val val--calm" x="151" y="272" text-anchor="middle">6 rounds</text>
-            <text class="cat" x="151" y="370" text-anchor="middle">L0</text>
+            <path class="bar--calm" d="M76 336 L76 292.6 Q76 285.6 83 285.6 L165 285.6 Q172 285.6 172 292.6 L172 336 Z" />
+            <text class="val val--calm" x="124" y="272" text-anchor="middle">6 rounds</text>
+            <text class="cat" x="124" y="370" text-anchor="middle">L0</text>
 
             <!-- L1: 6 rounds -->
-            <path class="bar--calm" d="M253 336 L253 292.6 Q253 285.6 260 285.6 L358 285.6 Q365 285.6 365 292.6 L365 336 Z" />
-            <text class="val val--calm" x="309" y="272" text-anchor="middle">6 rounds</text>
-            <text class="cat" x="309" y="370" text-anchor="middle">L1</text>
+            <path class="bar--calm" d="M208 336 L208 292.6 Q208 285.6 215 285.6 L297 285.6 Q304 285.6 304 292.6 L304 336 Z" />
+            <text class="val val--calm" x="256" y="272" text-anchor="middle">6 rounds</text>
+            <text class="cat" x="256" y="370" text-anchor="middle">L1</text>
+
+            <!-- L2: 9 rounds -->
+            <path class="bar--calm" d="M340 336 L340 267.4 Q340 260.4 347 260.4 L429 260.4 Q436 260.4 436 267.4 L436 336 Z" />
+            <text class="val val--calm" x="388" y="246" text-anchor="middle">9 rounds</text>
+            <text class="cat" x="388" y="370" text-anchor="middle">L2</text>
 
             <!-- L3: 26 rounds -->
-            <path class="bar--warn" d="M411 336 L411 124.6 Q411 117.6 418 117.6 L516 117.6 Q523 117.6 523 124.6 L523 336 Z" />
-            <text class="val val--warn" x="467" y="104" text-anchor="middle">26 rounds</text>
-            <text class="cat" x="467" y="370" text-anchor="middle">L3</text>
+            <path class="bar--warn" d="M472 336 L472 124.6 Q472 117.6 479 117.6 L561 117.6 Q568 117.6 568 124.6 L568 336 Z" />
+            <text class="val val--warn" x="520" y="104" text-anchor="middle">26 rounds</text>
+            <text class="cat" x="520" y="370" text-anchor="middle">L3</text>
 
             <!-- L4: 18 rounds -->
-            <path class="bar--warn" d="M569 336 L569 191.8 Q569 184.8 576 184.8 L674 184.8 Q681 184.8 681 191.8 L681 336 Z" />
-            <text class="val val--warn" x="625" y="171" text-anchor="middle">18 rounds</text>
-            <text class="cat" x="625" y="370" text-anchor="middle">L4</text>
+            <path class="bar--warn" d="M604 336 L604 191.8 Q604 184.8 611 184.8 L693 184.8 Q700 184.8 700 191.8 L700 336 Z" />
+            <text class="val val--warn" x="652" y="171" text-anchor="middle">18 rounds</text>
+            <text class="cat" x="652" y="370" text-anchor="middle">L4</text>
           </svg>
         </div>
       </div>
@@ -936,8 +970,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <div class="quote-block fade-up">
           <div class="chart-title quote-lead">War story</div>
-          <div>A single change once took <b>11 LLM runs</b> to get back to a
-            coherent state.</div>
+          <div>A single change to L2 later took <b>11 review rounds</b>.</div>
         </div>
       </div>
     </div>

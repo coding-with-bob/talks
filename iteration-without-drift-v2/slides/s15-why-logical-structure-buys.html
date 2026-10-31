@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -769,6 +771,34 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
     #s15 .arrow-head { fill: var(--theory); }
 
+    /* ---- the pseudo-code block as a per-level diff (2026-10-29) ----------
+       The real core-model.html shows each level's pseudo-code diffed against
+       the previous level. Kept quiet: a narrow gutter, one inserted row, one
+       changed row, faint tints, so the teal tags and the ref curve stay the
+       slide's main point. The theme has NO green token: --diff-ins is mixed
+       in OKLCH from two existing tokens (teal --series-healthy + amber
+       --story; the hue midpoint lands on green), no raw hex. Changed = the
+       existing amber --story. */
+    #s15 .main { --diff-ins: color-mix(in oklch, var(--series-healthy), var(--story)); }
+    #s15 .gutter-rule { stroke: var(--hairline); stroke-width: 1.1; }
+    #s15 .row--ins { fill: var(--diff-ins); fill-opacity: 0.16; }
+    #s15 .row--chg { fill: var(--story); fill-opacity: 0.15; }
+    #s15 .gut {
+      font-family: var(--font-mono); font-size: 17px; font-weight: 800;
+    }
+    #s15 .gut--ins { fill: var(--diff-ins); }
+    #s15 .gut--chg { fill: var(--story); }
+    /* the diff view is a switchable feature of the real page: a small
+       toggle in the ON state (owner call 2026-10-29, replaced a "diff vs
+       prev" pill). Track in a softened teal so it reads "on" without
+       competing with the solid-outlined anchor tags. */
+    #s15 .toggle-t {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+      fill: var(--muted-2);
+    }
+    #s15 .toggle-track { fill: var(--theory); fill-opacity: 0.6; }
+    #s15 .toggle-knob { fill: var(--navy-0); }
+
     /* ==== RIGHT: the five payoffs ========================================= */
     #s15 .payoffs {
       min-width: 0; min-height: 0;
@@ -796,7 +826,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">First encounters</div>
     <h1>What the logical structure buys</h1>
     <div class="accent-line"></div>
   </div>
@@ -808,7 +837,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <div class="doc-col fade-up">
         <div class="doc-fig">
           <svg class="doc" viewBox="0 0 572 620" preserveAspectRatio="xMidYMid meet" role="img"
-            aria-label="The same mock structured unit page from the previous slide, redrawn to fill this column. It still carries a browser chrome strip with three dots and the address corpus slash units slash run-lifecycle dot html, a header reading Unit: run lifecycle, a pseudo-code block about a gate passing a run, a domain-terms sidebar beside it holding the chips actor, run and gate, an invariants box with three rows, an absent section with two struck-out items, and a golden-traces footer with two given, when, then rows. What is new: three of its regions are outlined in teal and each carries a small mono anchor tag. The header is tagged hash run-lifecycle, the pseudo-code block is tagged hash gate-policy, and the invariants box is tagged hash invariants. In the sidebar the gate chip is outlined in teal and carries a small mono tail reading see hash gate-policy, and a thin teal curve runs from that tail up to the hash gate-policy tag on the pseudo-code block, so one concept points at another by name without leaving the page.">
+            aria-label="The same mock structured section page from the previous slide, redrawn to fill this column. It still carries a browser chrome strip with three dots and the address corpus slash sections slash run-lifecycle dot html, a header reading Section: run lifecycle, a pseudo-code block about a gate check on a run, shown as a diff against the previous capability level: a small toggle labelled diff, switched on, sits beside its label, a narrow gutter runs down its left edge, the line if run.state is not OPEN, reject is marked with a plus and a faint green row tint as inserted, the line append record is marked with a tilde and a faint amber tint as changed, and the other lines are unchanged, a domain-terms sidebar beside it holding the chips actor, run and gate, an invariants box with three rows, an absent section with two struck-out items, and a golden-traces footer with two given, when, then rows. What is new: three of its regions are outlined in teal and each carries a small mono anchor tag. The header is tagged hash run-lifecycle, the pseudo-code block is tagged hash gate-check, and the invariants box is tagged hash invariants. In the sidebar the gate chip is outlined in teal and carries a small mono tail reading see hash gate-check, and a thin teal curve runs from that tail up to the hash gate-check tag on the pseudo-code block, so one concept points at another by name without leaving the page.">
 
             <!-- ================= the page ================================= -->
             <rect class="page-bg" x="6" y="4" width="560" height="612" rx="15" />
@@ -827,26 +856,36 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <circle class="dot" cx="42" cy="22" r="4" />
             <circle class="dot" cx="58" cy="22" r="4" />
             <rect class="pill" x="78" y="12" width="320" height="20" rx="10" />
-            <text class="url" x="90" y="27">corpus/units/run-lifecycle.html</text>
+            <text class="url" x="90" y="27">corpus/sections/run-lifecycle.html</text>
 
             <!-- ---- page header, tagged ---------------------------------- -->
             <rect class="hl" x="18" y="52" width="536" height="44" rx="9" />
-            <text class="doc-title" x="34" y="81">Unit: run lifecycle</text>
+            <text class="doc-title" x="34" y="81">Section: run lifecycle</text>
             <rect class="tag" x="420" y="63" width="118" height="22" rx="11" />
             <text class="tag-t" x="479" y="78" text-anchor="middle">#run-lifecycle</text>
 
             <!-- ---- pseudo-code, tagged ---------------------------------- -->
             <text class="region-label" x="18" y="124">PSEUDO-CODE</text>
-            <rect class="tag" x="246" y="108" width="112" height="21" rx="10.5" />
-            <text class="tag-t" x="302" y="123" text-anchor="middle">#gate-policy</text>
+            <rect class="tag" x="262" y="108" width="96" height="21" rx="10.5" />
+            <text class="tag-t" x="310" y="123" text-anchor="middle">#gate-check</text>
+
+            <!-- diff view toggle, ON: this level's pseudo-code against the previous one -->
+            <text class="toggle-t" x="126" y="123">diff</text>
+            <rect class="toggle-track" x="161" y="110" width="34" height="18" rx="9" />
+            <circle class="toggle-knob" cx="186" cy="119" r="6.5" />
 
             <rect class="region-fill" x="18" y="134" width="340" height="160" rx="9" />
+            <rect class="row--ins" x="19" y="169.5" width="338" height="24" />
+            <rect class="row--chg" x="19" y="221.5" width="338" height="24" />
+            <line class="gutter-rule" x1="40" y1="142" x2="40" y2="286" />
             <rect class="hl" x="18" y="134" width="340" height="160" rx="9" />
-            <text class="code" x="34" y="160">on gate.pass(run):</text>
-            <text class="code" x="52" y="186">if run.state != OPEN: reject</text>
-            <text class="code" x="52" y="212">run.state = SEALED</text>
-            <text class="code" x="52" y="238">append record(run.id, gate.id)</text>
-            <text class="code" x="34" y="264">return run</text>
+            <text class="gut gut--ins" x="29" y="187" text-anchor="middle">+</text>
+            <text class="gut gut--chg" x="29" y="239" text-anchor="middle">~</text>
+            <text class="code" x="52" y="160">on gate.check(run):</text>
+            <text class="code" x="70" y="186">if run.state != OPEN: reject</text>
+            <text class="code" x="70" y="212">run.state = SEALED</text>
+            <text class="code" x="70" y="238">append record(run.id, gate.id)</text>
+            <text class="code" x="52" y="264">return run</text>
 
             <!-- ---- domain terms, with one term pointing at an anchor ---- -->
             <text class="region-label" x="374" y="124">DOMAIN TERMS</text>
@@ -862,7 +901,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
             <rect class="term term--ref" x="388" y="234" width="58" height="25" rx="12.5" />
             <text class="term-t term-t--ref" x="417" y="251" text-anchor="middle">gate</text>
-            <text class="ref-tail" x="388" y="278">see <tspan>#gate-policy</tspan></text>
+            <text class="ref-tail" x="388" y="278">see <tspan>#gate-check</tspan></text>
 
             <!-- the reference itself: gate term back up to the code anchor -->
             <path class="ref-arrow" d="M382 274 C360 264 368 152 360 124" />
@@ -890,7 +929,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
             <!-- ---- golden traces ---------------------------------------- -->
             <text class="region-label" x="22" y="550">GOLDEN TRACES</text>
-            <text class="trace" x="22" y="578"><tspan class="trace-k">GIVEN</tspan> an open run <tspan class="trace-k">WHEN</tspan> the gate passes <tspan class="trace-k">THEN</tspan> a record appears</text>
+            <text class="trace" x="22" y="578"><tspan class="trace-k">GIVEN</tspan> an open run <tspan class="trace-k">WHEN</tspan> the gate check passes <tspan class="trace-k">THEN</tspan> a record appears</text>
             <text class="trace" x="22" y="604"><tspan class="trace-k">GIVEN</tspan> a sealed run <tspan class="trace-k">WHEN</tspan> reopen is called <tspan class="trace-k">THEN</tspan> it is rejected</text>
           </svg>
         </div>
@@ -901,7 +940,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <div class="card prow fade-up">
           <h3>Mental map</h3>
-          <p>Named, typed entities give the human a map of the corpus.</p>
+          <p>Named, typed entities give humans and LLMs a map of the corpus.</p>
         </div>
 
         <div class="card prow fade-up">

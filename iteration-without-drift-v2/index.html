@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -3807,7 +3809,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <div class="content">
     <svg viewBox="0 0 1456 640" preserveAspectRatio="xMidYMid meet" role="img"
-      aria-label="One mock page from a structured design corpus, drawn centre-left and dissected into six labelled organs. The page carries a small browser chrome strip with three dots and the address corpus slash units slash run-lifecycle dot html, then a header reading Unit: run lifecycle with the id PF-004. Below it, a mono pseudo-code block with five short lines about a gate passing a run, and beside it a narrow sidebar of domain terms holding the chips actor, run and gate. Under both, a boxed invariants region with three rows, INV-3 a run never loses its record, INV-7 a sealed run is never reopened, INV-9 every gate decision names an actor. Below that an absent region listing two struck-out items, multi-tenant mode and plugin system. A footer strip closes the page with two golden traces written as given, when, then rows. Six chips in the margins are joined to the organs by thin leader lines: on the left Pseudo-code, Invariants and Absent list; on the right HTML over markdown pointing at the browser address, DDD lite pointing at the domain-term sidebar, and Golden traces pointing at the footer strip.">
+      aria-label="One mock page from a structured design corpus, drawn centre-left and dissected into six labelled organs. The page carries a small browser chrome strip with three dots and the address corpus slash sections slash run-lifecycle dot html, then a header reading Section: run lifecycle with the id PF-004. Below it, a mono pseudo-code block with five short lines about a gate check on a run, and beside it a narrow sidebar of domain terms holding the chips actor, run and gate. Under both, a boxed invariants region with three rows, INV-3 a run never loses its record, INV-7 a sealed run is never reopened, INV-9 every gate decision names an actor. Below that an absent region listing two struck-out items, multi-tenant mode and plugin system. A footer strip closes the page with two golden traces written as given, when, then rows. Six chips in the margins are joined to the organs by thin leader lines: on the left Pseudo-code, Invariants and Absent list; on the right HTML over markdown pointing at the browser address, DDD lite pointing at the domain-term sidebar, and Golden traces pointing at the footer strip.">
 
       <!-- ================= the page ====================================== -->
       <rect class="page-bg" x="356" y="6" width="644" height="628" rx="16" />
@@ -3826,17 +3828,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <circle class="dot" cx="400" cy="26" r="5" />
       <circle class="dot" cx="418" cy="26" r="5" />
       <rect class="pill" x="446" y="15" width="330" height="22" rx="11" />
-      <text class="url" x="462" y="31">corpus/units/run-lifecycle.html</text>
+      <text class="url" x="462" y="31">corpus/sections/run-lifecycle.html</text>
 
       <!-- ---- page header -------------------------------------------------- -->
-      <text class="doc-title" x="382" y="76">Unit: run lifecycle</text>
+      <text class="doc-title" x="382" y="76">Section: run lifecycle</text>
       <text class="doc-id" x="974" y="76" text-anchor="end">PF-004</text>
       <line class="page-rule" x1="382" y1="90" x2="974" y2="90" />
 
       <!-- ---- 2 . pseudo-code block ---------------------------------------- -->
       <text class="region-label" x="382" y="116">PSEUDO-CODE</text>
       <rect class="region" x="382" y="130" width="404" height="154" rx="10" />
-      <text class="code" x="402" y="156">on gate.pass(run):</text>
+      <text class="code" x="402" y="156">on gate.check(run):</text>
       <text class="code" x="422" y="182">if run.state != OPEN: reject</text>
       <text class="code" x="422" y="208">run.state = SEALED</text>
       <text class="code" x="422" y="234">append record(run.id, gate.id)</text>
@@ -3878,7 +3880,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <!-- ---- 6 . golden traces -------------------------------------------- -->
       <text class="region-label" x="382" y="552">GOLDEN TRACES</text>
-      <text class="trace" x="382" y="584"><tspan class="trace-k">GIVEN</tspan> a run open at gate 2 <tspan class="trace-k">WHEN</tspan> the gate passes <tspan class="trace-k">THEN</tspan> one record is appended</text>
+      <text class="trace" x="382" y="584"><tspan class="trace-k">GIVEN</tspan> a run open at gate 2 <tspan class="trace-k">WHEN</tspan> the gate check passes <tspan class="trace-k">THEN</tspan> one record is appended</text>
       <text class="trace" x="382" y="612"><tspan class="trace-k">GIVEN</tspan> a sealed run <tspan class="trace-k">WHEN</tspan> reopen is called <tspan class="trace-k">THEN</tspan> the call is rejected</text>
 
       <!-- ================= leaders, pins, chips =========================== -->
@@ -4053,6 +4055,34 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
     #s15 .arrow-head { fill: var(--theory); }
 
+    /* ---- the pseudo-code block as a per-level diff (2026-10-29) ----------
+       The real core-model.html shows each level's pseudo-code diffed against
+       the previous level. Kept quiet: a narrow gutter, one inserted row, one
+       changed row, faint tints, so the teal tags and the ref curve stay the
+       slide's main point. The theme has NO green token: --diff-ins is mixed
+       in OKLCH from two existing tokens (teal --series-healthy + amber
+       --story; the hue midpoint lands on green), no raw hex. Changed = the
+       existing amber --story. */
+    #s15 .main { --diff-ins: color-mix(in oklch, var(--series-healthy), var(--story)); }
+    #s15 .gutter-rule { stroke: var(--hairline); stroke-width: 1.1; }
+    #s15 .row--ins { fill: var(--diff-ins); fill-opacity: 0.16; }
+    #s15 .row--chg { fill: var(--story); fill-opacity: 0.15; }
+    #s15 .gut {
+      font-family: var(--font-mono); font-size: 17px; font-weight: 800;
+    }
+    #s15 .gut--ins { fill: var(--diff-ins); }
+    #s15 .gut--chg { fill: var(--story); }
+    /* the diff view is a switchable feature of the real page: a small
+       toggle in the ON state (owner call 2026-10-29, replaced a "diff vs
+       prev" pill). Track in a softened teal so it reads "on" without
+       competing with the solid-outlined anchor tags. */
+    #s15 .toggle-t {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+      fill: var(--muted-2);
+    }
+    #s15 .toggle-track { fill: var(--theory); fill-opacity: 0.6; }
+    #s15 .toggle-knob { fill: var(--navy-0); }
+
     /* ==== RIGHT: the five payoffs ========================================= */
     #s15 .payoffs {
       min-width: 0; min-height: 0;
@@ -4080,7 +4110,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">First encounters</div>
     <h1>What the logical structure buys</h1>
     <div class="accent-line"></div>
   </div>
@@ -4092,7 +4121,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <div class="doc-col fade-up">
         <div class="doc-fig">
           <svg class="doc" viewBox="0 0 572 620" preserveAspectRatio="xMidYMid meet" role="img"
-            aria-label="The same mock structured unit page from the previous slide, redrawn to fill this column. It still carries a browser chrome strip with three dots and the address corpus slash units slash run-lifecycle dot html, a header reading Unit: run lifecycle, a pseudo-code block about a gate passing a run, a domain-terms sidebar beside it holding the chips actor, run and gate, an invariants box with three rows, an absent section with two struck-out items, and a golden-traces footer with two given, when, then rows. What is new: three of its regions are outlined in teal and each carries a small mono anchor tag. The header is tagged hash run-lifecycle, the pseudo-code block is tagged hash gate-policy, and the invariants box is tagged hash invariants. In the sidebar the gate chip is outlined in teal and carries a small mono tail reading see hash gate-policy, and a thin teal curve runs from that tail up to the hash gate-policy tag on the pseudo-code block, so one concept points at another by name without leaving the page.">
+            aria-label="The same mock structured section page from the previous slide, redrawn to fill this column. It still carries a browser chrome strip with three dots and the address corpus slash sections slash run-lifecycle dot html, a header reading Section: run lifecycle, a pseudo-code block about a gate check on a run, shown as a diff against the previous capability level: a small toggle labelled diff, switched on, sits beside its label, a narrow gutter runs down its left edge, the line if run.state is not OPEN, reject is marked with a plus and a faint green row tint as inserted, the line append record is marked with a tilde and a faint amber tint as changed, and the other lines are unchanged, a domain-terms sidebar beside it holding the chips actor, run and gate, an invariants box with three rows, an absent section with two struck-out items, and a golden-traces footer with two given, when, then rows. What is new: three of its regions are outlined in teal and each carries a small mono anchor tag. The header is tagged hash run-lifecycle, the pseudo-code block is tagged hash gate-check, and the invariants box is tagged hash invariants. In the sidebar the gate chip is outlined in teal and carries a small mono tail reading see hash gate-check, and a thin teal curve runs from that tail up to the hash gate-check tag on the pseudo-code block, so one concept points at another by name without leaving the page.">
 
             <!-- ================= the page ================================= -->
             <rect class="page-bg" x="6" y="4" width="560" height="612" rx="15" />
@@ -4111,26 +4140,36 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <circle class="dot" cx="42" cy="22" r="4" />
             <circle class="dot" cx="58" cy="22" r="4" />
             <rect class="pill" x="78" y="12" width="320" height="20" rx="10" />
-            <text class="url" x="90" y="27">corpus/units/run-lifecycle.html</text>
+            <text class="url" x="90" y="27">corpus/sections/run-lifecycle.html</text>
 
             <!-- ---- page header, tagged ---------------------------------- -->
             <rect class="hl" x="18" y="52" width="536" height="44" rx="9" />
-            <text class="doc-title" x="34" y="81">Unit: run lifecycle</text>
+            <text class="doc-title" x="34" y="81">Section: run lifecycle</text>
             <rect class="tag" x="420" y="63" width="118" height="22" rx="11" />
             <text class="tag-t" x="479" y="78" text-anchor="middle">#run-lifecycle</text>
 
             <!-- ---- pseudo-code, tagged ---------------------------------- -->
             <text class="region-label" x="18" y="124">PSEUDO-CODE</text>
-            <rect class="tag" x="246" y="108" width="112" height="21" rx="10.5" />
-            <text class="tag-t" x="302" y="123" text-anchor="middle">#gate-policy</text>
+            <rect class="tag" x="262" y="108" width="96" height="21" rx="10.5" />
+            <text class="tag-t" x="310" y="123" text-anchor="middle">#gate-check</text>
+
+            <!-- diff view toggle, ON: this level's pseudo-code against the previous one -->
+            <text class="toggle-t" x="126" y="123">diff</text>
+            <rect class="toggle-track" x="161" y="110" width="34" height="18" rx="9" />
+            <circle class="toggle-knob" cx="186" cy="119" r="6.5" />
 
             <rect class="region-fill" x="18" y="134" width="340" height="160" rx="9" />
+            <rect class="row--ins" x="19" y="169.5" width="338" height="24" />
+            <rect class="row--chg" x="19" y="221.5" width="338" height="24" />
+            <line class="gutter-rule" x1="40" y1="142" x2="40" y2="286" />
             <rect class="hl" x="18" y="134" width="340" height="160" rx="9" />
-            <text class="code" x="34" y="160">on gate.pass(run):</text>
-            <text class="code" x="52" y="186">if run.state != OPEN: reject</text>
-            <text class="code" x="52" y="212">run.state = SEALED</text>
-            <text class="code" x="52" y="238">append record(run.id, gate.id)</text>
-            <text class="code" x="34" y="264">return run</text>
+            <text class="gut gut--ins" x="29" y="187" text-anchor="middle">+</text>
+            <text class="gut gut--chg" x="29" y="239" text-anchor="middle">~</text>
+            <text class="code" x="52" y="160">on gate.check(run):</text>
+            <text class="code" x="70" y="186">if run.state != OPEN: reject</text>
+            <text class="code" x="70" y="212">run.state = SEALED</text>
+            <text class="code" x="70" y="238">append record(run.id, gate.id)</text>
+            <text class="code" x="52" y="264">return run</text>
 
             <!-- ---- domain terms, with one term pointing at an anchor ---- -->
             <text class="region-label" x="374" y="124">DOMAIN TERMS</text>
@@ -4146,7 +4185,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
             <rect class="term term--ref" x="388" y="234" width="58" height="25" rx="12.5" />
             <text class="term-t term-t--ref" x="417" y="251" text-anchor="middle">gate</text>
-            <text class="ref-tail" x="388" y="278">see <tspan>#gate-policy</tspan></text>
+            <text class="ref-tail" x="388" y="278">see <tspan>#gate-check</tspan></text>
 
             <!-- the reference itself: gate term back up to the code anchor -->
             <path class="ref-arrow" d="M382 274 C360 264 368 152 360 124" />
@@ -4174,7 +4213,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
             <!-- ---- golden traces ---------------------------------------- -->
             <text class="region-label" x="22" y="550">GOLDEN TRACES</text>
-            <text class="trace" x="22" y="578"><tspan class="trace-k">GIVEN</tspan> an open run <tspan class="trace-k">WHEN</tspan> the gate passes <tspan class="trace-k">THEN</tspan> a record appears</text>
+            <text class="trace" x="22" y="578"><tspan class="trace-k">GIVEN</tspan> an open run <tspan class="trace-k">WHEN</tspan> the gate check passes <tspan class="trace-k">THEN</tspan> a record appears</text>
             <text class="trace" x="22" y="604"><tspan class="trace-k">GIVEN</tspan> a sealed run <tspan class="trace-k">WHEN</tspan> reopen is called <tspan class="trace-k">THEN</tspan> it is rejected</text>
           </svg>
         </div>
@@ -4185,7 +4224,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <div class="card prow fade-up">
           <h3>Mental map</h3>
-          <p>Named, typed entities give the human a map of the corpus.</p>
+          <p>Named, typed entities give humans and LLMs a map of the corpus.</p>
         </div>
 
         <div class="card prow fade-up">
@@ -4278,6 +4317,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   only thing that changed is how much corpus one change had to stay coherent
   with. Do NOT present 26 and 161 as achievements; they are symptoms.
   -->
+
+  <!-- CHART + WAR STORY (2026-10-30): an L2 bar (9 rounds) was added, so the
+       jump between L1 and L3 is no longer a mystery gap and the war story can
+       point at a layer the audience can see. The war story's 11 is the L2
+       REVISION cycle (owner changed the already-approved L2 decision to
+       "group = member-set"; re-review took 11 rounds), source
+       raw/siphra-arch/commit-timeline.md lines 606 (L2 arm cycle closed: 9
+       rounds), 609 (Revise L2 anchor decision on owner review), 690 (L2
+       revision arm cycle closed: 11 rounds). That revision happened before L3
+       existed, so it is NOT the ripple-up cost: the mechanism diagram shows the
+       ripple. The slide prints only the 11; the comparison with the 9 (even an
+       un-rippled change to one layer outcost that layer's own approval) is
+       spoken, with the L2 bar carrying the 9 on screen. -->
 
   <style>
     #s16 .content {
@@ -4377,7 +4429,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        whole length, which read as bold and flattened the emphasis on the
        number. The body now runs at the deck's normal card-body weight (620,
        as on s13 and s15), so only "11 LLM runs" carries weight and colour.
-       Size stepped 30 -> 34px to fill the now-wider card. */
+       Size stepped 30 -> 34px to fill the now-wider card.
+       2026-10-30 (owner call): rewritten to one sentence that points at L2.
+       The war story is now explicitly a REVISION of an already-approved layer
+       (11 review rounds). The slide does not print the comparison: the L2 bar
+       in the chart already shows the first-approval cost (9), and the "fix
+       cost more than the design" point is spoken. "11 LLM runs" is gone; the
+       emphasis now sits on "11 review rounds", the chart's own unit. The
+       single sentence sits higher in the fixed 210px card; that is accepted. */
     #s16 .quote-block {
       flex: none; height: 210px; max-width: none;
       padding: 24px 26px;
@@ -4393,11 +4452,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <!-- data-overflow-ok: the rotated stamp overhangs the title-block box by design -->
-  <div class="stamp" data-overflow-ok><span class="eyebrow">The price</span>Coherency load</div>
+  <div class="stamp" data-overflow-ok>Coherency load++</div>
 
   <div class="title-block">
     <div class="kicker">The crisis</div>
-    <h1>The giant monolith corpus failed to scale</h1>
+    <h1>The monolith corpus started to fail at scale</h1>
     <div class="accent-line"></div>
   </div>
 
@@ -4406,11 +4465,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <div class="card chart-card fade-up">
         <div class="chart-head">
-          <div class="chart-title">Review rounds</div>
+          <div class="chart-title">Review rounds to approve a new layer</div>
         </div>
         <div class="chart-svg">
           <svg viewBox="0 0 734 420" preserveAspectRatio="xMidYMid meet" role="img"
-            aria-label="Bar chart of review rounds needed to approve one capability layer. L0 six rounds, L1 six rounds, L3 twenty six rounds, L4 eighteen rounds. The two later layers dwarf the two early ones.">
+            aria-label="Bar chart of review rounds needed to approve one capability layer. L0 six rounds, L1 six rounds, L2 nine rounds, L3 twenty six rounds, L4 eighteen rounds. The two latest layers dwarf the three early ones.">
 
             <!-- y grid: 0 / 10 / 20 / 30 rounds -->
             <line class="grid-line" x1="62" y1="84" x2="714" y2="84" />
@@ -4433,27 +4492,39 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
                  measures 586 and sits centred with 33px of air on each side.
                  The vertical scale is untouched: baseline 336, 8.4px per
                  round, so every bar top and every value stays exactly where
-                 the data puts it. -->
+                 the data puts it.
+
+                 2026-10-30: L2 (9 rounds) added between L1 and L3, so five
+                 bars now. Bars are 96 wide with 36px gaps, so the group of
+                 five measures 624 and sits centred in the 652px plot area
+                 with 14px of air on each side (x 76-700). Bar centres: 124,
+                 256, 388, 520, 652. Corner radius 7 and the vertical scale
+                 are unchanged; L2 top = 336 - 9 x 8.4 = 260.4. -->
 
             <!-- L0: 6 rounds -->
-            <path class="bar--calm" d="M95 336 L95 292.6 Q95 285.6 102 285.6 L200 285.6 Q207 285.6 207 292.6 L207 336 Z" />
-            <text class="val val--calm" x="151" y="272" text-anchor="middle">6 rounds</text>
-            <text class="cat" x="151" y="370" text-anchor="middle">L0</text>
+            <path class="bar--calm" d="M76 336 L76 292.6 Q76 285.6 83 285.6 L165 285.6 Q172 285.6 172 292.6 L172 336 Z" />
+            <text class="val val--calm" x="124" y="272" text-anchor="middle">6 rounds</text>
+            <text class="cat" x="124" y="370" text-anchor="middle">L0</text>
 
             <!-- L1: 6 rounds -->
-            <path class="bar--calm" d="M253 336 L253 292.6 Q253 285.6 260 285.6 L358 285.6 Q365 285.6 365 292.6 L365 336 Z" />
-            <text class="val val--calm" x="309" y="272" text-anchor="middle">6 rounds</text>
-            <text class="cat" x="309" y="370" text-anchor="middle">L1</text>
+            <path class="bar--calm" d="M208 336 L208 292.6 Q208 285.6 215 285.6 L297 285.6 Q304 285.6 304 292.6 L304 336 Z" />
+            <text class="val val--calm" x="256" y="272" text-anchor="middle">6 rounds</text>
+            <text class="cat" x="256" y="370" text-anchor="middle">L1</text>
+
+            <!-- L2: 9 rounds -->
+            <path class="bar--calm" d="M340 336 L340 267.4 Q340 260.4 347 260.4 L429 260.4 Q436 260.4 436 267.4 L436 336 Z" />
+            <text class="val val--calm" x="388" y="246" text-anchor="middle">9 rounds</text>
+            <text class="cat" x="388" y="370" text-anchor="middle">L2</text>
 
             <!-- L3: 26 rounds -->
-            <path class="bar--warn" d="M411 336 L411 124.6 Q411 117.6 418 117.6 L516 117.6 Q523 117.6 523 124.6 L523 336 Z" />
-            <text class="val val--warn" x="467" y="104" text-anchor="middle">26 rounds</text>
-            <text class="cat" x="467" y="370" text-anchor="middle">L3</text>
+            <path class="bar--warn" d="M472 336 L472 124.6 Q472 117.6 479 117.6 L561 117.6 Q568 117.6 568 124.6 L568 336 Z" />
+            <text class="val val--warn" x="520" y="104" text-anchor="middle">26 rounds</text>
+            <text class="cat" x="520" y="370" text-anchor="middle">L3</text>
 
             <!-- L4: 18 rounds -->
-            <path class="bar--warn" d="M569 336 L569 191.8 Q569 184.8 576 184.8 L674 184.8 Q681 184.8 681 191.8 L681 336 Z" />
-            <text class="val val--warn" x="625" y="171" text-anchor="middle">18 rounds</text>
-            <text class="cat" x="625" y="370" text-anchor="middle">L4</text>
+            <path class="bar--warn" d="M604 336 L604 191.8 Q604 184.8 611 184.8 L693 184.8 Q700 184.8 700 191.8 L700 336 Z" />
+            <text class="val val--warn" x="652" y="171" text-anchor="middle">18 rounds</text>
+            <text class="cat" x="652" y="370" text-anchor="middle">L4</text>
           </svg>
         </div>
       </div>
@@ -4505,8 +4576,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <div class="quote-block fade-up">
           <div class="chart-title quote-lead">War story</div>
-          <div>A single change once took <b>11 LLM runs</b> to get back to a
-            coherent state.</div>
+          <div>A single change to L2 later took <b>11 review rounds</b>.</div>
         </div>
       </div>
     </div>
@@ -4604,7 +4674,13 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s17 .k-coral--b { fill: var(--coral); opacity: 0.8; }
     #s17 .k-coral--c { fill: var(--coral); opacity: 0.62; }
 
-    /* ==== RIGHT: the five traits ========================================= */
+    /* ==== RIGHT: six cards in three groups =============================
+       2026-10-30: regrouped and the kicker dropped. Group A (cards 1-3)
+       pairs with the prose wall on the left, group B (cards 4-5) with the
+       extracted table, and card 6 is the closing statement. The stack is
+       centred (justify-content: center) in a column as tall as the doc
+       column; the SVG is xMidYMid meet, so the stack midpoint (card 1 top
+       to card 6 bottom) lands on the page-mock midpoint. */
     #s17 .traits {
       min-width: 0; min-height: 0;
       display: flex; flex-direction: column; justify-content: center; gap: 14px;
@@ -4620,18 +4696,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       background: color-mix(in srgb, var(--theory) 16%, var(--card-bg));
     }
 
-    /* two thought groups: cards 1-3 shift up, cards 4-5 shift down, opening
-       a clear gap between card 3 and card 4. */
-    #s17 .traits > .trait:nth-child(-n+3) {
-      transform: translateY(-20px);
-    }
-    #s17 .traits > .trait:nth-child(n+4) {
-      transform: translateY(20px);
-    }
+    /* 2026-10-30 group spacing: card 4 (group B) and card 6 (closing
+       statement) each open a new group with margin-top 38px on top of the
+       14px in-group gap, so both group breaks are an equal 52px. The
+       closing card keeps the same 16% trait--key tint as cards 1 and 4;
+       it is set apart by spacing only. */
+    #s17 .trait--group-start { margin-top: 38px; }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Structure pays off</div>
     <h1>LLM traits behind the pain</h1>
     <div class="accent-line"></div>
   </div>
@@ -4805,9 +4878,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         </svg>
       </div>
 
-      <!-- ============ RIGHT: the five traits ============================= -->
+      <!-- ============ RIGHT: six cards in three groups ================
+           2026-10-30: group A (1-3) <-> prose wall, group B (4-5) <->
+           extracted table, card 6 = closing statement. Both group breaks
+           are 52px; all three key cards share the 16% tint; the stack is
+           centred on the page mock's vertical midpoint. -->
       <div class="traits">
 
+        <!-- group A: the prose wall -->
         <div class="card trait trait--key fade-up">
           <p>LLMs are <b>non-deterministic</b>.</p>
         </div>
@@ -4821,14 +4899,19 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <p>So <b>multiple rounds</b> are needed to reach coherence.</p>
         </div>
 
-        <div class="card trait trait--key fade-up">
-          <p>LLMs have a limited <b>focus</b>: they find issues better in a
-            focused context.</p>
+        <!-- group B: the extracted table (echoes s07 "Limited attention budget.") -->
+        <div class="card trait trait--key trait--group-start fade-up">
+          <p>LLMs have a limited <b>attention budget</b>.</p>
         </div>
 
         <div class="card trait fade-up">
-          <p>The <b>round count depends</b> on the size and structure of the
-            document.</p>
+          <p>The <b>tighter</b> the context, the better the result.</p>
+        </div>
+
+        <!-- closing statement -->
+        <div class="card trait trait--key trait--group-start fade-up">
+          <p>The <b>round count depends</b> on the <b>size</b> and
+            <b>structure</b> of the document.</p>
         </div>
       </div>
     </div>
@@ -5020,12 +5103,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       margin: 0; font-size: 20px; font-weight: 700;
       line-height: 1.4; color: var(--muted);
     }
-    #s18 .band p b { font-weight: 850; color: var(--white); }
+    /* 2026-10-30: the bold follows the story-lane accent (was --white), for
+       consistency with the other story slides' closing bands (s25). On this
+       light slide --story-on-dark resolves to the darker, readable amber. */
+    #s18 .band p b { font-weight: 850; color: var(--story-on-dark); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Round 2</div>
-    <h1>Divide and conquer</h1>
+    <h1>Divide and conquer, round two</h1>
     <div class="accent-line"></div>
   </div>
 
@@ -5157,7 +5242,233 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </div>
 </section>
 
-<section class="slide slide--light" data-lane="story" id="s19" data-act="act6" data-owner="draft" data-minutes="1.75"
+<section class="slide slide--light" data-lane="story" id="s18b" data-act="act6" data-owner="draft" data-minutes="0.75"
+  data-theme="light" data-exhibits="" data-tags="" data-evidence="">
+
+  <!-- SPEAKER-NOTE (DRAFT 2026-10-30, owner to rewrite on the board pass):
+    - "This is the pseudo-code block you saw on the page: gate check. It is
+       one function." (point at the left)
+    - "On disk it becomes units/<layer>/gate_check.txt, but only in the
+       layers that change it: L2 introduces it, L5 adds a branch and changes
+       one line."
+    - "L3 and L4 have no file at all. They inherit L2."
+    - "The build reassembles every level's page from that chain; the diff
+       view on the page is just the L5 file showing through."
+    - "So a change at L2 only touches the layers that hold a delta." (hand
+       off to the next slide)
+  -->
+
+  <style>
+    #s18b .content {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; gap: 22px; justify-content: center;
+    }
+
+    /* one canvas, drawn 1:1 (viewBox width = the 1456px content width) */
+    #s18b .main { flex: none; height: 430px; }
+    #s18b .main svg { width: 100%; height: 100%; display: block; }
+
+    /* ==== LEFT: the s15 page, cropped to its pseudo-code block ============
+       Same page vocabulary as s14 / s15 (page-bg, chrome band, url pill,
+       doc-title), scaled up so the code is readable. The teal region
+       outline from s15 is left off on purpose: on this slide teal means
+       "inherits" (s19's ghost blocks), so only the #gate-check name tag
+       keeps the theory teal. */
+    #s18b .page-bg { fill: var(--navy-0); }
+    #s18b .page-frame { fill: none; stroke: var(--muted-3); stroke-width: 1.6; }
+    #s18b .band-chrome { fill: var(--navy-2); }
+    #s18b .page-rule { stroke: var(--hairline); stroke-width: 1.4; }
+    #s18b .dot { fill: var(--muted-3); }
+    #s18b .pill { fill: var(--navy-0); stroke: var(--hairline); stroke-width: 1.2; }
+    #s18b .url { font-family: var(--font-mono); font-size: 14px; fill: var(--muted-2); }
+    #s18b .doc-title { font-size: 24px; font-weight: 800; fill: var(--white); letter-spacing: -0.01em; }
+    #s18b .doc-level {
+      font-family: var(--font-mono); font-size: 19px; font-weight: 800;
+      fill: var(--story-on-dark); letter-spacing: 0.02em;
+    }
+    #s18b .region-fill { fill: var(--navy-1); }
+    #s18b .region-label {
+      font-size: 15px; font-weight: 820; fill: var(--muted-2); letter-spacing: 0.1em;
+    }
+    #s18b .code { font-family: var(--font-mono); font-size: 19px; fill: var(--muted); }
+    #s18b .tag { fill: var(--card-bg-strong); stroke: var(--theory); stroke-width: 1.3; }
+    #s18b .tag-t {
+      font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+      fill: var(--theory-on-dark);
+    }
+    #s18b .toggle-t {
+      font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+      fill: var(--muted-2);
+    }
+    #s18b .toggle-track { fill: var(--theory); fill-opacity: 0.6; }
+    #s18b .toggle-knob { fill: var(--navy-0); }
+    #s18b .caption {
+      font-size: 15px; font-weight: 850; letter-spacing: 0.1em;
+      text-transform: uppercase; fill: var(--muted-2);
+    }
+
+    /* ---- diff rows: the s15 recipe, copied (no green token in the theme:
+       --diff-ins is mixed in OKLCH from teal --series-healthy and amber
+       --story, the hue midpoint lands on green; changed = amber --story) */
+    #s18b .main { --diff-ins: color-mix(in oklch, var(--series-healthy), var(--story)); }
+    #s18b .gutter-rule { stroke: var(--hairline); stroke-width: 1.2; }
+    #s18b .row--ins { fill: var(--diff-ins); fill-opacity: 0.16; }
+    #s18b .row--chg { fill: var(--story); fill-opacity: 0.15; }
+    #s18b .gut { font-family: var(--font-mono); font-weight: 800; }
+    #s18b .gut--page { font-size: 22px; }
+    #s18b .gut--file { font-size: 20px; }
+    #s18b .gut--ins { fill: var(--diff-ins); }
+    #s18b .gut--chg { fill: var(--story); }
+
+    /* ==== MIDDLE: the s18 arrow, twice (stored as / rebuilt by the build) */
+    #s18b .arrow { fill: none; stroke: var(--story); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    #s18b .arrow-label {
+      font-size: 15px; font-weight: 850; letter-spacing: 0.12em;
+      text-transform: uppercase; fill: var(--muted-2);
+    }
+
+    /* ==== RIGHT: units/ in the s18 tree grammar, blocks in s19's ======== */
+    #s18b .tree-root {
+      font-family: var(--font-mono); font-size: 20px; font-weight: 800; fill: var(--white);
+    }
+    #s18b .spine {
+      fill: none; stroke: var(--muted-3); stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    #s18b .t {
+      font-family: var(--font-mono); font-size: 18px; font-weight: 800;
+      fill: var(--muted-2); letter-spacing: 0.01em;
+    }
+    #s18b .t--own { fill: var(--story-on-dark); }
+    #s18b .ann { font-size: 16px; font-weight: 640; fill: var(--muted-2); }
+    #s18b .ann--key { font-weight: 800; fill: var(--story-on-dark); }
+    /* s19: solid amber = the layer holds its own version; dashed teal ghost
+       = the layer only inherits */
+    #s18b .blk-own { fill: var(--card-bg-strong); stroke: var(--story); stroke-width: 2.6; }
+    #s18b .blk-ghost {
+      fill: none; stroke: var(--series-healthy); stroke-width: 2;
+      stroke-dasharray: 8 7;
+    }
+    #s18b .blk-label--ghost { font-size: 18px; font-weight: 680; fill: var(--muted-2); letter-spacing: -0.01em; }
+    #s18b .fcode { font-family: var(--font-mono); font-size: 17px; fill: var(--muted); }
+
+    /* ---- the punchline (s18 closing-band pattern) ------------------------ */
+    #s18b .band {
+      flex: none; align-self: center;
+      width: fit-content; min-width: 40%; max-width: 100%;
+      padding: 16px 48px; text-align: center;
+      /* 2026-10-30: more air above the band (owner ask, ~1.5x the 22px
+         column gap). A relative offset moves only the band: its flex slot
+         is unchanged, so the centred column and the main canvas stay where
+         they were. 12px lands the band's bottom edge exactly on s18's. */
+      position: relative; top: 12px;
+    }
+    #s18b .band p {
+      margin: 0; font-size: 20px; font-weight: 700;
+      line-height: 1.4; color: var(--muted);
+    }
+    #s18b .band p b { font-weight: 850; color: var(--story-on-dark); }
+  </style>
+
+  <div class="title-block">
+    <h1>Breaking pseudocode down into units</h1>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="content">
+    <div class="main fade-up">
+      <svg viewBox="0 0 1456 430" preserveAspectRatio="xMidYMid meet" role="img"
+        aria-label="Left: the section page run lifecycle from the earlier slide, cropped to its pseudo-code block and drawn large. It is the page at level L5 with the diff view switched on and the name tag hash gate-check. Five lines: on gate.check of run; if run.state is not OPEN, reject, marked with a plus as inserted; run.state equals SEALED; append record of run.id and gate.id, marked with a tilde as changed; return run. In the middle two arrows: stored as, pointing right, and build, pointing back left. Right: a file tree units slash with one row per layer. L2 slash gate_check.txt, a solid amber block holding the original four lines, introduced here. L3 and L4 are dashed teal ghosts reading no file, inherits L2. L5 slash gate_check.txt is a solid amber block holding only the delta: the inserted if line and the changed append line.">
+
+        <!-- ================= LEFT: the page at L5 ========================== -->
+        <rect class="page-bg" x="20" y="10" width="580" height="356" rx="16" />
+        <path class="band-chrome" d="M20 26 A16 16 0 0 1 36 10 H584 A16 16 0 0 1 600 26 V52 H20 Z" />
+        <rect class="page-frame" x="20" y="10" width="580" height="356" rx="16" />
+        <line class="page-rule" x1="20" y1="52" x2="600" y2="52" />
+
+        <circle class="dot" cx="44" cy="31" r="5" />
+        <circle class="dot" cx="62" cy="31" r="5" />
+        <circle class="dot" cx="80" cy="31" r="5" />
+        <rect class="pill" x="102" y="19" width="360" height="24" rx="12" />
+        <text class="url" x="118" y="36">corpus/sections/run-lifecycle.html</text>
+
+        <text class="doc-title" x="44" y="94">Section: run lifecycle</text>
+        <text class="doc-level" x="576" y="94" text-anchor="end">L5</text>
+        <line class="page-rule" x1="44" y1="112" x2="576" y2="112" />
+
+        <text class="region-label" x="44" y="148">PSEUDO-CODE</text>
+        <text class="toggle-t" x="190" y="148">diff</text>
+        <rect class="toggle-track" x="230" y="132" width="42" height="22" rx="11" />
+        <circle class="toggle-knob" cx="261" cy="143" r="8" />
+        <rect class="tag" x="448" y="130" width="128" height="26" rx="13" />
+        <text class="tag-t" x="512" y="148" text-anchor="middle">#gate-check</text>
+
+        <rect class="region-fill" x="44" y="164" width="532" height="182" rx="10" />
+        <rect class="row--ins" x="45" y="207" width="530" height="30" />
+        <rect class="row--chg" x="45" y="271" width="530" height="30" />
+        <line class="gutter-rule" x1="76" y1="174" x2="76" y2="336" />
+        <text class="gut gut--page gut--ins" x="60" y="230" text-anchor="middle">+</text>
+        <text class="gut gut--page gut--chg" x="60" y="294" text-anchor="middle">~</text>
+        <text class="code" x="92" y="197">on gate.check(run):</text>
+        <text class="code" x="118" y="229">if run.state != OPEN: reject</text>
+        <text class="code" x="118" y="261">run.state = SEALED</text>
+        <text class="code" x="118" y="293">append record(run.id, gate.id)</text>
+        <text class="code" x="92" y="325">return run</text>
+
+        <text class="caption" x="310" y="404" text-anchor="middle">the page at L5, diff view on</text>
+
+        <!-- ================= MIDDLE: stored as / build ===================== -->
+        <text class="arrow-label" x="694" y="174" text-anchor="middle">stored as</text>
+        <path class="arrow" d="M650 192 H734 M722 180 L738 192 L722 204" />
+        <path class="arrow" d="M738 256 H654 M670 244 L654 256 L670 268" />
+        <text class="arrow-label" x="694" y="294" text-anchor="middle">build</text>
+
+        <!-- ================= RIGHT: units/, one row per layer ============== -->
+        <text class="tree-root" x="790" y="38">units/</text>
+        <path class="spine" d="M800 52 V372" />
+        <path class="spine" d="M800 92 H818 M800 246 H818 M800 306 H818 M800 372 H818" />
+
+        <!-- L2: introduced here, the original version -->
+        <text class="t t--own" x="828" y="98">L2/gate_check.txt</text>
+        <text class="ann" x="828" y="124">introduced here</text>
+        <rect class="blk-own" x="1040" y="64" width="406" height="140" rx="10" />
+        <line class="gutter-rule" x1="1078" y1="74" x2="1078" y2="194" />
+        <text class="fcode" x="1092" y="96">on gate.check(run):</text>
+        <text class="fcode" x="1114" y="124">run.state = SEALED</text>
+        <text class="fcode" x="1114" y="152">append record(run.id)</text>
+        <text class="fcode" x="1092" y="180">return run</text>
+
+        <!-- L3, L4: no file, pure inheritors -->
+        <text class="t" x="828" y="252">L3/</text>
+        <rect class="blk-ghost" x="1040" y="224" width="406" height="44" rx="10" />
+        <text class="blk-label--ghost" x="1062" y="252">no file, inherits L2</text>
+
+        <text class="t" x="828" y="312">L4/</text>
+        <rect class="blk-ghost" x="1040" y="284" width="406" height="44" rx="10" />
+        <text class="blk-label--ghost" x="1062" y="312">no file, inherits L2</text>
+
+        <!-- L5: only the delta -->
+        <text class="t t--own" x="828" y="378">L5/gate_check.txt</text>
+        <text class="ann ann--key" x="828" y="404">only the delta</text>
+        <rect class="blk-own" x="1040" y="344" width="406" height="82" rx="10" />
+        <rect class="row--ins" x="1041.3" y="357" width="403.4" height="27" />
+        <rect class="row--chg" x="1041.3" y="385" width="403.4" height="27" />
+        <line class="gutter-rule" x1="1078" y1="352" x2="1078" y2="418" />
+        <text class="gut gut--file gut--ins" x="1062" y="377" text-anchor="middle">+</text>
+        <text class="gut gut--file gut--chg" x="1062" y="405" text-anchor="middle">~</text>
+        <text class="fcode" x="1092" y="376">if run.state != OPEN: reject</text>
+        <text class="fcode" x="1092" y="404">append record(run.id, gate.id)</text>
+      </svg>
+    </div>
+
+    <div class="card band fade-up">
+      <p>A unit is one function. A layer stores <b>only its delta</b>; the build
+        reassembles the page.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide slide--light" data-lane="story" id="s19" data-act="act6" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
   <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a five-bullet list):
@@ -5238,7 +5549,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        same hairline/card-bg vocabulary as the deck's tag-chip */
     #s19 .unit-header-bg {
       fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1;
-      rx: var(--radius-chip);
+      rx: 15px; /* half the 30px rect height, a true pill; --radius-chip (999px) turns an SVG rect into an ellipse (fixed 2026-10-30) */
     }
 
     #s19 .lcode {
@@ -5322,8 +5633,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Change becomes local</div>
-    <h1>Pseudocode units</h1>
+    <h1>Benefits of pseudocode units</h1>
     <div class="accent-line"></div>
   </div>
 
@@ -5600,7 +5910,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">A knowledge graph arises</div>
     <h1>What the physical breakdown added</h1>
     <div class="accent-line"></div>
   </div>
@@ -6184,9 +6493,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        so the gate<->cards gap can widen independently of the cloud<->gate
        gap; a single uniform column-gap can't do that. margin-left shifts the
        whole composition right so the narrower cards column still balances
-       against the content area instead of leaving dead space on the right. */
+       against the content area instead of leaving dead space on the right.
+       Fixed height (not flex: 1): the gate centres against the full row
+       span, so a taller box stretches row 2 and drops the gate below the
+       side columns. 509px is the box the composition was tuned in; the
+       auto block margins split any spare content height evenly above and
+       below it, and the band keeps its spot at the bottom. */
     #s22 .filter {
-      flex: 1; min-height: 0;
+      flex: none; height: 509px; margin: auto 0;
       display: grid;
       grid-template-columns: 300px 18px 300px 46px 595px;
       grid-template-rows: auto 1fr;
@@ -6308,7 +6622,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Not financial advice</div>
     <h1>The irreducible remainder</h1>
     <div class="accent-line"></div>
   </div>
@@ -6504,8 +6817,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s23 .trace-line { stroke: var(--muted-3); stroke-width: 1.3; stroke-dasharray: 2 2.6; }
     #s23 .owner-id { font-family: var(--font-mono); font-size: 12px; font-weight: 700; fill: var(--muted-2); }
 
-    /* ---- 5 . the domain assertion register -------------------------------- */
-    #s23 .da-id { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; fill: var(--story-on-dark); }
+    /* ---- 5 . the domain claim register ------------------------------------ */
+    #s23 .dc-id { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; fill: var(--story-on-dark); }
     #s23 .src { fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.2; }
     #s23 .src-t { font-size: 12px; font-weight: 800; fill: var(--muted-2); letter-spacing: 0.03em; }
     #s23 .claim-t { font-size: 13.5px; font-weight: 600; fill: var(--muted); }
@@ -6528,14 +6841,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Another example</div>
-    <h1>The S-project:<br>same pressures, same shapes</h1>
+    <div class="kicker">The S-project</div>
+    <h1>The concept is reusable</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
     <svg viewBox="0 0 1456 500" preserveAspectRatio="xMidYMid meet" role="img"
-      aria-label="One mock page from the S-project design corpus, drawn in the middle of the canvas and dissected into five labelled organs, using the same anatomy grammar as the earlier building-blocks slide. The page carries a browser chrome strip with three dots and the address s-project slash model slash c2 slash L0 slash concept dot html, then a header reading Model corpus, cycle 2, with the marker c2 dot R1. The body holds three columns. On the left a stack of five level containers labelled L0 to L4, each with a fill bar of shrinking length. In the middle three progressive depth bands labelled concept, contract and protocol, tagged R1, R2 and R3, each with a growing accent rail and a meter showing one, two and three filled ticks. On the right a foundations sidebar of four ID chips, INV-K6, INV-R3, ABS-4 and VOC-6, each joined by a short line to its owning level L2, L4, L0 and L1. Below the columns a boxed domain assertion register with three claim rows: DA-7, quotas are set per team, not per user, tagged field, ask BK; DA-19, firms rarely change their plan mid-year, tagged constructed, ask ops lead; DA-31, the close is monthly, not daily, tagged assumed, ask finance. A footer strip closes the page with the scenario ledger, three rows reading S01, morning briefing, field, needs L0, L2; S04, onboarding a new firm, field, needs L0, L2, L5; and S17, quarterly close, constructed, needs L1, L3. Five chips in the margins are joined to the organs by thin leader lines: on the left Levels, working-set containers; Depth passes, concept, contract, protocol, with the hint depth follows epistemic status; and Domain assertion register, source-categorized claims plus the expert to validate. On the right Shared foundations, IDs traced to owning levels, and Scenario ledger, user journeys with IDs, each mapped to concepts.">
+      aria-label="One mock page from the S-project design corpus, drawn in the middle of the canvas and dissected into five labelled organs, using the same anatomy grammar as the earlier building-blocks slide. The page carries a browser chrome strip with three dots and the address s-project slash model slash c2 slash L0 slash concept dot html, then a header reading Model corpus, cycle 2, with the marker c2 dot R1. The body holds three columns. On the left a stack of five level containers labelled L0 to L4, each with a fill bar of shrinking length. In the middle three progressive depth bands labelled concept, contract and protocol, tagged R1, R2 and R3, each with a growing accent rail and a meter showing one, two and three filled ticks. On the right a foundations sidebar of four ID chips, INV-K6, INV-R3, ABS-4 and VOC-6, each joined by a short line to its owning level L2, L4, L0 and L1. Below the columns a boxed domain claim register with three claim rows: DC-7, quotas are set per team, not per user, tagged field, ask BK; DC-19, firms rarely change their plan mid-year, tagged constructed, ask ops lead; DC-31, the close is monthly, not daily, tagged assumed, ask finance. A footer strip closes the page with the scenario ledger, three rows reading S01, morning briefing, field, needs L0, L2; S04, onboarding a new firm, field, needs L0, L2, L5; and S17, quarterly close, constructed, needs L1, L3. Five chips in the margins are joined to the organs by thin leader lines: on the left Levels, working-set containers; Depth passes, concept, contract, protocol, with the hint depth follows epistemic status; and Domain claim register, source-categorized claims plus the expert to validate. On the right Shared foundations, IDs traced to owning levels, and Scenario ledger, user journeys with IDs, each mapped to concepts.">
 
       <!-- ================= the page ====================================== -->
       <rect class="page-bg" x="380" y="6" width="696" height="488" rx="16" />
@@ -6637,38 +6950,40 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <line class="trace-line" x1="991" y1="211" x2="1005" y2="211" />
       <text class="owner-id" x="1010" y="215">L1</text>
 
-      <!-- ---- 5 . the domain assertion register ---------------------------- -->
+      <!-- ---- 5 . the domain claim register -------------------------------- -->
       <rect class="region--open" x="406" y="263" width="644" height="128" rx="10" />
-      <text class="region-label" x="428" y="287">DOMAIN ASSERTION REGISTER</text>
+      <text class="region-label" x="428" y="287">DOMAIN CLAIM REGISTER</text>
 
-      <text class="da-id" x="428" y="317">DA-7</text>
+      <text class="dc-id" x="428" y="317">DC-7</text>
       <rect class="src" x="490" y="301" width="96" height="22" rx="11" />
       <text class="src-t" x="538" y="316" text-anchor="middle">field</text>
       <text class="claim-t" x="604" y="317">quotas are set per team, not per user</text>
       <text class="who-t" x="1028" y="317" text-anchor="end">ask: BK</text>
 
-      <text class="da-id" x="428" y="345">DA-19</text>
+      <text class="dc-id" x="428" y="345">DC-19</text>
       <rect class="src" x="490" y="329" width="96" height="22" rx="11" />
       <text class="src-t" x="538" y="344" text-anchor="middle">constructed</text>
       <text class="claim-t" x="604" y="345">firms rarely change their plan mid-year</text>
       <text class="who-t" x="1028" y="345" text-anchor="end">ask: ops lead</text>
 
-      <text class="da-id" x="428" y="373">DA-31</text>
+      <text class="dc-id" x="428" y="373">DC-31</text>
       <rect class="src" x="490" y="357" width="96" height="22" rx="11" />
       <text class="src-t" x="538" y="372" text-anchor="middle">assumed</text>
       <text class="claim-t" x="604" y="373">the close is monthly, not daily</text>
       <text class="who-t" x="1028" y="373" text-anchor="end">ask: finance</text>
 
       <!-- ---- 3 . the scenario ledger strip --------------------------------
-           Three rows on a 22px pitch inside the 400..494 footer band: header
-           baseline 422 (12px clear of the band rule), last row baseline 484
-           (its descenders stop ~6px short of the page bottom). IDs are
+           Three rows on a 20px pitch (444, 464, 484) inside the 400..494
+           footer band: header baseline 422 (12px clear of the band rule),
+           22px from the header to the first row so the label reads as a
+           label, last row baseline 484 (its descenders stop ~6px short of
+           the page bottom). Spacing retuned 2026-10-31. IDs are
            zero-padded to 3 characters (S01, S04, S17) so the mono glyphs
            align naturally without a textLength stretch. S01 is the row
            the next fragment's guided-tour page points back at. -->
       <text class="region-label" x="406" y="422">SCENARIO LEDGER</text>
-      <text class="sc" x="406" y="440"><tspan class="sc-k" x="406">S01</tspan><tspan x="432">&middot; morning briefing &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2</tspan></text>
-      <text class="sc" x="406" y="462"><tspan class="sc-k" x="406">S04</tspan><tspan x="432">&middot; onboarding a new firm &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2, L5</tspan></text>
+      <text class="sc" x="406" y="444"><tspan class="sc-k" x="406">S01</tspan><tspan x="432">&middot; morning briefing &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2</tspan></text>
+      <text class="sc" x="406" y="464"><tspan class="sc-k" x="406">S04</tspan><tspan x="432">&middot; onboarding a new firm &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2, L5</tspan></text>
       <text class="sc" x="406" y="484"><tspan class="sc-k" x="406">S17</tspan><tspan x="432">&middot; quarterly close &middot; constructed &middot; needs </tspan><tspan class="sc-lv">L1, L3</tspan></text>
 
       <!-- ================= leaders, pins, chips =========================== -->
@@ -6690,14 +7005,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <text class="chip-s" x="66" y="261">concept, contract, protocol</text>
       <text class="chip-h" x="66" y="280">depth follows epistemic status</text>
 
-      <!-- LEFT 3 . domain assertion register -->
+      <!-- LEFT 3 . domain claim register -->
       <line class="leader" x1="320" y1="359" x2="406" y2="330" />
       <circle class="pin" cx="406" cy="330" r="4.5" />
-      <rect class="chip" x="40" y="320" width="280" height="78" rx="16" />
-      <circle class="chip-dot" cx="64" cy="359" r="5" />
-      <text class="chip-t" x="82" y="347">Domain assertion register</text>
-      <text class="chip-s" x="82" y="369">source-categorized claims,</text>
-      <text class="chip-h" x="82" y="388">plus the expert to validate</text>
+      <rect class="chip" x="24" y="320" width="296" height="78" rx="16" />
+      <circle class="chip-dot" cx="48" cy="359" r="5" />
+      <text class="chip-t" x="66" y="347">Domain claim register</text>
+      <text class="chip-s" x="66" y="369">source-categorized claims,</text>
+      <text class="chip-h" x="66" y="388">plus the expert to validate</text>
 
       <!-- RIGHT 1 . shared foundations -->
       <line class="leader" x1="1136" y1="180" x2="1050" y2="170" />
@@ -6807,7 +7122,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
     /* ---- labels --------------------------------------------------------- */
     #s23b .token-label { font-size: 17px; font-weight: 850; fill: var(--white); letter-spacing: -0.01em; }
-    #s23b .token-sub { font-size: 14px; font-weight: 650; fill: var(--muted-2); }
     #s23b .panel-eyebrow {
       font-size: 15px; font-weight: 850; letter-spacing: 0.1em; fill: var(--story-on-dark);
     }
@@ -6826,14 +7140,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s23b .mini-rule { stroke: var(--story); stroke-width: 1.1; opacity: 0.55; }
     #s23b .zoom { fill: none; stroke: var(--story); stroke-width: 1.6; opacity: 0.38; }
 
-    /* ---- the exhibit: the domain-assertion table ------------------------ */
+    /* ---- the exhibit: the domain-claim table ---------------------------- */
     #s23b .exhibit { fill: var(--card-bg-strong); stroke: var(--story); stroke-width: 2.2; }
     #s23b .exh-eyebrow {
       font-size: 14px; font-weight: 850; letter-spacing: 0.1em; fill: var(--story-on-dark);
     }
     #s23b .th { font-size: 14px; font-weight: 850; letter-spacing: 0.06em; fill: var(--muted-2); }
     #s23b .rule-line { stroke: var(--muted-3); stroke-width: 1.3; opacity: 0.5; }
-    #s23b .da-id { font-family: var(--font-mono); font-size: 15px; font-weight: 800; fill: var(--story-on-dark); }
+    #s23b .dc-id { font-family: var(--font-mono); font-size: 15px; font-weight: 800; fill: var(--story-on-dark); }
     #s23b .da-t { font-size: 15px; font-weight: 620; fill: var(--white); }
     #s23b .da-who { font-size: 15px; font-weight: 780; fill: var(--white); }
     #s23b .chip { fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.4; }
@@ -6858,14 +7172,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
   <div class="title-block">
     <div class="kicker">The Swiss Army Corpus</div>
-    <h1>Two renders, many consumers</h1>
+    <h1>Same corpus, different renders</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
     <div class="diagram fade-up">
       <svg viewBox="0 0 1456 500" preserveAspectRatio="xMidYMid meet" role="img"
-        aria-label="One source corpus on the left, drawn as a small page glyph labelled the S-project corpus, one source. Two amber arrows fan out from it to the right into two mock render panels. The upper panel, Architect render, is dense: two tight columns of small section headings, many short body lines, a mono code block and three invariant rows, with the sublabel full depth, for the builders. The lower panel, Guided tour render, is friendlier: its address reads tour slash 02 a morning with the product dot html, and under one large amber heading bar the first line is real copy, John opens the dashboard, scenario S01, which is the morning briefing row from the scenario ledger on the previous slide. Widely spaced gray narrative lines follow, then a second smaller heading and, along its bottom edge, a small three column table glyph. Its sublabel reads the business stakeholder's view. Two faint amber lines widen from that bottom table glyph to the right, opening it into a large exhibit on the right hand side: a table headed at the bottom of every tour page, with the columns assertion, source and validate with. Row one, DA-012, usage peaks follow the billing cycle, source chip interview, validate with ops lead. Row two, DA-031, partners never share accounts, source chip assumption drawn in amber, validate with partner manager. Row three, DA-047, exports must stay under 10 MB, source chip research, validate with platform team.">
+        aria-label="One source corpus on the left, drawn as a small page glyph labelled the S-project corpus. Two amber arrows fan out from it to the right into two mock render panels. The upper panel, Architect render, is dense: two tight columns of small section headings, many short body lines, a mono code block and three invariant rows, with the sublabel full depth, for the builders. The lower panel, Guided tour render, is friendlier: its address reads tour slash 02 a morning with the product dot html, and under one large amber heading bar the first line is real copy, John opens the dashboard, scenario S01, which is the morning briefing row from the scenario ledger on the previous slide. Widely spaced gray narrative lines follow, then a second smaller heading and, along its bottom edge, a small three column table glyph. Its sublabel reads the business stakeholder's view. Two faint amber lines widen from that bottom table glyph to the right, opening it into a large exhibit on the right hand side: a table headed at the bottom of every tour page, with the columns claim, source and validate with. Row one, DC-12, usage peaks follow the billing cycle, source chip interview, validate with ops lead. Row two, DC-31, partners never share accounts, source chip assumption drawn in amber, validate with partner manager. Row three, DC-47, exports must stay under 10 MB, source chip research, validate with platform team.">
 
         <!-- ================= the corpus token ============================= -->
         <rect class="page-bg" x="30" y="160" width="140" height="176" rx="12" />
@@ -6898,7 +7212,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <rect class="inv-bar" x="112" y="322" width="44" height="5" rx="2.5" />
 
         <text class="token-label" x="100" y="364" text-anchor="middle">the S-project corpus</text>
-        <text class="token-sub" x="100" y="386" text-anchor="middle">one source</text>
 
         <!-- ================= the two render arrows ======================== -->
         <path class="flow" d="M176 232 C212 232, 210 97, 244 97" />
@@ -6979,16 +7292,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <path class="zoom" d="M754 420 L800 200" />
         <path class="zoom" d="M754 444 L800 500" />
 
-        <!-- ================= the domain-assertion table =================== -->
+        <!-- ================= the domain-claim table ======================= -->
         <rect class="exhibit" x="800" y="200" width="652" height="300" rx="14" />
         <text class="exh-eyebrow" x="826" y="230">AT THE BOTTOM OF EVERY TOUR PAGE</text>
 
-        <text class="th" x="826" y="262">assertion</text>
+        <text class="th" x="826" y="262">claim</text>
         <text class="th" x="1188" y="262">source</text>
         <text class="th" x="1322" y="262">validate with</text>
         <line class="rule-line" x1="826" y1="276" x2="1426" y2="276" />
 
-        <text class="da-id" x="826" y="316">DA-012</text>
+        <text class="dc-id" x="826" y="316">DC-12</text>
         <text class="da-t" x="898" y="316">usage peaks follow the billing cycle</text>
         <rect class="chip chip--ev" x="1188" y="298" width="108" height="28" rx="14" />
         <text class="chip-t chip-t--ev" x="1242" y="317" text-anchor="middle">interview</text>
@@ -6996,7 +7309,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <line class="rule-line" x1="826" y1="343" x2="1426" y2="343" />
 
-        <text class="da-id" x="826" y="383">DA-031</text>
+        <text class="dc-id" x="826" y="383">DC-31</text>
         <text class="da-t" x="898" y="383">partners never share accounts</text>
         <rect class="chip chip--as" x="1188" y="365" width="108" height="28" rx="14" />
         <text class="chip-t chip-t--as" x="1242" y="384" text-anchor="middle">assumption</text>
@@ -7004,7 +7317,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
         <line class="rule-line" x1="826" y1="410" x2="1426" y2="410" />
 
-        <text class="da-id" x="826" y="450">DA-047</text>
+        <text class="dc-id" x="826" y="450">DC-47</text>
         <text class="da-t" x="898" y="450">exports must stay under 10 MB</text>
         <rect class="chip chip--ev" x="1188" y="432" width="108" height="28" rx="14" />
         <text class="chip-t chip-t--ev" x="1242" y="451" text-anchor="middle">research</text>
@@ -7162,7 +7475,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">One structure to rule them all</div>
     <h1>The blocks map onto the implementation</h1>
     <div class="accent-line"></div>
   </div>
@@ -7542,7 +7854,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Anchor to the agents</div>
     <h1>Claim structure supports agent autonomy</h1>
     <div class="accent-line"></div>
   </div>
@@ -9351,11 +9662,33 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     clearInline(last);
     return true;
   };
+  // shared next / back actions: keys and taps both go through these two
+  const next = () => { if (!revealNext()) step(1); };
+  const prev = () => { if (!unrevealLast()) step(-1); };
   addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); if (!revealNext()) step(1); }
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); if (!unrevealLast()) step(-1); }
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); next(); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); prev(); }
     else if (e.key === "Home") { i = 0; show(); }
     else if (e.key === "End") { i = slides.length - 1; show(); }
+  });
+  // ---- tap zones (2026-10-31) ----
+  // The GitHub Pages build is also viewed on phones, which have no keys: a
+  // tap (or mouse click) on the right half of the viewport acts as next, on
+  // the left half as back, with the same step reveal semantics as the keys.
+  // Registered on document, not .deck, because the scaled slide does not
+  // cover the letterbox margins and taps there must navigate too. Taps on
+  // interactive elements, non-primary buttons and modifier-key clicks are
+  // left alone. Drag guard: click alone already skips touch scrolls/pans
+  // (the browser cancels the click), but a mouse drag (text selection) still
+  // ends in a click, so pointerdown records the start point and a click that
+  // moved more than 10px is ignored.
+  let down = null;
+  document.addEventListener("pointerdown", (e) => { down = { x: e.clientX, y: e.clientY }; });
+  document.addEventListener("click", (e) => {
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    if (e.target.closest && e.target.closest("a, button, input, textarea, select, [contenteditable], summary")) return;
+    if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 10) return;
+    if (e.clientX >= innerWidth / 2) next(); else prev();
   });
   addEventListener("hashchange", () => { fromHash(); show(); });
   fromHash();

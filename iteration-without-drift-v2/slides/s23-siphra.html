@@ -586,7 +586,9 @@ body { background: var(--stage-bg); min-height: 100vh; }
 body[data-active-theme="light"] { background: #dfe7f2; }
 body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 @media screen {
-  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; }
+  /* touch-action: double-tap on iOS Safari would otherwise zoom instead of
+     navigating (tap zones, 2026-10-31); pinch zoom stays */
+  body.deck-mode { display: grid; place-items: center; height: 100vh; overflow: hidden; touch-action: manipulation; }
   .deck .slide { display: none; }
   .deck .slide.active { display: flex; }
   /* Fixed-canvas fit: the slide lays out at --slide-max-w (see components.css)
@@ -741,8 +743,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s23 .trace-line { stroke: var(--muted-3); stroke-width: 1.3; stroke-dasharray: 2 2.6; }
     #s23 .owner-id { font-family: var(--font-mono); font-size: 12px; font-weight: 700; fill: var(--muted-2); }
 
-    /* ---- 5 . the domain assertion register -------------------------------- */
-    #s23 .da-id { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; fill: var(--story-on-dark); }
+    /* ---- 5 . the domain claim register ------------------------------------ */
+    #s23 .dc-id { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; fill: var(--story-on-dark); }
     #s23 .src { fill: var(--card-bg); stroke: var(--hairline); stroke-width: 1.2; }
     #s23 .src-t { font-size: 12px; font-weight: 800; fill: var(--muted-2); letter-spacing: 0.03em; }
     #s23 .claim-t { font-size: 13.5px; font-weight: 600; fill: var(--muted); }
@@ -765,14 +767,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Another example</div>
-    <h1>The S-project:<br>same pressures, same shapes</h1>
+    <div class="kicker">The S-project</div>
+    <h1>The concept is reusable</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
     <svg viewBox="0 0 1456 500" preserveAspectRatio="xMidYMid meet" role="img"
-      aria-label="One mock page from the S-project design corpus, drawn in the middle of the canvas and dissected into five labelled organs, using the same anatomy grammar as the earlier building-blocks slide. The page carries a browser chrome strip with three dots and the address s-project slash model slash c2 slash L0 slash concept dot html, then a header reading Model corpus, cycle 2, with the marker c2 dot R1. The body holds three columns. On the left a stack of five level containers labelled L0 to L4, each with a fill bar of shrinking length. In the middle three progressive depth bands labelled concept, contract and protocol, tagged R1, R2 and R3, each with a growing accent rail and a meter showing one, two and three filled ticks. On the right a foundations sidebar of four ID chips, INV-K6, INV-R3, ABS-4 and VOC-6, each joined by a short line to its owning level L2, L4, L0 and L1. Below the columns a boxed domain assertion register with three claim rows: DA-7, quotas are set per team, not per user, tagged field, ask BK; DA-19, firms rarely change their plan mid-year, tagged constructed, ask ops lead; DA-31, the close is monthly, not daily, tagged assumed, ask finance. A footer strip closes the page with the scenario ledger, three rows reading S01, morning briefing, field, needs L0, L2; S04, onboarding a new firm, field, needs L0, L2, L5; and S17, quarterly close, constructed, needs L1, L3. Five chips in the margins are joined to the organs by thin leader lines: on the left Levels, working-set containers; Depth passes, concept, contract, protocol, with the hint depth follows epistemic status; and Domain assertion register, source-categorized claims plus the expert to validate. On the right Shared foundations, IDs traced to owning levels, and Scenario ledger, user journeys with IDs, each mapped to concepts.">
+      aria-label="One mock page from the S-project design corpus, drawn in the middle of the canvas and dissected into five labelled organs, using the same anatomy grammar as the earlier building-blocks slide. The page carries a browser chrome strip with three dots and the address s-project slash model slash c2 slash L0 slash concept dot html, then a header reading Model corpus, cycle 2, with the marker c2 dot R1. The body holds three columns. On the left a stack of five level containers labelled L0 to L4, each with a fill bar of shrinking length. In the middle three progressive depth bands labelled concept, contract and protocol, tagged R1, R2 and R3, each with a growing accent rail and a meter showing one, two and three filled ticks. On the right a foundations sidebar of four ID chips, INV-K6, INV-R3, ABS-4 and VOC-6, each joined by a short line to its owning level L2, L4, L0 and L1. Below the columns a boxed domain claim register with three claim rows: DC-7, quotas are set per team, not per user, tagged field, ask BK; DC-19, firms rarely change their plan mid-year, tagged constructed, ask ops lead; DC-31, the close is monthly, not daily, tagged assumed, ask finance. A footer strip closes the page with the scenario ledger, three rows reading S01, morning briefing, field, needs L0, L2; S04, onboarding a new firm, field, needs L0, L2, L5; and S17, quarterly close, constructed, needs L1, L3. Five chips in the margins are joined to the organs by thin leader lines: on the left Levels, working-set containers; Depth passes, concept, contract, protocol, with the hint depth follows epistemic status; and Domain claim register, source-categorized claims plus the expert to validate. On the right Shared foundations, IDs traced to owning levels, and Scenario ledger, user journeys with IDs, each mapped to concepts.">
 
       <!-- ================= the page ====================================== -->
       <rect class="page-bg" x="380" y="6" width="696" height="488" rx="16" />
@@ -874,38 +876,40 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <line class="trace-line" x1="991" y1="211" x2="1005" y2="211" />
       <text class="owner-id" x="1010" y="215">L1</text>
 
-      <!-- ---- 5 . the domain assertion register ---------------------------- -->
+      <!-- ---- 5 . the domain claim register -------------------------------- -->
       <rect class="region--open" x="406" y="263" width="644" height="128" rx="10" />
-      <text class="region-label" x="428" y="287">DOMAIN ASSERTION REGISTER</text>
+      <text class="region-label" x="428" y="287">DOMAIN CLAIM REGISTER</text>
 
-      <text class="da-id" x="428" y="317">DA-7</text>
+      <text class="dc-id" x="428" y="317">DC-7</text>
       <rect class="src" x="490" y="301" width="96" height="22" rx="11" />
       <text class="src-t" x="538" y="316" text-anchor="middle">field</text>
       <text class="claim-t" x="604" y="317">quotas are set per team, not per user</text>
       <text class="who-t" x="1028" y="317" text-anchor="end">ask: BK</text>
 
-      <text class="da-id" x="428" y="345">DA-19</text>
+      <text class="dc-id" x="428" y="345">DC-19</text>
       <rect class="src" x="490" y="329" width="96" height="22" rx="11" />
       <text class="src-t" x="538" y="344" text-anchor="middle">constructed</text>
       <text class="claim-t" x="604" y="345">firms rarely change their plan mid-year</text>
       <text class="who-t" x="1028" y="345" text-anchor="end">ask: ops lead</text>
 
-      <text class="da-id" x="428" y="373">DA-31</text>
+      <text class="dc-id" x="428" y="373">DC-31</text>
       <rect class="src" x="490" y="357" width="96" height="22" rx="11" />
       <text class="src-t" x="538" y="372" text-anchor="middle">assumed</text>
       <text class="claim-t" x="604" y="373">the close is monthly, not daily</text>
       <text class="who-t" x="1028" y="373" text-anchor="end">ask: finance</text>
 
       <!-- ---- 3 . the scenario ledger strip --------------------------------
-           Three rows on a 22px pitch inside the 400..494 footer band: header
-           baseline 422 (12px clear of the band rule), last row baseline 484
-           (its descenders stop ~6px short of the page bottom). IDs are
+           Three rows on a 20px pitch (444, 464, 484) inside the 400..494
+           footer band: header baseline 422 (12px clear of the band rule),
+           22px from the header to the first row so the label reads as a
+           label, last row baseline 484 (its descenders stop ~6px short of
+           the page bottom). Spacing retuned 2026-10-31. IDs are
            zero-padded to 3 characters (S01, S04, S17) so the mono glyphs
            align naturally without a textLength stretch. S01 is the row
            the next fragment's guided-tour page points back at. -->
       <text class="region-label" x="406" y="422">SCENARIO LEDGER</text>
-      <text class="sc" x="406" y="440"><tspan class="sc-k" x="406">S01</tspan><tspan x="432">&middot; morning briefing &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2</tspan></text>
-      <text class="sc" x="406" y="462"><tspan class="sc-k" x="406">S04</tspan><tspan x="432">&middot; onboarding a new firm &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2, L5</tspan></text>
+      <text class="sc" x="406" y="444"><tspan class="sc-k" x="406">S01</tspan><tspan x="432">&middot; morning briefing &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2</tspan></text>
+      <text class="sc" x="406" y="464"><tspan class="sc-k" x="406">S04</tspan><tspan x="432">&middot; onboarding a new firm &middot; field &middot; needs </tspan><tspan class="sc-lv">L0, L2, L5</tspan></text>
       <text class="sc" x="406" y="484"><tspan class="sc-k" x="406">S17</tspan><tspan x="432">&middot; quarterly close &middot; constructed &middot; needs </tspan><tspan class="sc-lv">L1, L3</tspan></text>
 
       <!-- ================= leaders, pins, chips =========================== -->
@@ -927,14 +931,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       <text class="chip-s" x="66" y="261">concept, contract, protocol</text>
       <text class="chip-h" x="66" y="280">depth follows epistemic status</text>
 
-      <!-- LEFT 3 . domain assertion register -->
+      <!-- LEFT 3 . domain claim register -->
       <line class="leader" x1="320" y1="359" x2="406" y2="330" />
       <circle class="pin" cx="406" cy="330" r="4.5" />
-      <rect class="chip" x="40" y="320" width="280" height="78" rx="16" />
-      <circle class="chip-dot" cx="64" cy="359" r="5" />
-      <text class="chip-t" x="82" y="347">Domain assertion register</text>
-      <text class="chip-s" x="82" y="369">source-categorized claims,</text>
-      <text class="chip-h" x="82" y="388">plus the expert to validate</text>
+      <rect class="chip" x="24" y="320" width="296" height="78" rx="16" />
+      <circle class="chip-dot" cx="48" cy="359" r="5" />
+      <text class="chip-t" x="66" y="347">Domain claim register</text>
+      <text class="chip-s" x="66" y="369">source-categorized claims,</text>
+      <text class="chip-h" x="66" y="388">plus the expert to validate</text>
 
       <!-- RIGHT 1 . shared foundations -->
       <line class="leader" x1="1136" y1="180" x2="1050" y2="170" />
