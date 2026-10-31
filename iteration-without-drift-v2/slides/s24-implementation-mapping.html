@@ -649,39 +649,25 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s24" data-act="act8" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a six-bullet list):
-  Slide-design notes: avoid 'kernel'; one spoken parenthetical for ADR.
+  <!-- SPEAKER-NOTE:
 
-  THE CLAIM: nothing in the implementation is invented next to the design
-  corpus. Every block on the left already has its address on the right, so
-  the corpus is not documentation that runs alongside the code, it is the
-  thing the code is generated from.
+  And if we go back to my VC project, I was able to leverage this design
+  corpus structure even from the perspective of the implementation. So the
+  model description was the basis of when I started to create the
+  specification task for implementation. The DDD terms were mapped into the
+  domain types, and this is something where I had an actual CI script which
+  checked whether all the domain terms are existing in the code. The golden
+  traces became executable tests, the invariants were became behavior
+  preservation rails, the absent list became part of the ADR of the ADRs in
+  the non-goal section. So the structure actually helped driving the
+  implementation itself.
 
-  Spoken beats (VERBATIM: these are the six bullets the slide used to
-  print, now spoken over the mapping):
-    - "Ledger slice -> the task spec itself (projection, not invention)."
-    - "DDD-lite terms -> the domain types, with drift measured against the
-       registry."
-    - "Golden traces -> executable tests."
-    - "Invariants -> behaviour-preservation rails."
-    - "Absent list -> ADR-gated non-goals." (say the parenthetical out loud
-       once, here: "ADR, Architecture Decision Record")
-    - "A realization ledger + the implementation pinned to a model git
-       hash: the model cannot silently change underneath; CI enforces
-       both."
 
-  HOW TO WALK THE PICTURE: read the five pairs left to right, one line
-  each, fast. Only three arrows carry a qualifier and those are the three
-  places where the mapping is doing real work: the spec is a projection,
-  the types are checked for drift, the traces actually execute. The two
-  bare arrows need no commentary.
-
-  THEN LAND THE BOTTOM STRIP, slower: the two hashes are the whole point
-  of the slide. Design and implementation are pinned to each other, and
-  the pin is enforced by the build, not by discipline.
-
-  IF SHORT ON TIME: read the five rows off the slide without comment and
-  spend the remaining seconds on the bottom strip.
+  So the actual implementation of parts of the model were connected through
+  git commit hashes. And based on this, I have a CI check which checks that if
+  the model is changing and the related code is not changing, then this is
+  probably an issue. So even from this perspective, this structure provides
+  many different ways how you can leverage it.
   -->
 
   <style>

@@ -649,41 +649,46 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" id="s28" data-act="act9" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a five-bullet list on dark):
+  <!-- SPEAKER-NOTE:
 
-  The closing takeaways. Light canvas, lane-less on purpose: this is a meta
-  slide that speaks for both lanes at once, so it carries no lane stripe.
+  So now let's talk about a bit the key takeaways.
 
-  KICKER (2026-10-28) "How I carry the load": closes the promise s02b's
-  band made ("This talk: how to carry it"). Closing line, after row 5:
-  "Those are the five ways I carry the coherency load. The harness is one
-  instance; the five travel."
-  Delivery: one beat per row, and do not read the rows verbatim; the audience
-  can read. Point at the glyph, name the moment in the talk it comes from,
-  then say the takeaway in your own words.
 
-  #1: speak the future-proof tail here (the tail is NOT printed): as models
-  get better, the structure is what keeps compounding; it does not become
-  redundant, it becomes cheaper to produce.
+  As I was going through this journey, for me the biggest aha moment was that
+  the structure itself creates information. And in the inside, this is kinda
+  obvious because we know that when we describe a system, a system is a
+  composition of many smaller parts and the relationship is very important,
+  and if you make those relationships kinda explicit, then this is something
+  that we can leverage from multiple direction.
 
-  #4: wording settled 2026-08-26 (the board's old TODO is closed). "Route
-  human attention by decision type" deliberately echoes s25's title claim,
-  so the room hears the callback. Do not re-open the wording.
 
-  THE RECALL GLYPHS, in row order (each one quotes a picture the room has
-  already seen, so name the slide out loud if the recall does not land):
-    1. mini knowledge graph, from s20 "What the physical breakdown added"
-       (teal slice = context for one edit, amber = a changed invariant).
-    2. mini two-box pair HUMAN | LLM, from s07 "The working-set limit".
-    3. mini build pipeline with the byte-identical seal, from s18
-       "Divide and conquer" (round 2).
-    4. mini three-lane claim triage with the amber stop, from s25
-       "Claim structure supports agent autonomy".
-    5. mini review-rounds bar chart with the two tall warning bars, from
-       s16 "The giant monolith corpus failed to scale".
+  It is important to keep in mind that this is not something that we are only
+  doing to kinda help ellums. As I mentioned, this structure helped me as well
+  in several cases. So this helps me to better understand and to better
+  navigate the design space as well.
 
-  IF SHORT ON TIME: rows 1 and 4 are the load-bearing pair. Read 2, 3 and 5
-  off the slide without commentary.
+
+  And this is very important because if you remember for example the S
+  project, this was kinda like a very very early product discovery story, but
+  even in other cases, it is quite frequent that your design will change a
+  lot. So from this perspective, it is very important that you have a
+  structure which support that you can easily change the corpus and you have a
+  structure that make those changes safe and makes the result checkable.
+
+
+  Another very interesting perspective is that if you have a structure like
+  this, then you can leverage from the perspective to make sure that your
+  attention is used when it is really important. So if you, if you do your job
+  properly, then you can, you can provide more autonomy to the agents in a
+  safe way, and those cases when your attention is needed can be surfaced by
+  the system.
+
+
+  And my last key point is that it is important to design for the LLM's
+  characteristics. This is especially true, for example, in the case of the
+  feedback loops, because if you are not careful and you don't design the
+  disposition perspective and when to stop the loop, then you can easily get a
+  never ending nitpicking loop.
   -->
 
   <style>
@@ -692,31 +697,27 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       display: flex; flex-direction: column; justify-content: center;
     }
 
-    /* ---- five calm rows: number, recall glyph, takeaway ------------------ */
+    /* ---- five calm rows: recall glyph, takeaway --------------------------- */
     /* The takeaway table is deliberately narrow (owner call 2026-08-26): the
        lead is its own line and the explainer sits under it, so a wide measure
-       would leave every explainer as one long ribbon. 756px total leaves a
-       ~552px text column, the width at which the longest explainers (rows 1
+       would leave every explainer as one long ribbon. 678px total (756px
+       before the row numerals were dropped on 2026-10-31) leaves a ~552px
+       text column, the width at which the longest explainers (rows 1
        and 5) wrap to exactly two lines and no lead ever wraps. The table is
        centered on the slide, not left-flush to the title: at this width a
        left flush would leave the right half of the canvas stranded. */
     #s28 .takeaways {
       margin: 0; padding: 0; list-style: none;
       display: flex; flex-direction: column;
-      width: 756px; align-self: center;
+      width: 678px; align-self: center;
     }
     #s28 .row {
-      display: grid; grid-template-columns: 52px 92px 1fr;
+      display: grid; grid-template-columns: 92px 1fr;
       align-items: center; column-gap: 26px;
       padding: 16px 4px;
     }
     #s28 .row + .row { border-top: 1px solid var(--hairline); }
 
-    #s28 .num {
-      font-size: 32px; font-weight: 850; letter-spacing: -0.02em;
-      text-align: center; font-variant-numeric: tabular-nums;
-      color: color-mix(in srgb, var(--blue) 60%, var(--muted-3));
-    }
 
     #s28 .glyph {
       width: 92px; height: 64px;
@@ -816,7 +817,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">How I carry the load</div>
     <h1>Five things to take home</h1>
     <div class="accent-line"></div>
   </div>
@@ -826,7 +826,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <!-- ============ 1. structure creates information ==================== -->
       <li class="row fade-up">
-        <span class="num">1</span>
         <span class="glyph">
           <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
             aria-label="A miniature knowledge graph. A dashed teal region encloses a unit box and a small domain term pill on the left. On the right an invariant plate and the two entities below it are ringed in amber, with amber edges spreading between them.">
@@ -852,7 +851,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <!-- ============ 2. it serves both minds ============================= -->
       <li class="row fade-up">
-        <span class="num">2</span>
         <span class="glyph">
           <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
             aria-label="Two small boxes side by side, one labelled HUMAN and one labelled LLM, each holding a short row of item marks, the second row partly faded.">
@@ -871,12 +869,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <rect class="g2-item--faded" x="74" y="37" width="6" height="6" rx="1.6" />
           </svg>
         </span>
-        <p class="say"><b>It serves both minds</b>Humans and LLMs get the same thing:<br>understanding and navigation of the design space.</p>
+        <p class="say"><b>It serves both &ldquo;minds&rdquo;</b>Humans and LLMs get the same thing:<br>understanding and navigation of the design space.</p>
       </li>
 
       <!-- ============ 3. it can breathe, and can be verified ============== -->
       <li class="row fade-up">
-        <span class="num">3</span>
         <span class="glyph">
           <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
             aria-label="A miniature pipeline: a document, an arrow, a build box, an arrow, the same document again. A dashed amber bracket runs underneath from the first document to the last and meets a small ticked seal captioned diff 0.">
@@ -913,7 +910,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
       <!-- ============ 4. route human attention by decision type =========== -->
       <li class="row fade-up">
-        <span class="num">4</span>
         <span class="glyph">
           <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
             aria-label="A miniature triage: a splitter fans into three lanes. The top two are teal and end in teal pills. The bottom lane is amber and runs into a solid hatched amber barrier.">
@@ -944,13 +940,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             </g>
           </svg>
         </span>
-        <p class="say"><b>Route human attention by decision type</b>The agent runs free on
-          decided and derived;<br>the human handles the genuinely new.</p>
+        <p class="say"><b>Route human attention where it really matters</b>The structure can also be leveraged to steer human attention:<br>it surfaces the decisions that need a person.</p>
       </li>
 
       <!-- ============ 5. design for the LLM's characteristics ============= -->
       <li class="row fade-up">
-        <span class="num">5</span>
         <span class="glyph">
           <svg viewBox="0 0 88 62" preserveAspectRatio="xMidYMid meet" role="img"
             aria-label="A miniature bar chart of four bars on a baseline. The first two are short and cyan; the last two are tall and warm red.">
@@ -965,7 +959,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <line class="g5-axis" x1="6" y1="52" x2="84" y2="52" />
           </svg>
         </span>
-        <p class="say"><b>Design for the LLM&rsquo;s characteristics</b>Especially the feedback loops:<br>without triage and a stop rule, a neverending nitpicking loop.</p>
+        <p class="say"><b>Design for the LLM&rsquo;s characteristics</b>Especially the feedback loops: without a disposition and a stop rule, what you get is a never-ending nitpicking loop.</p>
       </li>
 
     </ol>

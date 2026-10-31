@@ -649,46 +649,26 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s08" data-act="act2" data-owner="draft" data-minutes="1.25"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  The falsifiable criterion, kept verbatim in the quote block: it is a
-  design-quality metric, not a slogan.
+  <!-- SPEAKER-NOTE:
 
-  POSITION (board pass 2026-10-28): the slide before this one is now s06,
-  the giant design doc stamped "Reason 1: too big for one head"; this slide
-  is the answer to that stamp. The slide after it is s13 "Who carries the
-  load?". Close with the hand-off: "That handled reason one. But I knew I
-  would iterate a lot, and every round had to leave all these layers
-  coherent with each other. Reason two was still open." s13 picks it up.
+  So the solution was not super revolutionary. I split the system into
+  different capability layers, and then I started to work out each capability
+  one by one. And I decided to use HTML as the format of the document, because
+  this way I can, I can use, so I can leverage the more visual expressiveness
+  of HTML.
 
-  Spoken beats, moved here from the old bullet list:
-    - (2026-10-28) name the move first: "this is iterate in space, round one."
-    - "I broke the problem into capability layers."
-    - "One layer is small enough to actually think through."
-    - "And I defined the feedback loop up front:" (then read the quote).
+  And even inside designing one capability, I kinda had an iterative
+  structure. So first we worked out that we called the small spec. This was
+  more like a high-level perspective, the boundary contracts of that
+  capability layer and the most important aspects, domain terms, and when we
+  agreed on those terms then I also ran a V1 reality check, which meant that
+  the agent was checking whether what we planned is capable to support all the
+  related feature of V1. And only after that we created the draft for that
+  specific layer.
 
-  How each layer actually landed (the two chips are the short form):
-    1. SMALL SPEC. Before any corpus work, a small spec was agreed for the
-       layer: what the layer's contract is, what it owns, what it does not.
-       Small enough to hold in one head at once, which is the whole point of
-       the working-set slide in the opening (s07).
-    2. V1 REALITY CHECK. Then a separate pass read the v1 codebase and
-       confirmed that the capability layer as specified really covers the
-       expectations v1 poses. v1 was the ground truth: if the layer could not
-       carry what v1 already demanded, the layer boundary was wrong, not v1.
-  The bracket note "one layer = one working set" is the quiet callback to the
-  7 plus or minus 2 bound from s07 in the opening. Do not belabour it; if
-  someone asks, that IS the sizing rule for a layer.
-
-  CROSS-SLIDE ARC (updated 2026-08-25, owner call): the dashed red back-arrow
-  drawn here is the theoretical failure mode; it stays as the up-front
-  criterion only. s16 (the monolith crisis) no longer claims this test fires:
-  what happens there is legitimate evolution (small low-layer tweaks plus an
-  unplanned new L0x layer rippling upward), not the falsifiable criterion
-  failing. Drop the old callback line at s16 ("remember the arrow...").
-
-  The criterion quote moved off the slide (THE TEST diagram carries it
-  visually); say it out loud: "If enabling a new layer never forces fixing a
-  lower one, the layering was right."
+  So this partially solved some of my problems. But as we discussed about the
+  price of the iteration, this kinda opened up the issue of coherence load.
+  And this is something that I needed to deal with.
   -->
 
   <style>

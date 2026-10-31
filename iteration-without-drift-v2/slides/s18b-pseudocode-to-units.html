@@ -649,17 +649,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s18b" data-act="act6" data-owner="draft" data-minutes="0.75"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (DRAFT 2026-10-30, owner to rewrite on the board pass):
-    - "This is the pseudo-code block you saw on the page: gate check. It is
-       one function." (point at the left)
-    - "On disk it becomes units/<layer>/gate_check.txt, but only in the
-       layers that change it: L2 introduces it, L5 adds a branch and changes
-       one line."
-    - "L3 and L4 have no file at all. They inherit L2."
-    - "The build reassembles every level's page from that chain; the diff
-       view on the page is just the L5 file showing through."
-    - "So a change at L2 only touches the layers that hold a delta." (hand
-       off to the next slide)
+  <!-- SPEAKER-NOTE:
+
+  I also figured out a way how can I store the pseudocode in a way which is
+  much more effective to be able to change by LLMs, so kind of every function
+  in the pseudocode became a small unit. And what was kind of cool that I only
+  store the unit the first time I define that piece of function, and then each
+  layer which doesn't touch it, I don't store that function, so the pseudocode
+  for that layer is built by the, by the build script. So I only store
+  additional information related to that pseudocode unit if that, if it is, if
+  it was modified by a new layer.
   -->
 
   <style>

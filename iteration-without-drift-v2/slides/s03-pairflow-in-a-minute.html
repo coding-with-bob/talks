@@ -649,55 +649,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s03" data-act="act0" data-owner="draft" data-minutes="0.75"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Strictly one minute of context. No deeper pairflow detail.
-  Open with the owner's board line (2026-10-28): "And now, back to the
-  story." Then "so, the harness I just mentioned" (s02b's band already
-  announced Pairflow v1 to v3 as the case); do not re-introduce it. This is
-  the first story-lane slide after four theory slides, so the lane switch
-  (orange stripe) and that line do the same job: the room is told the
-  theory is over.
-  The three points to say out loud (verbatim from the previous bullet
-  version of this slide, now carried by the picture instead of by text):
-    - My agent harness: workflows for LLM-driven software work.
-    - v1: one specific workflow, put directly into code.
-    - That is all the context this talk needs.
-  Walk the left panel top to bottom: a normal codex cli discussion ends in a
-  task file, and one sentence hands that file to pairflow. The right panel is
-  what happens next: pairflow runs the loop. The handoff artifact is the
-  point, not the tool.
+  <!-- SPEAKER-NOTE:
 
-  PORT NOTE (2026-08-26): composition ported from talk #1's slide
-  talk1/deck/src/s21-codex-to-pairflow-run.html ("From Codex discussion to
-  Pairflow run"). The talk-1 h1 is dropped: this slide keeps its own
-  title-block. Asset: assets/img/pairflow-run-timeline.png, copied verbatim
-  from talk1/deck/assets/img/ (412x412 crop of the pairflow run-timeline UI).
-
-  TOKEN MAPPING, talk-1 tokens and literals to meetup tokens:
-    --dark-grad-0 / --dark-grad-1 -> var(--navy-ink), lifted toward --blue
-    --terminal                    -> var(--navy-ink)
-    --white-ink                   -> var(--panel-ink), see the note below
-    --muted-on-dark / -4          -> color-mix over var(--panel-ink)
-    --card-bg-dark                -> color-mix over var(--panel-ink)
-    --hairline-blue-2 / -3        -> var(--hairline-blue)
-    --card-bg-soft                -> var(--card-bg)
-    --shadow-card-lg              -> 0 18px 44px var(--glow-blue) (s29 idiom)
-    --blue-bright                 -> was var(--blue) + var(--glow-blue) on the
-      right-panel heading; restyled since (2026-08-26 pass) to ink var(--white)
-      bold, matching how sibling story-lane panels title themselves, and the
-      status-dot marker that sat in front of it was dropped
-    --ink                         -> var(--white)
-    rgba(18, 101, 255, a)         -> color-mix over var(--blue) (same rgb)
-    rgba(25, 215, 255, a)         -> color-mix over var(--cyan-decor) (same rgb)
-    rgba(231, 242, 255, 0.78)     -> var(--card-bg-strong) (0.84, near match)
-    rgba(11, 138, 75, a) + --green-tint-ink: the meetup theme has NO green
-      token, so the "created file" chip takes the lane accent var(--story)
-      instead. It stays the third, clearly separate color against the blue
-      user chips and the cyan command chip, and it is this slide's own lane
-      color. Closest existing token, per the no-new-tokens rule.
-    .flow-bg: talk-1-only component, no rule for it in this deck's
-      components.css and no meetup slide uses it. Dropped: the lane edge
-      stripe already carries this slide's decoration.
+  És most vissza a sztorihoz. Az én régi rendszerem annyit tudott igazából,
+  hogyha megállapodtam egy tervben, utána tudtam delegálni ennek a kis
+  harnessnek, és akkor egy implementáló elkezdte megcsinálni, a reviewer
+  review-t adott, feedbacket adott, és közben pörögtek egymás között. A cél a
+  konvergencia volt: amikor a reviewer nem talál adott thresholdnak feletti
+  problémát.  So nowadays we would say that this is a small factory. But it,
+  but Perflu itself it is not relevant from the perspective of the talk. What
+  is important that this was one very specific workflow baked into a code.
   -->
 
   <style>

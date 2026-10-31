@@ -649,51 +649,43 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="theory" id="s20" data-act="act6" data-owner="draft" data-minutes="1.25"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was two cards plus two bullets):
+  <!-- SPEAKER-NOTE:
 
-  THE PAYOFF SLIDE of act 6. s18 shattered the monolith, s19 showed one
-  mechanism (pseudocode units). This one names what the physical breakdown
-  bought, over a picture of the corpus as a knowledge graph.
+  So with this physical breakdown, what we actually created is a knowledge
+  graph. Which means that all of these small entities might be connected in
+  different ways. And what is very important to understand and realize that
+  this way the structure itself is information. So we don't just have like the
+  small puzzles, the small puzzles of a big picture, but the actual metadata
+  and how they are connected with each other enables many different ways to
+  traverse that information graph.
 
-  Spoken beats (VERBATIM: these are the four texts the slide used to print
-  as "Mechanical side" / "Semantic side" cards and two bullets, now spoken
-  over the graph):
-    - "An LLM usually can't do a logical transformation in one pass; it
-       works far better on smaller, focused contexts."
-    - "The structure itself is information: the pieces are not just the
-       same text. A knowledge graph with metadata and purpose-dependent
-       traversals."
-    - "It manages the dynamic nature of the corpus: an invalidated
-       assumption tells you exactly what depends on it."
-    - "It enables refactoring the structure itself, and a real CI/CD on
-       the design model."
 
-  BOARD TODO RESOLVED (2026-08-26): the board flagged the word "mechanical"
-  as possibly wrong. Resolved by DROPPING both labels. The pair
-  "Mechanical side" / "Semantic side" is gone; the four cards now each name
-  their own payoff, so no umbrella word has to carry the split. Do not
-  reintroduce the labels.
+  Example one that I mentioned, that for example if I'm changing a function,
+  then I can clearly see how that function or how that unit of information is
+  connected with some other information. So if I want to check whether that,
+  whether the change induces some other changes in the corpus, then now I can
+  create a much more focused smaller context for an LLM to check whether my
+  modification has some impact on other parts of the knowledge graph. Or
+  another example is that right now I can clearly see which parts of the
+  design corpus depends, for example, on an invariant. So if I'm thinking to
+  change that invariant, it provides me a much better understanding and a very
+  clear understanding of which items might be impacted. So even I as a human
+  can better think through whether my change is correct or not.
 
-  HOW TO WALK THE PICTURE: name the shapes once, fast, off the legend at
-  the bottom (units, invariants, domain terms, golden traces: the same
-  addressable entities from the previous slide, now with edges between
-  them). Then show the two traversals, one at a time, and stress that both
-  read the SAME graph, just for different purposes:
-    1. TEAL region: pick one unit, take its direct dependencies, and that
-       is the whole context an LLM gets for that edit. Small, bounded,
-       and generated, not curated by hand.
-    2. AMBER spread: mark one invariant changed, and the graph tells you
-       which units and which golden trace go stale. Nobody has to remember.
-  The line to land: "same corpus, two different questions, two different
-  slices. That is what having a structure means."
 
-  VOCABULARY GUARD: the word "assumption" is deliberately NOT printed on
-  this slide. In siphra this same invalidation pattern returns as the
-  assumption register, and that is where the word gets introduced. Do not
-  preview it here, not even verbally: say "invariant" on this slide.
+  And another very interesting benefit is that this way I can even iterate on
+  the structure itself. And I can have a CI/CD pipeline on the, on the design
+  model as well, because there are many, many checks I can do. I can check the
+  dependencies between the parts, so this enables many innovation on the
+  design layer as well.
 
-  IF SHORT ON TIME: cut the amber traversal narration to one sentence and
-  keep the teal one, then read cards 2 and 4 straight off the slide.
+  And you might think that this whole structure it needed a lot of time to
+  figure out, but actually this was a quite quick organic process, so the
+  whole journey until this point took like seven days starting from an empty
+  paper to have this working structure. And this structure enabled me to move
+  forward. So after this point, I kind of introduced like 10 more layers, and
+  from that point working with the design corpus became again a very fluent
+  experience, so usually I only had just a very few review cycles.
   -->
 
   <style>

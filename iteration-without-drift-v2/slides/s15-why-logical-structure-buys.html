@@ -649,42 +649,43 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="theory" id="s15" data-act="act4" data-owner="draft" data-minutes="1.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Green board note: show the code diff viewer here. Live demo reminder, keep it
-  short: open the diff viewer on a real corpus change so the audience sees the
-  structure moving, not just a static page.
+  <!-- SPEAKER-NOTE:
 
-  VISUAL (2026-08-25): the six bullets became five payoff cards on the right,
-  and the left carries the s14 page a second time, smaller. Deliberate rhyme:
-  s14 dissected that page into organs, here the same page comes back and the
-  organs turn out to be NAMED. Three regions carry an anchor tag, and the
-  referencing now happens INSIDE the page: the "gate" domain term carries a
-  mono "see #gate-policy" tail, and a thin teal curve runs from that tail up
-  to the #gate-policy tag on the pseudo-code block. One concept points at
-  another by name, without leaving the file.
+  Hát erről szerintem már nagyrészt beszéltünk, de egyrészt maga az, hogy ez a
+  domain space is szét lett vágva konkrétabb dolgokra. Ezeken is adott
+  fogózkodókat, hogy hogyan érdemes dolgokat végiggondolni. Például végig
+  tudtam menni csak az invariánsokon. Hiányzik onnan valami szerintem, igen,
+  nem. Megint csak egy nagy szöveget olvasgatva nem biztos, hogy beugrik.
+  Ezáltal az én working memory-mat is jobban ki tudtam használni, kerülni.
 
-  Revision (2026-08-25): the separate "a reference elsewhere" side card and
-  the caption under the page were both dropped. The page mock took over the
-  freed width of the left column and its regions were scaled up with it.
+  Ahogy mondtam, bekerült már ez, hogy címezhetőek az egyes entitások, és már
+  ez például behozta azt, hogy nem tudok mondjuk olyan invariánsra hivatkozni,
+  ami nem létezik, vagy nincsen definiálva. Tehát ezen a ponton már létrejött
+  egy kis CI script, ami nyilván nem túl mélyen, de elkezd ellenőrzéseket
+  végezni a doksin, és hozott is találatokat, tehát segített az építkezésben.
 
-  Delivery: land the exhibit first ("this is the same page you just saw"),
-  then read the tags out loud once, then trace the curve with a finger:
-  "named, typed entities, still in one file". That sentence used to be the
-  caption and is now the spoken guard rail. Then walk the five cards fast.
-  Do not promise a physical split here, that reveal comes later and depends
-  on this slide not spoiling it.
+  A struktúra is sokkal tömörebb token szempontból, mint ha ezt mind szerettem
+  volna leírni.
 
-  The six original bullets, verbatim:
-    1 . Named, typed entities give the human a mental map of the corpus.
-    2 . Helps get around the working-set limits.
-    3 . Concepts become addressable.
-    4 . Enables structural verification: does every referenced entity exist?
-    5 . A more token-dense store of information; safer transformation of the
-        corpus.
-    6 . And it enables iterating on the structure itself.
 
-  Bullets 5 and 6 were merged into one card ("Denser and safer") because they
-  are the same beat: the structure is now a thing you can operate on.
+  And this is something that can really help. So even outside of this context,
+  I had many examples when I was working on a design document and I just kept
+  finding some issues that we fixed but then we find some other issues, and
+  when I try to understand why this is happening, why we just, you know,
+  create a coherent document, the issue was that we kind of wanted to describe
+  a state machine in a prose, and this was very fragile for LLM-based editing.
+  So then we decided, okay, let's put the state machine into a table, and
+  after we did it in one or two rounds, we were able to make it coherent.
+
+  So this is something that you need to remember, that it really matters in
+  which format do you store given information, because it impacts a lot how
+  easy it is for LLM to work with that information.
+
+
+  And my original thesis that HTML might help worked out pretty well. And it
+  also enabled some kinda document related innovation. For example, I built in
+  the ecode if view into the Sudocode, and this helped me to better understand
+  how the kernel code is changing from capability layer to capability layer.
   -->
 
   <style>

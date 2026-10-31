@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — s29-pointer</title>
+<title>Iteration Without Drift — s26e-two-things-to-design-v2</title>
 <style>
 
 @font-face {
@@ -646,104 +646,269 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </style>
 </head>
 <body class="single-mode">
-<section class="slide slide--light" id="s29" data-act="act9" data-owner="draft" data-minutes="0.5"
+<section class="slide slide--light" data-lane="theory" id="s26e" data-act="act8" data-owner="draft" data-minutes="0.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Close with the pointer.
-  The centerpiece is a real screenshot of the companion site's cross-map view
-  (assets/img/companion-triangle.png, provided by the owner 2026-08-26): the
-  three projects sit at the corners, each dot is one building block, and the
-  overlap lobes carry the counts.
-  Closing spoken beat, the one number to say out loud: 23 building blocks
-  recur in ALL THREE projects. That is the recurrence claim of the whole talk,
-  standing on the site anyone can open and check.
+  <!-- SPEAKER-NOTE:
+
+  So I already mentioned that I'm using LLM review loops frequently and I want
+  to share a few learnings about them because I learned a lot. Sometimes I
+  learned a lot about how they can fail miserably. So I think, so I believe
+  this part can be very handy for you.
+
+
+  So when we are talking about an LLM review loop, then we need to think about
+  two major perspective. One is the control loop itself, and the other is the
+  lenses that we use for the actual review.
+
+
+  So in the case of the loop, you need to consider how to deal with the
+  findings, when do you want a human being involved? How you apply those
+  changes? What to do when you finished one round of review? For example, it
+  is possible that in the first round you run all the lenses and then based on
+  the findings in, the next round, you only run just a few of them, which
+  seems meaningful based on the findings. There are many options here. What is
+  important that you need to be very careful about how you design these
+  perspectives, and also it might be important that you have a budget limit,
+  so you say okay, oh, maximum five runs or maximum twenty sub agents,
+  whatever makes sense in your specific case.
+
+  And then you think about the lenses. One lens is kind of one perspective,
+  which includes the questions that you want to use for the measurement. You
+  need to think about the sensitivity. So for example, if you are looking for
+  findings, you can classify them into like P1, P2, P3, whatever severity
+  level makes sense to you, and you may say that by default I'm interested
+  only in P1 and P2 level of findings. And from a process perspective, you
+  should have a calibration attached to the lens, which means that you compare
+  the results of the lens to some reference cases.
   -->
 
   <style>
-    #s29 .content {
+    #s26e .content {
       flex: 1; min-height: 0;
-      display: grid; grid-template-columns: 700px 1fr; gap: 40px;
-      align-items: center;
+      display: flex; flex-direction: column; gap: 24px; justify-content: center;
     }
 
-    /* ---- browser-chrome frame (deck browser-mock vocabulary, s14/s15) ---- */
-    #s29 .shot-col { display: flex; flex-direction: column; gap: 12px; }
-    #s29 .frame {
-      border-radius: 14px; overflow: hidden;
+    /* ==== the row: the ring (left, review on its right) | one lens, up close == */
+    #s26e .row {
+      flex: none; height: 508px;
+      display: grid; grid-template-columns: 1fr 380px; gap: 28px;
+      align-items: stretch;
+    }
+
+    /* ---- the ring ----------------------------------------------------------- */
+    /* the svg is pinned to the column box: a percentage height on a flex item
+       does not resolve here, and the aspect height would overrun the row */
+    #s26e .viz { min-width: 0; position: relative; }
+    #s26e .viz svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+    #s26e .st {
+      fill: var(--card-bg); stroke: var(--muted-2); stroke-width: 1.7;
+    }
+    #s26e .st--reviewer {
+      fill: color-mix(in srgb, var(--theory) 9%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--theory) 55%, var(--hairline));
+    }
+    #s26e .st-t {
+      font-size: 18px; font-weight: 850; fill: var(--white); letter-spacing: -0.014em;
+    }
+    #s26e .st-s {
+      font-size: 13.5px; font-weight: 760; fill: var(--muted-2); letter-spacing: 0.005em;
+    }
+    #s26e .st-s--warn { fill: var(--story-on-dark); font-weight: 850; }
+    #s26e .edge { fill: none; stroke: var(--muted-2); stroke-width: 2.4; stroke-linecap: round; }
+    #s26e .edge--next { stroke-dasharray: 6 6; }
+    #s26e .ah { fill: var(--muted-2); }
+    #s26e .cap {
+      font-size: 13.5px; font-weight: 800; fill: var(--muted-2); letter-spacing: 0.01em;
+    }
+    #s26e .cap-ev { fill: var(--theory-on-dark); font-weight: 850; }
+    #s26e .finding { fill: var(--theory); }
+
+    /* the end state (UML final state): ring + dot in the edge colour */
+    #s26e .end-ring { fill: none; stroke: var(--muted-2); stroke-width: 2.4; }
+    #s26e .end-dot { fill: var(--muted-2); }
+
+    /* the human as an inner loop: an amber station below the disposition */
+    #s26e .st--human {
+      fill: color-mix(in srgb, var(--story) 8%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--story) 55%, var(--hairline));
+    }
+    #s26e .cap--warn { fill: var(--story-on-dark); font-weight: 850; }
+
+    /* the lens glyph (s26c vocabulary) */
+    #s26e .lens { fill: none; stroke: var(--theory); stroke-width: 2.8; stroke-linecap: round; }
+    #s26e .lens-glass { fill: color-mix(in srgb, var(--theory) 14%, transparent); }
+
+    /* the human gate (s25 vocabulary) */
+    #s26e .exit { fill: none; stroke: var(--story); stroke-width: 2.2; stroke-dasharray: 5 5; stroke-linecap: round; }
+    #s26e .ah-new { fill: var(--story); }
+    #s26e .bar { fill: var(--story); }
+    #s26e .bar-hatch { stroke: var(--navy-1); stroke-width: 4; }
+    #s26e .human { fill: var(--story); }
+    #s26e .human-t {
+      font-size: 14.5px; font-weight: 850; fill: var(--story-on-dark); letter-spacing: -0.01em;
+    }
+
+    /* ---- one lens, up close: the review box's glyph, zoomed ----------------- */
+    #s26e .zoom {
+      min-width: 0;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    #s26e .zoom h3 {
+      flex: none;
+      margin: 0 0 0 26px;
+      font-size: 30px; font-weight: 850; line-height: 1.1;
+      letter-spacing: -0.024em; color: var(--white);
+    }
+    /* the glass at 80% of its iteration-4 size (470x380 -> 376x304) */
+    #s26e .zoom svg { flex: none; display: block; width: 376px; height: 304px; margin-top: 12px; }
+    #s26e .big-lens { fill: none; stroke: var(--theory); stroke-width: 9; stroke-linecap: round; }
+    #s26e .big-lens-handle { fill: none; stroke: var(--theory); stroke-width: 18; stroke-linecap: round; }
+    #s26e .big-glass { fill: color-mix(in srgb, var(--theory) 9%, transparent); }
+    #s26e .prop {
+      font-size: 28px; font-weight: 820; fill: var(--white); letter-spacing: -0.016em;
+    }
+    #s26e .prop-rule { stroke: color-mix(in srgb, var(--theory) 45%, transparent); stroke-width: 2; stroke-linecap: round; }
+
+    /* ==== the bottom band: one centred line ================================== */
+    #s26e .band {
+      flex: none;
+      width: fit-content; max-width: 100%;
+      margin: 0 auto;
+      padding: 15px 40px 16px;
+      border-radius: var(--radius-card);
+      background: var(--card-bg);
       border: 1px solid var(--hairline);
-      background: var(--navy-ink);
-      box-shadow: 0 18px 44px var(--glow-blue);
+      font-size: 21px; font-weight: 680; line-height: 1.3; color: var(--muted-2);
+      letter-spacing: -0.01em; text-align: center; white-space: nowrap;
     }
-    #s29 .frame-bar {
-      height: 40px; display: flex; align-items: center; gap: 8px;
-      padding: 0 14px;
-      background: var(--card-bg-strong);
-      border-bottom: 1px solid var(--hairline);
-    }
-    #s29 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted-3); }
-    #s29 .dot:first-child { margin-left: 2px; }
-    #s29 .url-pill {
-      margin-left: 12px; flex: 1;
-      padding: 4px 12px; border-radius: var(--radius-chip);
-      background: var(--navy-0); border: 1px solid var(--hairline);
-      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
-      color: var(--muted-2); letter-spacing: -0.01em;
-    }
-    /* The screenshot is dark on a light slide by design: the contrast is what
-       makes it read as a screenshot rather than as slide artwork. Sized to the
-       frame body exactly (source is 1840x1380, so 4:3) to avoid letterboxing. */
-    #s29 .shot { display: block; width: 698px; height: 523px; }
-
-    /* ---- link cards -------------------------------------------------------
-       Four compact cards stacked beside the screenshot (patterns, the
-       SelfReport skill, this deck, the previous talk). The stack alternates
-       card--strong / plain so the rhythm reads as deliberate. */
-    #s29 .cards { display: flex; flex-direction: column; gap: 12px; }
-    #s29 .card { padding: 15px 20px; border-radius: 16px; }
-    #s29 .card h3 { margin: 0 0 6px; font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
-    #s29 .card h3 a {
-      color: var(--white); text-decoration: underline; text-underline-offset: 4px;
-    }
-    #s29 .card p { margin: 0; font-size: 14px; font-weight: 600; color: var(--muted-2); line-height: 1.35; }
+    #s26e .band .band-k { color: var(--muted); font-weight: 820; }
+    #s26e .band .sep { padding: 0 12px; color: var(--muted-3); }
+    #s26e .band b { font-weight: 860; }
+    #s26e .band b.loop-w { color: var(--story-on-dark); }
+    #s26e .band b.lens-w { color: var(--theory-on-dark); }
   </style>
 
   <div class="title-block">
-    <div class="kicker">One more thing</div>
-    <h1>The companion site</h1>
+    <div class="kicker">Designing LLM review loops</div>
+    <h1>The (control) loop and the lens(es)</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="shot-col fade-up">
-      <div class="frame">
-        <div class="frame-bar">
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="url-pill">coding-with-bob.github.io/patterns</span>
-        </div>
-        <img class="shot" src="../assets/img/companion-triangle.png"
-          alt="A screenshot from the companion site: three projects, pairflow, project-s and confpipeline, sit at the corners of a triangle. Each project holds a crescent of colored dots for the building blocks found only there: 27, 22 and 23. Between every pair sits an overlap lobe, pairflow plus project-s with 4 blocks marked the thin edge, pairflow plus confpipeline with 16 blocks, project-s plus confpipeline with 11 blocks. In the middle of the triangle a dashed circle holds the shared core, labelled in all three, 23 blocks.">
+
+    <div class="row">
+
+      <!-- ============ the ring, review on the right, running clockwise ====== -->
+      <div class="viz fade-up">
+        <svg viewBox="0 0 888 420" preserveAspectRatio="xMaxYMid meet" role="img"
+          aria-label="A control loop drawn as a clockwise ring of four stations. On the right, next to the enlarged lens, a box labelled review contains three teal magnifying glasses representing different perspectives, with the caption one lens per agent. An arrow carrying three teal dots captioned findings plus evidence leads down and left to a box at the bottom labelled disposition, with the sub-line fix, investigate, decline. From disposition an arrow carrying two teal dots captioned accepted findings plus evidence leads left and up to a box on the left labelled apply. From apply an arrow leads up and right to a box at the top labelled next round, with a question mark, and the sub-line which lens or lenses; from its right side an arrow leads right and down back to review. Between next round and disposition, on the same vertical axis, sits one final-state symbol, a ring around a filled dot, captioned loop ends; an arrow captioned out of budget comes down into it from next round, and an arrow captioned no accepted findings comes up into it from disposition. Below disposition, a dashed amber arrow captioned needs a decision passes a short hatched amber barrier into a box labelled human decides, and a second dashed amber arrow beside the barrier carries the decision back up into disposition, a small inner loop.">
+          <defs>
+            <marker id="s26e-ah" viewBox="0 0 12 12" refX="11" refY="6"
+              markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+              <path class="ah" d="M0 0 L12 6 L0 12 Z" />
+            </marker>
+            <marker id="s26e-ah-new" viewBox="0 0 12 12" refX="11" refY="6"
+              markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+              <path class="ah-new" d="M0 0 L12 6 L0 12 Z" />
+            </marker>
+            <clipPath id="s26e-barclip">
+              <rect x="418" y="322" width="54" height="18" rx="6" />
+            </clipPath>
+          </defs>
+
+          <!-- the four edges of the ring (clockwise: review, disposition, apply, next round?).
+               Each edge is a straight run with one rounded corner and ends on a straight
+               stretch, so every arrowhead sits on the line's own direction. -->
+          <path class="edge" d="M774 206 L774 227 Q774 263 738 263 L575 263" marker-end="url(#s26e-ah)" />
+          <path class="edge" d="M369 263 L172 263 Q136 263 136 227 L136 189" marker-end="url(#s26e-ah)" />
+          <circle class="finding" cx="230" cy="263" r="4.5" />
+          <circle class="finding" cx="252" cy="263" r="4.5" />
+          <text class="cap" x="190" y="289">accepted findings</text>
+          <text class="cap" x="190" y="307">+ <tspan class="cap-ev">evidence</tspan></text>
+          <path class="edge" d="M136 125 L136 81 Q136 45 172 45 L363 45" marker-end="url(#s26e-ah)" />
+          <path class="edge" d="M569 45 L738 45 Q774 45 774 81 L774 96" marker-end="url(#s26e-ah)" />
+
+          <!-- the findings travelling along the first edge, each carrying its evidence -->
+          <circle class="finding" cx="718" cy="263" r="4.5" />
+          <circle class="finding" cx="696" cy="263" r="4.5" />
+          <circle class="finding" cx="674" cy="263" r="4.5" />
+          <text class="cap" x="670" y="289">findings</text>
+          <text class="cap" x="670" y="307">+ <tspan class="cap-ev">evidence</tspan></text>
+
+          <!-- station 1 (right): review can apply several lenses, one per agent here -->
+          <rect class="st st--reviewer" x="670" y="102" width="208" height="104" rx="16" />
+          <text class="st-t" x="774" y="126" text-anchor="middle">review</text>
+          <circle class="lens lens-glass" cx="723" cy="151" r="11" />
+          <path class="lens" d="M731 159 L738 166" />
+          <circle class="lens lens-glass" cx="774" cy="151" r="11" />
+          <path class="lens" d="M782 159 L789 166" />
+          <circle class="lens lens-glass" cx="825" cy="151" r="11" />
+          <path class="lens" d="M833 159 L840 166" />
+          <text class="st-s" x="774" y="190" text-anchor="middle">one lens per agent</text>
+
+          <!-- station 2 (bottom): disposition -->
+          <rect class="st" x="369" y="228" width="200" height="70" rx="16" />
+          <text class="st-t" x="469" y="257" text-anchor="middle">disposition</text>
+          <text class="st-s" x="469" y="281" text-anchor="middle">fix &middot; investigate &middot; decline</text>
+
+          <!-- station 3 (left): apply, a title-only station -->
+          <rect class="st" x="60" y="125" width="152" height="58" rx="16" />
+          <text class="st-t" x="136" y="160" text-anchor="middle">apply</text>
+
+          <!-- station 4 (top): the gate, same size and axis as disposition -->
+          <rect class="st" x="369" y="10" width="200" height="70" rx="16" />
+          <text class="st-t" x="469" y="39" text-anchor="middle">next round?</text>
+          <text class="st-s" x="469" y="63" text-anchor="middle">which lens(es)?</text>
+
+          <!-- one end state on the axis, reached from the gate and from the disposition -->
+          <path class="edge" d="M469 80 V140" marker-end="url(#s26e-ah)" />
+          <path class="edge" d="M469 228 V168" marker-end="url(#s26e-ah)" />
+          <circle class="end-ring" cx="469" cy="154" r="12" />
+          <circle class="end-dot" cx="469" cy="154" r="6.5" />
+          <text class="cap" x="459" y="116" text-anchor="end">out of budget</text>
+          <text class="cap" x="459" y="202" text-anchor="end">no accepted findings</text>
+          <text class="cap" x="489" y="159">loop ends</text>
+
+          <!-- the human as an inner loop: the barrier stops only the way down -->
+          <path class="exit" d="M445 298 V318" marker-end="url(#s26e-ah-new)" />
+          <rect class="bar" x="418" y="322" width="54" height="18" rx="6" />
+          <g clip-path="url(#s26e-barclip)">
+            <path class="bar-hatch" d="M406 350 L428 314" />
+            <path class="bar-hatch" d="M424 350 L446 314" />
+            <path class="bar-hatch" d="M442 350 L464 314" />
+            <path class="bar-hatch" d="M460 350 L482 314" />
+          </g>
+          <path class="exit" d="M445 344 V362" marker-end="url(#s26e-ah-new)" />
+          <path class="exit" d="M493 366 V302" marker-end="url(#s26e-ah-new)" />
+          <text class="cap cap--warn" x="410" y="336" text-anchor="end">needs a decision</text>
+          <rect class="st st--human" x="385" y="366" width="168" height="42" rx="14" />
+          <circle class="human" cx="411" cy="378" r="6.5" />
+          <path class="human" d="M401 401 q0 -14 10 -14 q10 0 10 14 Z" />
+          <text class="human-t" x="427" y="392">human decides</text>
+        </svg>
+      </div>
+
+      <!-- ============ one lens, up close ===================================== -->
+      <div class="zoom fade-up">
+        <h3>A measuring instrument</h3>
+        <!-- viewBox starts at x=-52 so the glass centre sits under the heading midpoint -->
+        <svg viewBox="-52 0 470 380" preserveAspectRatio="xMinYMid meet" role="img"
+          aria-label="One of the review lenses enlarged: a large teal magnifying glass with three words inside it, questions, sensitivity, calibration.">
+          <circle class="big-lens big-glass" cx="190" cy="172" r="158" />
+          <path class="big-lens-handle" d="M305 287 L378 360" />
+          <text class="prop" x="190" y="116" text-anchor="middle">questions</text>
+          <line class="prop-rule" x1="150" y1="138" x2="230" y2="138" />
+          <text class="prop" x="190" y="182" text-anchor="middle">sensitivity</text>
+          <line class="prop-rule" x1="150" y1="204" x2="230" y2="204" />
+          <text class="prop" x="190" y="248" text-anchor="middle">calibration</text>
+        </svg>
       </div>
     </div>
 
-    <div class="cards">
-      <div class="card card--strong fade-up">
-        <h3 class="mono"><a href="https://coding-with-bob.github.io/patterns" target="_blank" rel="noopener">coding-with-bob.github.io/patterns</a></h3>
-        <p>The cross-mapped ledger of building blocks distilled from three real projects.</p>
-      </div>
-      <div class="card fade-up">
-        <h3 class="mono"><a href="https://github.com/coding-with-bob/patterns/tree/main/.claude/skills/SelfReport" target="_blank" rel="noopener">SelfReport skill in the patterns repo</a></h3>
-        <p>Use this skill to create the same HTML report for your own project: make your process building blocks visible, for the good or the bad.</p>
-      </div>
-      <div class="card card--strong fade-up">
-        <h3 class="mono"><a href="https://coding-with-bob.github.io/talks/iteration-without-drift-v2" target="_blank" rel="noopener">coding-with-bob.github.io/talks/iteration-without-drift-v2</a></h3>
-        <p>These slides, published as a self-contained web deck.</p>
-      </div>
-      <div class="card fade-up">
-        <h3 class="mono"><a href="https://coding-with-bob.github.io/talks/from-prompts-to-convergence" target="_blank" rel="noopener">coding-with-bob.github.io/talks/from-prompts-to-convergence</a></h3>
-        <p>My previous talk, the precursor of this one.</p>
-      </div>
-    </div>
+    <!-- ============ why the split matters, in one line ======================= -->
+    <p class="band fade-up"><span class="band-k">They fail independently:</span> good lens, <b class="loop-w">bad loop</b><span class="sep">&middot;</span>good loop, <b class="lens-w">bad lens</b>.</p>
   </div>
 </section>
 <script>

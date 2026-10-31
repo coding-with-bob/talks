@@ -649,33 +649,53 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="theory" id="s26b" data-act="act8" data-owner="draft" data-minutes="1.25"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (merged 2026-10-21):
-  Walk the motivation, triage, stopping conditions, then the value band.
-  Sources: docs/review-loop-and-lens-first-principles*.md and
-  codetalks/recording/slides/s26-review-loops.md.
+  <!-- SPEAKER-NOTE:
 
-  A fresh reader probes intent transfer. A misreading can reveal ambiguity,
-  but does not prove every implementer will fail in the same way.
+  So now let's go a bit deeper into the perspective of the loop. So this is a
+  big topic, so I only highlight a few important perspective. Actually, this
+  just, this topic could be turned into a talk itself.
 
-  The war-story counts are approximate. The important count is zero
-  rejections: every finding was accepted and acted on. Every disposition
-  needs a reason, including fixing, investigating, and declining. A
-  plausible finding may need investigation before a change is justified.
 
-  DoD means definition of done. Define it at the document's intended
-  abstraction level: an architecture review should not silently grow into
-  a demand for every implementation detail. A concrete implementation
-  obstacle that invalidates the architecture is still a relevant finding.
-  Set the cost limit separately. Acceptance, a needed decision, and budget
-  exhaustion are distinct exits. Only acceptance approves the artifact.
-  Re-check changes and relevant side effects. A fixed scope alone does not
-  guarantee convergence.
+  By default the lenses are running in a fresh context. So the main reason is
+  that we want to make sure that the reviewer is not biased by the author. On
+  the other hand, there is another perspective here, so if the reviewer with a
+  fresh context finds some ambiguity, then there is a high chance that the
+  implementer will also find that ambiguity. So this way, with a fresh
+  context, we can also somewhat test the intent transfer in some cases.
 
-  The value band highlights task completion without an explicit value
-  check. The 850-line specification proposed for 10 lines of code is a
-  project experience. Explain that nobody in that loop was asked whether
-  the change was worth making. Declining can be the justified decision.
-  Then hand over to designing the lenses.
+
+  Another important issue is that when you have the findings, you need to have
+  a disposition process. Here we can see an example. So in a project I didn't
+  have that, and after a while I just realized that in many LLM review rounds
+  I had 700 findings and zero was declined, and this was the main reason why
+  some of my tasks became very bloated. Because for an LLM it's super easy to
+  find something which can be improved, but if you add something to the
+  document that you or to the artifact that you are reviewing, then in the
+  next round there is a higher chance that you will find something, so this
+  way you can get into a never-ending loop. So it is very important to think
+  about how can you make sure that you only focus on the, on the really
+  important findings. Idea that you can leverage here that you can, so you
+  have to classify all the findings into three categories: one is that you
+  really want to fix something that you might want to investigate, and the
+  third is that you just decline because it is not really meaningful.
+
+
+  And the third topic, which is kinda highly related to the previous one, is
+  that you need to think about when the loop should stop. Because as I
+  mentioned, LLMs are great at, so they're much better at finding something
+  than just being done. So you might need to think about, you might give a
+  maximum budget, like you can run maximum five rounds. Related to the
+  disposition topic, it is very important that you only consider the topics
+  which are on the right abstraction level. So, for example, when I was doing
+  some review for the architecture and the reviewer might return some
+  implementation details, and it's very important that those are declined.
+
+
+  It is important to keep in mind that LLMs were trained or were mainly
+  trained for finishing a task so they are not necessarily good at reasoning
+  about whether it is worth making a change or not. So when you design the
+  loop, you really need to make sure that the loop is responsible for the
+  value judgment.
   -->
 
   <style>
@@ -684,102 +704,98 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       display: flex; flex-direction: column; gap: 24px; justify-content: center;
     }
 
-    /* ==== the three cards ================================================= */
+    /* ==== the three cards: hook on top, a graphic in the middle, one line under
+       (s26d panel grammar: hairline strokes, theory/story accents) ============= */
     #s26b .cards {
-      flex: none; height: 432px;
-      display: grid; grid-template-columns: 1fr 1.32fr 1fr; gap: 22px;
+      flex: none;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px;
       align-items: stretch;
     }
-    /* Cards are TOP-aligned, not centered: the three h3s then share one
-       baseline across the row, which is the calm reading. The two short
-       cards keep their empty lower half deliberately. */
     #s26b .card {
-      min-width: 0;
-      padding: 30px 32px;
-      display: flex; flex-direction: column; justify-content: flex-start; gap: 16px;
+      min-width: 0; min-height: 0;
+      padding: 26px 28px 24px;
+      display: flex; flex-direction: column;
     }
+    /* all three h3s are one line, so they share one baseline across the row */
     #s26b .card h3 {
-      margin: 0;
-      font-size: 29px; font-weight: 840; color: var(--white);
-      letter-spacing: -0.026em; line-height: 1.12; text-wrap: balance;
+      flex: none; margin: 0; white-space: nowrap;
+      font-size: 25px; font-weight: 850; color: var(--white);
+      letter-spacing: -0.024em; line-height: 1.13; text-wrap: balance;
     }
-    #s26b .card p {
-      margin: 0;
-      font-size: 20px; font-weight: 640; color: var(--muted); line-height: 1.42;
+    #s26b .lead {
+      flex: none; margin: 12px 0 0;
+      font-size: 18px; font-weight: 640; line-height: 1.4; color: var(--muted-2);
     }
-    #s26b .card p b { color: var(--white); font-weight: 850; }
-
-    /* the failure-mode card sits in the middle and carries the evidence */
-    #s26b .card--war { border-color: var(--hairline-blue); }
-    #s26b .card--stop { gap: 12px; }
-
-    /* ---- war-story inset (s16 quote-block grammar, scaled down) ---------- */
-    #s26b .war {
-      border-radius: 18px;
-      padding: 16px 20px 18px;
-      background: color-mix(in srgb, var(--series-flat) 8%, var(--card-bg-strong));
-      border: 1px solid color-mix(in srgb, var(--series-flat) 34%, var(--hairline));
-    }
-    #s26b .war-lead {
-      font-size: 14px; font-weight: 850; letter-spacing: 0.14em;
+    #s26b .eyebrow {
+      flex: none; margin: 0 0 8px;
+      font-size: 13px; font-weight: 850; letter-spacing: 0.13em;
       text-transform: uppercase; color: var(--muted-2);
-      margin-bottom: 8px;
     }
-    #s26b .war p { font-size: 21px; font-weight: 700; line-height: 1.34; color: var(--white); }
-    #s26b .war p b { color: var(--series-flat); font-weight: 880; }
-
-    #s26b .verdict { font-weight: 840; color: var(--white); }
-
-    /* the three end states of a loop (s26 ring vocabulary) */
-    #s26b .ends {
-      margin: 0; padding: 0; list-style: none;
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    #s26b .ends li {
-      padding: 6px 13px;
-      font-size: 16px; font-weight: 820; color: var(--white); letter-spacing: -0.01em;
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--theory) 10%, var(--card-bg));
-      border: 1px solid color-mix(in srgb, var(--theory) 40%, var(--hairline));
-    }
-    #s26b .ends li.ends--warn {
-      color: var(--story-on-dark);
-      background: color-mix(in srgb, var(--story) 12%, var(--card-bg));
-      border-color: color-mix(in srgb, var(--story) 50%, var(--hairline));
-    }
-
-    /* ==== the bottom band ================================================= */
-    #s26b .band {
-      flex: none;
-      width: fit-content; min-width: 40%; max-width: 100%;
-      margin: 0 auto;
-      display: grid; grid-template-columns: auto 260px;
-      align-items: center; gap: 24px;
-      padding: 20px 48px 21px;
-      border-radius: 22px;
-      background: color-mix(in srgb, var(--theory) 11%, var(--card-bg));
-      border: 1px solid var(--hairline-blue);
-    }
-    #s26b .band p {
-      margin: 0; min-width: 0;
-      font-size: 24px; font-weight: 650; line-height: 1.3; color: var(--muted);
-    }
-    #s26b .band p b { color: var(--white); font-weight: 880; }
-    #s26b .band-eg {
-      padding-left: 24px;
-      border-left: 1px solid var(--hairline);
+    #s26b .foot {
+      flex: none; margin: 0;
+      font-size: 18px; font-weight: 650; line-height: 1.38; color: var(--muted-2);
       text-wrap: balance;
     }
-    #s26b .band-eg .eg-k {
-      display: block;
-      font-size: 13px; font-weight: 850; letter-spacing: 0.13em;
-      text-transform: uppercase; color: var(--muted-3);
-      margin-bottom: 5px;
+    #s26b .foot b { color: var(--white); font-weight: 840; }
+    /* the graphic area takes the card's spare height and centres its content */
+    #s26b .viz { flex: 1 0 auto; display: flex; align-items: center; justify-content: center; margin: 12px 0 14px; }
+    /* graphics render at 1:1 of their viewBox width, so the 14.5px captions stay 14.5px */
+    #s26b .viz svg { display: block; width: 100%; max-width: 372px; height: auto; }
+    #s26b .stat-group { width: 100%; }
+
+    /* ---- shared svg vocabulary (s26d / s26e) ------------------------------- */
+    #s26b .doc { fill: var(--card-bg); stroke: var(--muted-2); stroke-width: 1.7; }
+    #s26b .doc-line { fill: var(--muted-3); }
+    #s26b .doc-line--hot { fill: color-mix(in srgb, var(--story) 25%, var(--card-bg)); stroke: var(--story); stroke-width: 1.5; }
+    #s26b .lead-line { fill: none; stroke: color-mix(in srgb, var(--story) 60%, var(--hairline)); stroke-width: 1.8; stroke-dasharray: 4 4; stroke-linecap: round; }
+    #s26b .reader { fill: color-mix(in srgb, var(--theory) 70%, var(--card-bg)); }
+    #s26b .ask { font-size: 26px; font-weight: 880; fill: var(--story-on-dark); }
+    #s26b .cap { font-size: 14.5px; font-weight: 800; fill: var(--muted-2); letter-spacing: 0.01em; }
+    #s26b .cap-k { font-size: 15px; font-weight: 850; fill: var(--white); }
+    #s26b .cap--warn { fill: var(--story-on-dark); }
+    #s26b .cap--ok { fill: var(--theory-on-dark); font-weight: 850; }
+    #s26b .node { fill: var(--card-bg); stroke: var(--muted-2); stroke-width: 1.7; }
+    #s26b .node-t { font-size: 16px; font-weight: 850; fill: var(--white); }
+    #s26b .bus { fill: none; stroke: var(--muted-2); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    #s26b .ah { fill: var(--muted-2); }
+    #s26b .end-ring { fill: none; stroke: var(--muted-2); stroke-width: 2.2; }
+    #s26b .end-ring--ok { stroke: var(--theory); }
+    #s26b .end-dot { fill: var(--muted-2); }
+    #s26b .end-dot--ok { fill: var(--theory); }
+    #s26b .human { fill: var(--story); }
+
+    /* ---- the war story as three stat tiles --------------------------------- */
+    #s26b .card--war { border-color: var(--hairline-blue); }
+    #s26b .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 170px; gap: 14px;
     }
-    #s26b .band-eg span.eg-t {
-      font-size: 17px; font-weight: 700; line-height: 1.36; color: var(--muted-2);
+    #s26b .stat {
+      min-width: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      border-radius: 18px;
+      background: var(--card-bg-strong);
+      border: 1px solid var(--hairline);
     }
-    #s26b .band-eg span.eg-t b { color: var(--white); font-weight: 860; }
+    #s26b .stat-n {
+      font-size: 44px; font-weight: 880; line-height: 1; letter-spacing: -0.03em;
+      color: var(--white); font-variant-numeric: tabular-nums;
+    }
+    #s26b .stat-k { font-size: 17px; font-weight: 760; color: var(--muted-2); }
+    #s26b .stat--zero {
+      background: color-mix(in srgb, var(--series-flat) 8%, var(--card-bg-strong));
+      border-color: color-mix(in srgb, var(--series-flat) 40%, var(--hairline));
+    }
+    #s26b .stat--zero .stat-n { color: var(--series-flat); }
+    #s26b .stat--zero .stat-k { color: var(--white); }
+
+    /* ==== the bottom band: one claim (s26d / s26e band grammar) ============== */
+    #s26b .band {
+      flex: none; width: fit-content; margin: 0 auto;
+      padding: 16px 48px; border-radius: var(--radius-card);
+      background: var(--card-bg); border: 1px solid var(--hairline);
+    }
+    #s26b .band p { margin: 0; font-size: 23px; font-weight: 640; line-height: 1.3; color: var(--muted); }
+    #s26b .band b { color: var(--theory); font-weight: 880; }
   </style>
 
   <div class="title-block">
@@ -792,47 +808,99 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
     <div class="cards">
 
-      <!-- 1. why review at all -->
+      <!-- 1. why review at all: the reviewer's question forecasts the implementer's -->
       <div class="card fade-up">
         <h3>The fresh reader is a forecast</h3>
-        <p>A fresh reviewer&rsquo;s misreading can reveal ambiguity a fresh
-          implementer may also face.<br><br>Review tests <b>intent transfer</b>.</p>
-      </div>
-
-      <!-- 2. what it costs to skip triage -->
-      <div class="card card--war fade-up">
-        <h3>Without triage: a neverending nitpicking loop</h3>
-        <div class="war">
-          <div class="war-lead">War story</div>
-          <p>One project&rsquo;s first approach: ~100 rounds, ~700 findings,
-            <b>zero rejections</b>.</p>
+        <div class="viz">
+          <svg viewBox="0 0 372 222" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="One document with one highlighted ambiguous line. Below it two readers, the reviewer now and the implementer later, both ask the same question mark at that line.">
+            <rect class="doc" x="116" y="4" width="140" height="112" rx="10" />
+            <rect class="doc-line" x="136" y="24" width="98" height="7" rx="3.5" />
+            <rect class="doc-line doc-line--hot" x="129" y="42" width="114" height="18" rx="6" />
+            <rect class="doc-line" x="136" y="72" width="90" height="7" rx="3.5" />
+            <rect class="doc-line" x="136" y="92" width="70" height="7" rx="3.5" />
+            <!-- the same line, read twice -->
+            <path class="lead-line" d="M129 51 Q74 51 74 124" />
+            <path class="lead-line" d="M243 51 Q298 51 298 124" />
+            <!-- reader 1: the reviewer, now -->
+            <circle class="reader" cx="74" cy="140" r="11" />
+            <path class="reader" d="M57 180 q0 -24 17 -24 q17 0 17 24 Z" />
+            <text class="ask" x="94" y="148">?</text>
+            <text class="cap-k" x="74" y="200" text-anchor="middle">reviewer</text>
+            <text class="cap" x="74" y="218" text-anchor="middle">now</text>
+            <!-- reader 2: the implementer, later -->
+            <circle class="reader" cx="298" cy="140" r="11" />
+            <path class="reader" d="M281 180 q0 -24 17 -24 q17 0 17 24 Z" />
+            <text class="ask" x="318" y="148">?</text>
+            <text class="cap-k" x="298" y="200" text-anchor="middle">implementer</text>
+            <text class="cap" x="298" y="218" text-anchor="middle">later</text>
+          </svg>
         </div>
-        <p class="verdict"><b>Every action requires a reason.</b><br>Fix, investigate, or decline.</p>
+        <p class="foot">Review tests <b>intent transfer</b>. Ambiguity for the reviewer <b>signals ambiguity</b> for implementers.</p>
       </div>
 
-      <!-- 3. how the loop ends -->
+      <!-- 2. what it costs to skip the disposition -->
+      <div class="card card--war fade-up">
+        <h3>Design the disposition</h3>
+        <div class="viz">
+          <div class="stat-group">
+            <div class="eyebrow">One project, first approach</div>
+            <div class="stats">
+              <div class="stat"><span class="stat-n">~100</span><span class="stat-k">rounds</span></div>
+              <div class="stat"><span class="stat-n">~700</span><span class="stat-k">findings</span></div>
+              <div class="stat stat--zero"><span class="stat-n">0</span><span class="stat-k">declined</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="foot"><b>Every finding is classified (with a reason):</b><br>fix &middot; investigate &middot; decline.</p>
+      </div>
+
+      <!-- 3. how the loop ends: three exits from a round (s26e ring vocabulary) -->
       <div class="card card--stop fade-up">
         <h3>Design the stop</h3>
-        <p>LLMs are better at finding something than at being done.</p>
-        <p><b>DoD at the right abstraction level + cost limit</b></p>
-        <ul class="ends">
-          <li>accepted</li>
-          <li class="ends--warn">needs a decision</li>
-          <li>budget exhausted</li>
-        </ul>
-        <p>Only acceptance is <b>approval</b>.</p>
+        <p class="lead">LLMs are better at finding something than at being done.</p>
+        <div class="viz">
+          <svg viewBox="0 -18 372 168" preserveAspectRatio="xMidYMid meet" role="img"
+            aria-label="A round has three exits. No accepted findings ends the loop at a final-state symbol captioned approval. Needs a decision leads to an amber human. Out of budget ends the loop at a final-state symbol captioned loop ends.">
+            <defs>
+              <marker id="s26b-ah" viewBox="0 0 12 12" refX="11" refY="6"
+                markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+                <path class="ah" d="M0 0 L12 6 L0 12 Z" />
+              </marker>
+            </defs>
+            <rect class="node" x="2" y="57" width="78" height="40" rx="12" />
+            <text class="node-t" x="41" y="83" text-anchor="middle">round</text>
+            <!-- one bus, three exits -->
+            <path class="bus" d="M80 77 H100" />
+            <path class="bus" d="M100 21 V133" />
+            <path class="bus" d="M100 21 H240" marker-end="url(#s26b-ah)" />
+            <path class="bus" d="M100 77 H240" marker-end="url(#s26b-ah)" />
+            <path class="bus" d="M100 133 H240" marker-end="url(#s26b-ah)" />
+            <text class="cap" x="112" y="-5">no accepted</text>
+            <text class="cap" x="112" y="13">findings</text>
+            <text class="cap cap--warn" x="112" y="69">needs a decision</text>
+            <text class="cap" x="112" y="125">out of budget</text>
+            <!-- the clean round: the only approval -->
+            <circle class="end-ring end-ring--ok" cx="258" cy="21" r="12" />
+            <circle class="end-dot end-dot--ok" cx="258" cy="21" r="6.5" />
+            <text class="cap cap--ok" x="278" y="26">approval</text>
+            <!-- the human decides -->
+            <circle class="human" cx="258" cy="68" r="7.5" />
+            <path class="human" d="M246 95 q0 -16 12 -16 q12 0 12 16 Z" />
+            <text class="cap cap--warn" x="278" y="82">human</text>
+            <!-- out of budget: the loop ends without approval -->
+            <circle class="end-ring" cx="258" cy="133" r="12" />
+            <circle class="end-dot" cx="258" cy="133" r="6.5" />
+            <text class="cap" x="278" y="138">loop ends</text>
+          </svg>
+        </div>
+        <p class="foot">Definition of done at the <b>right abstraction</b><br><b>level</b> + <b>cost limit</b>.</p>
       </div>
     </div>
 
-    <!-- the value point -->
+    <!-- the value point, one claim -->
     <div class="band fade-up">
-      <p>An LLM is trained to <b>finish the task</b>, not to ask whether the
-        change<br>is worth making. The loop must carry the <b>value judgment</b>.</p>
-      <p class="band-eg">
-        <span class="eg-k">seen in practice</span>
-        <span class="eg-t"><b>850 lines of spec</b> proposed for 10 lines of
-          code.</span>
-      </p>
+      <p>The loop must carry the <b>value judgment</b>.</p>
     </div>
   </div>
 </section>

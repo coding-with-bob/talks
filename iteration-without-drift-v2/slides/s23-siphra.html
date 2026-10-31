@@ -649,50 +649,53 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s23" data-act="act8" data-owner="draft" data-minutes="1.25"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Don't spend much time here - the point is the pattern recurrence.
+  <!-- SPEAKER-NOTE:
 
-  VISUAL (2026-08-26): the six cards were replaced by the SAME dissected-page
-  anatomy used on s14, now with S-project organs. That is the whole argument
-  of the slide: identical grammar, different project. One glance should read
-  "same shapes". Land the page first ("this is a different project, a
-  different domain"), then let the chips do the talking. Do NOT walk all five
-  organs one by one; point at two, name the rest with a sweep of the hand.
+  So a few weeks after I created this structure, a friend of mine reached out
+  to me and it asked my help to design the architecture of a system which
+  supports the work of oil engineers, which was kind of funny because I had
+  not much clue to that domain, and this was a heavy data engineering project.
+  Even I had somewhat limited understanding how that should work. But I had
+  some scripts from customer discussions and I had a basic understanding of
+  how this system should work. So based on this information I sat down, I
+  literally had like a 20 hours long discussion with Fable and it was a very
+  intensive brainstorming, and based on that we identified kinda the key
+  capabilities of the system.
 
-  NOTE: the "one corpus, two renders" beat is NOT on this slide. The next
-  fragment carries it visually; here we stay purely on the structural
-  anatomy, so do not tease it.
 
-  Per-organ spoken beats (the old card text, verbatim):
-    1 . Model skeleton
-        "Levels as working-set containers, concepts = capabilities,
-        depth passes: concept -> contract -> protocol, depth follows
-        epistemic status."
-        On the page: the stack of level containers on the left, and the
-        three depth bands in the middle.
-    2 . Scenario ledger
-        "User journeys with IDs, each mapped to the concepts it needs."
-        On the page: the footer strip with the S-numbered rows. S01, the
-        morning briefing, is the row the NEXT fragment calls back to: its
-        guided-tour page opens on "John opens the dashboard (#S01)". No need
-        to flag it here; just do not read the ledger as throwaway detail.
-    3 . Domain assertion register
-        "Source-categorized claims + the expert who can validate each,
-        effectively a risk register."
-        On the page: the boxed DA rows with a source tag and a name.
-    4 . Shared foundations
-        "Vocabulary, invariants, even the ~20h brainstorm's points, with IDs
-        traced to owning levels."
-        On the page: the right sidebar, each ID pointing at its owning level.
-    5 . One corpus, two renders
-        "The architecture doc failed for the business stakeholder. The fix was
-        a second render, not a new document."
-        NOT on this slide: the next fragment carries it. Say it there.
-    6 . Spoken aside, not shown on the slide
-        "Structure simplified for the talk: correct, not exact."
+  And then I needed to create the architecture and it was very, very much the
+  same experience or the same feeling that I had when I realized that okay, I
+  just need to create that config. But then it was super overwhelming. So I
+  had like 30, 40 pages of kinda brainstorming. So I, it was absolutely not
+  clear how to, how to turn that into an architecture. And then it kinda
+  clicked that, okay, so this is pretty much the same situation. So now, so
+  probably I can kinda use the same concept. So I was thinking a bit, okay,
+  what could be these building blocks in this case? And I come up with a
+  structure that you can see on the image.
 
-  Close by naming the rhyme, not the organs: different domain, different
-  vocabulary, and the corpus grew the same skeleton anyway.
+
+  It was very similar to the previous concept that I kind of created these
+  capability layers called levels in this case. An interesting perspective was
+  that as I was not sure about the domain, I captured all of my claims related
+  to the domain in this domain claim register. We created something called the
+  scenario ledger, which were kind of the user journeys that the customer of
+  this system might have. And then I mapped those to the key concepts, and
+  there were some other foundational building blocks like the invariants, the
+  absent list, the vocabulary. So pretty much the same, and actually I was
+  able to turn that, so I'm able to, I was able to work with this structure in
+  a very effective way. I was able to turn those brainstorming into a very
+  nice architecture. To be honest, I was kinda proud, especially as I
+  mentioned, I was, I'm not an expert of creating a very data intensive
+  application.
+
+  So there was only one small issue, that when I showed the architecture to my
+  friend, he told me that hey, I don't understand it. so it was a very
+  interesting realization that of course in his mind, as he was a business
+  people, he kind of understood the big high-level capabilities of the system,
+  but for him this more lower level capabilities, and of course this system on
+  this level was much more complex than how he imagined the architecture, but
+  it was a very interesting realization that he simply doesn't understand the
+  architecture.
   -->
 
   <style>

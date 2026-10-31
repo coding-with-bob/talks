@@ -649,33 +649,22 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s18" data-act="act6" data-owner="draft" data-minutes="1.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (rebuilt 2026-08-25, was a four-bullet list):
-  The golden test: the method applied to itself.
+  <!-- SPEAKER-NOTE:
 
-  Spoken beats (these are the four bullets the slide used to print, now
-  spoken over the pipeline picture, left to right):
-    - "Realisation: HTML should be a presentation view, not information
-       storage."
-    - "Physically break the corpus into small building blocks + a build
-       process."
-    - "A true refactoring story: refactor only, no new capability."
-    - "The original HTML became the acceptance test:" (then, pointing at the
-       byte-identical seal, say verbatim): "I can do whatever I want, as long
-       as the build recreates the original HTML byte-precisely."
+  So I was thinking that what if the HTML wouldn't be the kind of final
+  artifact of storing the information, but only just the presentation layer.
+  And based on this idea I realized that I just need to break out all of the
+  building blocks and put them into their own location, and then I just need a
+  ledger which describe how they are related, and how the overall model should
+  be constructed from these small building blocks.
 
-  HOW TO WALK THE PICTURE: point at the left box (the untouched original),
-  then the sources, then the build, then the right box, then drop to the
-  bracket underneath. The bracket is the whole point: the two boxes at the
-  ends of the pipeline are the SAME bytes. That is what made the refactor
-  safe to attempt at all.
 
-  WHY NO NUMBERS HERE (deliberate): this slide is about the mechanism, not
-  the size of the corpus. Sizes and counts belong to the later breakdown
-  slide. If someone asks how big it was, answer verbally.
-
-  DEFINITION TRAP: "ledger" gets its half-line definition on the NEXT slide
-  (s19). Here it is only shown as the one generated artifact in the tree, so
-  do not stop to explain it; say "generated, never hand-edited" and move on.
+  So based on this concept, I started to refactor the model. I started to
+  factor out the building blocks from the HTML, type by type, and I started to
+  create a build process which can build the HTML view based on the ledger.
+  And what was really cool that uh the original HTML became uh the actual
+  acceptance criteria because I I I only needed to check that after each of
+  these refactoring steps, I just have the same original HTML output.
   -->
 
   <style>

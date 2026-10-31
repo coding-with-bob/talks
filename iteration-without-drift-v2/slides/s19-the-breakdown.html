@@ -649,52 +649,26 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s19" data-act="act6" data-owner="draft" data-minutes="1.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (rebuilt 2026-08-26, was a five-bullet list):
-  One mechanism, shown once: pseudocode units, and why a low-layer change
-  stopped being expensive.
+  <!-- SPEAKER-NOTE:
 
-  Spoken beats (verbatim: these are the five bullets the slide used to
-  print, now spoken over the picture):
-    - "Pseudocode split into pseudocode units, generated per layer from a
-       ledger."
-    - "Unit ↔ layer dependencies become a queryable structure: change a
-       lower unit and know exactly which layers override it; only those
-       need review."
-    - "Focused LLM edits → fewer errors, far cheaper re-coherence."
-    - "Invariants · domain terms · absent entries · per-level golden
-       traces: all become addressable entities."
-    - "A build process assembles the whole."
+  So this structure provides a lot of benefits. Just a small interesting
+  example: that for example if you want to find which are the, you, which are
+  the units which introduced or changed the specific function, then you can
+  query the file system, which means that you don't need to use an LLM to try
+  to infer that from a huge chunk of text, but you can just simply query it
+  and you can use deterministic tools to get that piece of information.
 
-  DEFINITION DEBT (carried over from s18): the word 'ledger' is first used
-  in beat 1 and is NOT printed on this slide. Give the half-line definition
-  out loud as you say it: "the generated index of invariants, domain terms,
-  rejections and deferrals."
+  And as of now, let's imagine that I want to edit this function, the original
+  version. Then I know that only level 5 might be impacted by this change. So
+  this is a very useful information for the LLM, because now the LLM knows
+  that if I'm changing that pseudocode unit, then I only need to check level 5
+  to see whether it has an impact on that level. So this way, for example, for
+  the specific change the LLM shouldn't check again a huge bunch of text, but
+  it can kinda do the check on a much smaller, much more focused context,
+  which means that the result will be much more.
 
-  TEASER DROPPED (2026-08-26): the "to be continued" stinger box is gone,
-  the very next slide already covers the other addressable entities.
-
-  CLOSING BEAT (moved off-slide 2026-08-26, was the bottom band): after the
-  three rules, say out loud: "Invariants, domain terms, absent entries,
-  per-level golden traces: all become addressable entities in the same
-  system."
-
-  HOW TO WALK THE PICTURE: start at the bottom, L2, where the unit is
-  introduced. Run a finger up the chain: L3 and L4 hold nothing of their
-  own, they inherit. L5 holds its own rewritten version. L6 and L7 inherit
-  that rewrite. Then land on the edit badge at L2 and read the two colors
-  off the picture: teal rebuilds itself, amber is the only place a human or
-  an LLM has to look. The mono line underneath is the punchline: the review
-  list is not a judgement call, it is a directory listing.
-
-  DELIBERATE REUSE: the gate-check example drawn here is the same worked
-  example as in the notes, so the story on stage and the reference agree
-  line for line. Full mechanism: talk-notes Reference section (unit-delta
-  build): storage model, pure inheritors vs overriders, the ls blast
-  radius.
-
-  WHY NO OTHER NUMBERS (rule kept from s18): the only concrete output on
-  the slide is the ls result. Corpus sizes and counts get answered verbally
-  if someone asks.
+  So then I'm able to do a much more effective work, and the chance that this
+  work is kind of fully effective increases a lot.
   -->
 
   <style>

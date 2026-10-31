@@ -649,49 +649,44 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="story" id="s14" data-act="act4" data-owner="draft" data-minutes="2.0"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  One line of WHY per block; details are speaker notes.
+  <!-- SPEAKER-NOTE:
 
-  VISUAL (2026-08-25): the six building-block cards were replaced by a
-  dissected corpus page. One mock structured unit is drawn as anatomy, its
-  six organs labelled with leader lines and chips. This is the deliberate
-  rhyme with s13: there the prose page is the patient with injuries pinned
-  onto it, here the structured page is the healthy body. Same page-mock
-  vocabulary, opposite verdict.
+  So I started to experiment with using HTML and structured entities.
 
-  Delivery: land the page first ("this is roughly what one unit looks like"),
-  then walk the six organs. Left column top to bottom, then right column.
-  Keep it fast: one WHY sentence per block, nothing more.
 
-  Live option: switch to a browser tab with a real corpus unit here to show
-  the actual thing.
+  So the first concept I wanted to try out is pseudocode. The idea is kind of
+  simple, that in a pseudocode we can store a lot of information in a very
+  talk dance way. This is very expressive. It is easier to understand even for
+  me than reading a bunch of tests. And I also assume that even for LM kinda
+  finding issues in a pseudocode is much easier than finding issues in a
+  prose, as LLMs were highly optimized to deal with the code.
 
-  Per-block spoken beats (the old card text, verbatim):
-    1 . HTML over markdown
-        "Better visual expression of the concept. Caveat: the LLM pays for
-        unnecessary HTML elements."
-        On the page: the browser chrome and the .html address.
-    2 . Pseudo-code
-        "More concrete and compact than prose; token-efficient; shows whether
-        we are on the same page; converges faster."
-        On the page: the mono block with the gate.pass branch.
-    3 . Invariants
-        "Define what the system must always ensure and keep true."
-        On the page: the boxed INV rows.
-    4 . DDD "lite"
-        "Domain terms clearly defined, which keeps the corpus coherent."
-        On the page: the sidebar with bubble / run / gate.
-    5 . Absent list
-        "Humans and LLMs both love to overengineer, so make the not-building
-        decisions explicit."
-        On the page: the two struck-out items.
-    6 . Golden traces
-        "Concrete scenarios of expected behaviour: the corpus can be validated
-        against them."
-        On the page: the given / when / then rows in the footer.
 
-  Close on the whole page, not on any one organ: every block exists because
-  prose could not carry that job.
+  I wanted to use clear domain terms. I'm using here the domain driven design
+  memory, but I was mainly leveraging it from the perspective to make very
+  explicit which are the domain terms I want to introduce. It's a bit like
+  having a very clear vocabulary, and this way I can avoid that in the plans
+  we are referring to the same thing with different words, so then this can
+  introduce clarity.
+
+
+  In multiple projects in the past I used clear invariants in the system I was
+  building, and I wanted to make in this project even those separate entities,
+  so this way I can refer to them and I can make sure that those invariants
+  are very clearly defined and they are not kinda hidden inside the prose.
+
+
+  I guess you have the experience that in many cases an LLM tend to over
+  engineer repeat, or wants to build stuff which are not necessary. So from
+  this perspective, I found very useful to have a very specific absent list.
+  So I always wanted to clearly define which are the parts or which are some
+  functionalities that I definitely don't want to implement.
+
+
+  And finally for each capability layer, I used these: traces, which were
+  kinda the most important acceptance criteria covering the key happy passes,
+  even this is something that I found very useful to explicitly define and not
+  something potentially buried inside the prose.
   -->
 
   <style>

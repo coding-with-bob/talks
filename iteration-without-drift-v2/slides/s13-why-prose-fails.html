@@ -657,84 +657,49 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   carries it? The substrate does. And this is what the substrate was." Then
   the page and the four groups. Without that opening line the jump from
   the layer diagram to a prose page is not evident.
+  -->
 
-  SPEAKER-NOTE (draft, from the Miro board):
-  Seven board categories, regrouped into FOUR failure modes. Grouping approved
-  by the owner on 2026-08-25.
+  <!-- SPEAKER-NOTE:
 
-  VISUAL (2026-08-25, fourth pass): left is one tall mock prose page carrying
-  FOUR injuries, top to bottom, each marked by a NUMBERED pin in the gutter.
-  Two further blank sheets are stacked behind the page, offset down-and-left:
-  the spec is many such big chunks of prose, not one page.
-  Right is a 2x2 grid of the four groups (short cards, board category names as
-  pills) with the closing band directly underneath it. The cards carry no
-  badges: the numbers map by the cards' reading order, left to right and top
-  to bottom, so pin n on the page is card n in the grid.
+  So the problem was that if you mainly use pros to describe your design, it
+  is not an ideal substrate to have an LLM to deal with the coherency load.
 
-  Delivery: land the page first ("this is what a prose spec looks like"), then
-  walk the four groups. One beat per group, the detail lines below are the
-  board's own sticky texts, verbatim.
+  So with this image I kinda tried to explain some of the issues that we can
+  run into when we use just the pros.
 
-  1 . Harder to understand
-      "Hard to understand - concepts overlap and blend (Comprehension)"
-      "Some decisions are not explicit but are lost among the lines
-       (Implicit decisions)"
-      "Harder to keep only the relevant information in context
-       (Context economy)"
-      "Harder for an LLM to deal with a big chunk of text (Context economy)"
-      NOTE: this group mirrors s07's "both minds are bounded" line (now in
-      the opening block). The
-      first two lines are the human side, the last two are the LLM side, and
-      the card text says "both minds" on purpose. Call the callback out loud.
-      On the page, pin 1 covers the whole first paragraph and carries two
-      cues. First, one teal bar and one amber bar run into each other and the
-      stretch where they overlap turns into a third muddy tone: two concepts,
-      and where they meet the reader cannot tell which is which. Second, on
-      that paragraph's last line a run of text is blurred out, with the
-      watermark "HIDDEN DECISION" beside it: the decision is in there, it is
-      simply not readable as a decision.
 
-  2 . Harder to change
-      "Hard to iterate on (Iteration &amp; coherence)"
-      "It is harder for an LLM to keep unstructured data coherent
-       (Iteration &amp; coherence)"
-      "Hard to manage dependencies (Dependencies &amp; change)"
-      "Hard to manage dynamic changes of the landscape
-       (Dependencies &amp; change)"
-      On the page: faint bracket ticks and indented bars in the second
-      paragraph show sections that the prose never declares ("implicit
-      structure"), and a dashed arrow leaves that paragraph for another one
-      further down, carrying a link nothing in the text names ("hidden
-      dependencies").
+  So one issue is around how easy to understand this something. Here the
+  problem could be that there might be some underlying decisions which are not
+  highlighted in the text. Some concepts might overlap, even this is an issue,
+  and this can overwhelm both a human and an LLM as well.
 
-  3 . Harder to address
-      "Hard to address specific concepts (Addressability &amp; views)"
-      "Hard to generate different views (different parts/granularity) for
-       different stakeholders (Addressability &amp; views)"
-      "Harder to answer questions about the structural aspects of the corpus
-       (Addressability &amp; views)"
-      On the page: mid paragraph, inline among the text bars, one framed box
-      holds a single "specific concept" and a magnifier rests on its left
-      edge. The paragraph keeps the page's normal line pitch; the plate only
-      bulges gently past its own line. The concept is in the flow like
-      everything else. You can only get at it by hunting for it.
+  It is not easy to change such a document because now imagine that we have
+  this document and I realize that I don't need the concept of blue. And I
+  asked the LLM, okay, let's remove blue, then usually finding blue it usually
+  works, but even in this case, the non-determinism can kick in. But it's much
+  harder when you have some derived concepts like green. And it's not
+  necessarily easy to remove blue from green. And this is where you might run
+  into some problems.
 
-  4 . Harder to verify
-      "Hard to verify (economical asymmetry) (Verification)"
-      On the page, at the very bottom, a checklist line the document cannot
-      answer: "CORRECT: Yes [ ] No [ ]", both boxes unticked, with a red
-      question mark after them.
 
-  The two faint page watermarks ("implicit structure", "hidden dependencies")
-  and the "HIDDEN DECISION" mark are there so the page names its own
-  properties. Do not read them out, they are for the eye.
+  Another issue is that some concepts are not clearly defined, so it's much
+  harder to address them if they are kinda hidden inside the text. Which also
+  means that for example if I want to list those concepts then I need to rely
+  on an LLM to infer those from the text, which again, as LLMs are
+  non-deterministic, it means that I can't fully rely on an LLM to do that. So
+  again, this is a limitation. Another related issue is that if you keep those
+  concepts in a prose, then kinda the way how they are visually displayed is
+  kind of frozen. It's just the markdown, and if you need it to generate a
+  different view, then you don't really have too much support to do that.
 
-  Close on the band, not on any single group: none of these is a writing
-  problem. They are all substrate problems. KICKER (2026-10-28) "Who carries
-  the load?": answer it out loud on the band: the substrate has to carry it,
-  and prose is the wrong substrate. (The old kicker "Coherency load
-  strikes" is gone; s16, where the load actually hits, carries the theory
-  stamp "Coherency load" instead.)
+  And last issue is that it's quite hard to validate whether a document is
+  correct or not. And even from this perspective, just one markdown file is
+  not super easy to deal with.
+
+
+  So all of these issues are related to the substrate itself, because a
+  markdown file is just limited to provide structure, which can help from the
+  perspective of all of these issues.
   -->
 
   <style>

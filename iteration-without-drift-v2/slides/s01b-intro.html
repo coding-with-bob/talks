@@ -649,44 +649,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide" id="s01b" data-act="act0" data-owner="draft" data-minutes="0.5"
   data-theme="dark" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft):
-  The personal intro, 30 seconds. Establishes standing before the story
-  starts: built and led engineering organizations, shipped at real scale,
-  and the reason this talk exists is caring whether AI workflows survive
-  actual software delivery.
-  No lane marker on purpose: this is a meta slide, like s01 and s2b.
+  <!-- SPEAKER-NOTE:
 
-  PORT NOTE: ported from talk1/deck/src/s02-about-me.html (the Craft deck's
-  "About me"). Content is verbatim. Adaptations for this deck:
-   - meetup section-root pattern (id/data-* attrs, .title-block + .kicker +
-     .accent-line vocabulary from theme/components.css)
-   - meetup type scale: h1 falls back to --fs-h1 and the kicker to the
-     shared .kicker rule, instead of talk-1's hand-measured 71px/27px that
-     were fitted to a delivered PNG
-   - color mapping, no hex in fragments (check.mjs rule e): talk-1's
-     --blue-google kicker becomes the standard on-dark kicker accent, and
-     the icon gradient --blue-content to --cyan-decor becomes this deck's
-     --blue to --cyan family
-   - the three icons are the source's inline SVG drawings, kept as is, but
-     sized off a single row height rather than talk-1's per-icon
-     translateY nudges (those existed only to match delivered pixels)
-  Asset: assets/img/title-flow-field.png, copied from talk1/deck/assets/img/.
-
-  AD OVERLAY (2026-08-26): the slide carries one in-slide step (README,
-  "In-slide step reveal"). The first next-key press drops a full-slide scrim
-  over the intro and shows the Craft Conference discount ticket
-  (assets/img/compass-ad.jpg); the second press moves on to the next slide.
-  The ticket art itself only carries the code and the discount, so a one-line
-  caption names the event and the date.
-
-  Spoken beat (ad overlay): I am working on the Craft Conference,
-  June 3-4. This is the plug.
-  TODO (owner, board 2026-10-28): ask Bene whether the Craft exposure in a
-  code.talks deck is okay. Until answered, the overlay stays as is.
-
-  OPTION, cold open (board pass 2026-10-28, see s02's note): one story
-  sentence spoken here, before the theory block, so the room knows a story
-  is coming: "I just needed a config format. I got twelve questions."
+  So I'm in the camp who started to do engineering work again due to AI, and
+  I'm pretty much interested in, you know, how it is possible to use LLMs in a
+  proper way in the context of delivering real software to real customers.
+  Even from the beginning I was kinda interested how can I get to close to the
+  software factory level, so how can I create more end-to-end delivery, how
+  can I delegate bigger task to LLMs?
   -->
 
   <style>
@@ -725,6 +695,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s01b .icon--server svg { width: 76px; height: 74px; }
     #s01b .icon--globe svg { width: 72px; height: 72px; }
     #s01b .icon--chart svg { width: 70px; height: 74px; }
+    #s01b .icon--mic svg { width: 64px; height: 72px; }
 
     #s01b .row-text {
       color: var(--white);
@@ -733,6 +704,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       letter-spacing: -0.005em;
       font-weight: 600;
     }
+    /* the conference is the one highlighted phrase on the slide */
+    #s01b .row-text b { color: var(--cyan-on-dark); font-weight: 800; }
 
     #s01b .closing {
       margin-top: 44px;
@@ -742,46 +715,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       letter-spacing: -0.01em;
       font-weight: 620;
     }
-
-    /* ---- ad overlay (class="step": hidden until the first next press) ----
-       Absolute + inset 0 so it covers the whole canvas, padding included, and
-       sits above the intro content (.slide > * gets z-index 2 from
-       components.css). While hidden the shell sets visibility: hidden, which
-       also kills pointer events, so nothing here can catch a click. */
-    #s01b .ad-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 30px;
-      background: color-mix(in srgb, var(--navy-ink) 86%, transparent);
-      backdrop-filter: blur(3px);
-    }
-
-    /* 3:2 art, sized off the canvas height (640 / 900 = 71%). */
-    #s01b .ad-poster {
-      display: block;
-      height: 640px;
-      width: auto;
-      border-radius: var(--radius-card);
-      border: 1px solid var(--hairline);
-      box-shadow:
-        0 30px 78px color-mix(in srgb, var(--navy-ink) 88%, transparent),
-        0 0 46px var(--glow-cyan);
-    }
-
-    #s01b .ad-caption {
-      color: var(--white);
-      font-size: 28px;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      font-weight: 700;
-      text-align: center;
-    }
-    #s01b .ad-caption b { color: var(--cyan-on-dark); font-weight: 800; }
   </style>
 
   <div class="title-block fade-up">
@@ -876,18 +809,37 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         </div>
         <div class="row-text">Built teams from 5 to 200 people</div>
       </div>
+
+      <div class="row fade-up">
+        <div class="icon icon--mic">
+          <svg viewBox="0 0 64 72" aria-hidden="true">
+            <defs>
+              <linearGradient id="s01b-ig4" gradientUnits="userSpaceOnUse" x1="0" y1="72" x2="64" y2="0">
+                <stop offset="0%" style="stop-color: var(--blue)" />
+                <stop offset="100%" style="stop-color: var(--cyan)" />
+              </linearGradient>
+            </defs>
+            <g stroke="url(#s01b-ig4)">
+              <rect x="21" y="1.2" width="22" height="33" rx="11" />
+              <path d="M21 13H43" />
+              <path d="M21 21H43" />
+              <path d="M12 22v4a20 20 0 0 0 40 0v-4" />
+              <path d="M32 46V66" />
+              <path d="M19 70.5H45" />
+              <path d="M6 9q-5 9 0 18" />
+              <path d="M58 9q5 9 0 18" />
+            </g>
+          </svg>
+        </div>
+        <div class="row-text">Organizer of <b>Craft Conference</b>, Budapest, June 3-4</div>
+      </div>
     </div>
 
     <div class="closing">
-      I care about whether AI workflows<br>actually work in real software delivery
+      I care about how AI workflows produce<br>reliable results in real software delivery
     </div>
   </div>
 
-  <div class="ad-overlay step">
-    <img class="ad-poster" src="../assets/img/compass-ad.jpg"
-      alt="A vintage cinema ticket stub lying on black, printed in blue on aged paper. The stub reads FelhoSentMe, and a starburst seal on it reads 30% DISCOUNT.">
-    <div class="ad-caption"><b>Craft Conference</b>, June 3-4</div>
-  </div>
 </section>
 <script>
 (() => {

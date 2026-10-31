@@ -649,33 +649,30 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section class="slide slide--light" data-lane="theory" id="s17" data-act="act5" data-owner="draft" data-minutes="1.5"
   data-theme="light" data-exhibits="" data-tags="" data-evidence="">
 
-  <!-- SPEAKER-NOTE (draft, from the Miro board):
-  Colour-shades example lives HERE: the cost of CHANGING such a document
-  (pick out the red - but there are shades, and orange too).
+  <!-- SPEAKER-NOTE:
 
-  VISUAL (2026-08-25): one page mock on the left, split into two halves.
+  And what I experienced is kinda grounded in theory as well, at least there
+  is a very good reason for it. So what we need to understand in this case is
+  that even if you are working with a smaller document, we still have this
+  phenomenon that LLMs are non-deterministic, which means that LMs, so even
+  though they are kinda amazing to find issues, but usually we can't rely on
+  that they find all of them. So you, so you kinda in any cases when we are
+  working with documents, we really need to understand that we need to work in
+  multiple rounds.
 
-  TOP two thirds = the contract dissolved into prose. The four colours come
-  back as short highlighted segments scattered through a wall of gray
-  paragraph bars. Nothing is lost, but nothing is addressable either.
+  And there is another perspective that we need to keep in mind, that as we
+  already discussed, the Tel LMs have a limited attention budget. And that
+  means that if we are working with a bunch of text, or we can turn that text
+  into a more structured, more condensed format, then usually LLMs can be much
+  more effective with this more structured data.
 
-  BOTTOM third = the SAME contract, EXTRACTED. A small table: four rows, each
-  keyed by one distinct colour (teal, amber, blue, coral) and carrying one
-  terse contract fragment (timeout 30s, retries 3, batch.size 128, on.fail
-  reject). Compact, unambiguous, one place per fact, trivial to edit.
-
-  THE SHADES = the Miro colour-shades example, drawn literally. Coral appears
-  FOUR times and in THREE variants (full strength twice, then 0.80, then
-  0.62). At a glance they read as one colour. That is the cost of CHANGING
-  such a document: you sweep the prose for "the red one", you catch three of
-  the four, and one stale shade survives the edit. The amber segments sit
-  right beside them, so "pick out the red" also means "and orange too".
-
-  Delivery: land the table first ("this is the contract, extracted"), then
-  drop to the prose wall and say the same sentence about it. Then the shades.
-  Do not name the opacities out loud, just ask the room to find all the reds.
-  Then walk the five traits on the right: the shades slide is WHY multiple
-  rounds are needed and why a focused context finds more.
+  So kinda how many review runs usually we need to do a change? It kind of
+  depends, of course it depends on the nature of the change. So it's a bit
+  different when we want to make a bigger logical change on the overall
+  corpus, but still it pretty much depends on the size and the structure of
+  the document. So even though I kinda had a good structure which supported
+  effective way of working with an LM, the overall size of the corpus started
+  to be an issue.
   -->
 
   <style>
