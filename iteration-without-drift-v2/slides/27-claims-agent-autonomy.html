@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — 29-two-things-to-design</title>
+<title>Iteration Without Drift — 27-claims-agent-autonomy</title>
 <style>
 
 @font-face {
@@ -653,11 +653,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <body class="single-mode">
 <section
   class="slide slide--light"
-  data-lane="theory"
-  id="s26e"
+  data-lane="story"
+  id="s25"
   data-act="act8"
   data-owner="draft"
-  data-minutes="1.25"
+  data-minutes="1.5"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,280 +665,313 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  I mentioned that I use **LLM review loops** a lot, and I want to share a few
-  learnings about them, including how they can **fail miserably**.
+  A more structured, more detailed design corpus can also support **agent
+  autonomy**. When I started implementing a part of the project, I usually
+  first created a **contract document**: the important claims the given
+  implementation should deliver.
 
-  An LLM review loop has **two major perspectives**: the **control loop**
-  itself, and the **lenses** we use for the actual review.
+  Each claim was classified into one of **three categories**: decided in the
+  model, directly derived from the model, or a **new semantic decision**. This
+  way the agent could work on these artifacts autonomously, until it ran into
+  a new semantic decision. There the loop stops, and a **human decides**.
 
-  For the loop, you need to decide how to deal with the findings. The reviewer
-  returns findings with evidence, and a **disposition step** decides what
-  happens with each one. You also need to decide how and when a **human in the
-  loop** is needed. Then the accepted findings are applied, and you decide the
-  next round: for example, the first round runs all the lenses, and the next
-  round only the few that seem meaningful based on the findings. There are
-  many options here. What matters is that you design this loop carefully, and
-  the loop needs **an end, a budget**.
+  Of course there was a feedback loop which checked whether the classification
+  was correct: it had to provide **clear evidence**, a statement in the corpus
+  that proves the claim is decided in or derived from the model.
 
-  Then the lenses. **One lens is one perspective**, with the questions you use
-  for the measurement. You need to think about the **sensitivity**: for
-  example, you classify the findings into P1, P2, P3, whatever severity levels
-  make sense to you, and say that by default you are interested only in P1 and
-  P2. And a lens needs **calibration**.
+  The claim structure was useful after the implementation too: a **review
+  loop** checked whether the claims were properly implemented and properly
+  tested. It checked whether the implementation is semantically correct, and
+  whether the tests cover the aspects that matter for the given claim. And one
+  lens did **mutation testing**: it changed the code and checked that the
+  relevant tests fail; **green tests** meant the tests needed improvement.
+
+  I did not plan this in advance, but it was a very nice side effect: I can
+  **direct my attention** to where it is really needed. The agent runs on its
+  own as far as its assumptions can be **checked against the corpus**. Where
+  there is nothing to check against, the **loop stops**.
   -->
 
   <style>
-    #s26e .content {
+    #s25 .content {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 22px;
       justify-content: center;
     }
 
-    /* ==== the row: the ring (left, review on its right) | one lens, up close == */
-    #s26e .row {
+    /* ==== flow (full width) ============================================== */
+    /* The "Rule of thumb" card that sat to the right of the flow was removed
+       2026-11-02 (owner call): both of its lines repeated what the diagram
+       already shows (ticked lanes proceed, the NEW lane hits the barrier);
+       the generalisation now lives in the speaker note. The flow takes the
+       full width, centred by the svg's xMidYMid meet at its native 1110px
+       (a taller box scales the drawing up and overflowcheck then flags the
+       "agent at work" caption, so the height stays 430). */
+    #s25 .flow-row {
       flex: none;
-      height: 508px;
       display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 28px;
-      align-items: stretch;
+      grid-template-columns: 1fr;
     }
-
-    /* ---- the ring ----------------------------------------------------------- */
-    /* the svg is pinned to the column box: a percentage height on a flex item
-       does not resolve here, and the aspect height would overrun the row */
-    #s26e .viz {
+    #s25 .flow {
+      height: 430px;
       min-width: 0;
-      position: relative;
     }
-    #s26e .viz svg {
-      position: absolute;
-      inset: 0;
+    #s25 .flow svg {
       width: 100%;
       height: 100%;
       display: block;
+      overflow: visible;
     }
 
-    #s26e .st {
+    /* ---- column headers over the three stages ---------------------------- */
+    #s25 .col-h {
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      fill: var(--muted-2);
+    }
+    #s25 .col-rule {
+      stroke: var(--hairline);
+      stroke-width: 1.4;
+    }
+
+    /* ---- the agent glyph: robot head over a terminal ---------------------- */
+    #s25 .bot {
+      fill: none;
+      stroke: var(--story);
+      stroke-width: 2.2;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    #s25 .bot-fill {
+      fill: var(--story);
+    }
+    #s25 .bot-term {
       fill: var(--card-bg);
       stroke: var(--muted-2);
+      stroke-width: 1.8;
+    }
+    #s25 .bot-mark {
+      fill: none;
+      stroke: var(--muted-2);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    #s25 .cap {
+      font-size: 14px;
+      font-weight: 800;
+      fill: var(--muted-2);
+      letter-spacing: -0.004em;
+    }
+
+    /* ---- the three-way splitter ------------------------------------------ */
+    #s25 .bus {
+      stroke: var(--muted-2);
+      stroke-width: 2.6;
+      stroke-linecap: round;
+    }
+    #s25 .bus-node {
+      fill: var(--muted-2);
+    }
+    #s25 .stub {
+      fill: none;
+      stroke: var(--muted-2);
+      stroke-width: 2.2;
+    }
+    #s25 .ah-n {
+      fill: var(--muted-2);
+    }
+
+    /* ---- claim chips (neutral: the raw claim, before it is classed) ------- */
+    #s25 .chip {
+      fill: var(--card-bg);
+      stroke: var(--hairline);
+      stroke-width: 1.4;
+    }
+    #s25 .chip-t {
+      font-size: 15px;
+      font-weight: 700;
+      fill: var(--white);
+      letter-spacing: -0.008em;
+    }
+    #s25 .edge-ok {
+      fill: var(--theory);
+    }
+    #s25 .edge-new {
+      fill: var(--story);
+    }
+
+    /* ---- class pills: teal = passes, amber = stops ------------------------ */
+    #s25 .pill-ok {
+      fill: color-mix(in srgb, var(--theory) 13%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--theory) 45%, var(--hairline));
+      stroke-width: 1.6;
+    }
+    #s25 .pill-ok--soft {
+      fill: color-mix(in srgb, var(--theory) 7%, var(--card-bg));
+    }
+    #s25 .pill-new {
+      fill: color-mix(in srgb, var(--story) 16%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--story) 55%, var(--hairline));
+      stroke-width: 1.6;
+    }
+    #s25 .pill-t {
+      font-size: 15px;
+      font-weight: 850;
+      fill: var(--theory-on-dark);
+      letter-spacing: -0.006em;
+    }
+    #s25 .pill-t--new {
+      fill: var(--story-on-dark);
+    }
+    #s25 .ic-ok {
+      fill: none;
+      stroke: var(--theory-on-dark);
       stroke-width: 1.7;
     }
-    #s26e .st--reviewer {
-      fill: color-mix(in srgb, var(--theory) 9%, var(--card-bg));
-      stroke: color-mix(in srgb, var(--theory) 55%, var(--hairline));
+    #s25 .ic-tick {
+      fill: none;
+      stroke: var(--theory-on-dark);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
-    #s26e .st-t {
+    #s25 .ic-new {
+      fill: none;
+      stroke: var(--story-on-dark);
+      stroke-width: 1.7;
+    }
+    #s25 .ic-bang {
+      fill: var(--story-on-dark);
+      stroke: var(--story-on-dark);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    /* ---- the flowing (teal) lanes ---------------------------------------- */
+    #s25 .lane-ok {
+      fill: none;
+      stroke: var(--theory);
+      stroke-width: 2.4;
+    }
+    #s25 .ah-ok {
+      fill: var(--theory);
+    }
+    #s25 .out-card {
+      fill: color-mix(in srgb, var(--theory) 10%, var(--card-bg));
+      stroke: color-mix(in srgb, var(--theory) 42%, var(--hairline));
+      stroke-width: 1.6;
+    }
+    #s25 .out-t {
       font-size: 18px;
       font-weight: 850;
       fill: var(--white);
-      letter-spacing: -0.014em;
+      letter-spacing: -0.018em;
     }
-    #s26e .st-s {
-      font-size: 13.5px;
-      font-weight: 760;
-      fill: var(--muted-2);
-      letter-spacing: 0.005em;
-    }
-    #s26e .st-s--warn {
-      fill: var(--story-on-dark);
-      font-weight: 850;
-    }
-    #s26e .edge {
+
+    /* ---- the lane that terminates (amber) -------------------------------- */
+    #s25 .lane-new {
       fill: none;
-      stroke: var(--muted-2);
-      stroke-width: 2.4;
-      stroke-linecap: round;
+      stroke: var(--story);
+      stroke-width: 2.6;
     }
-    #s26e .edge--next {
-      stroke-dasharray: 6 6;
+    #s25 .ah-new {
+      fill: var(--story);
     }
-    #s26e .ah {
-      fill: var(--muted-2);
+    #s25 .bar {
+      fill: var(--story);
     }
-    #s26e .cap {
-      font-size: 13.5px;
-      font-weight: 800;
-      fill: var(--muted-2);
-      letter-spacing: 0.01em;
+    #s25 .bar-hatch {
+      stroke: var(--navy-1);
+      stroke-width: 5;
     }
-    #s26e .cap-ev {
-      fill: var(--theory-on-dark);
-      font-weight: 850;
-    }
-    #s26e .finding {
-      fill: var(--theory);
-    }
-
-    /* the end state (UML final state): ring + dot in the edge colour */
-    #s26e .end-ring {
-      fill: none;
-      stroke: var(--muted-2);
-      stroke-width: 2.4;
-    }
-    #s26e .end-dot {
-      fill: var(--muted-2);
-    }
-
-    /* the human as an inner loop: an amber station below the disposition */
-    #s26e .st--human {
-      fill: color-mix(in srgb, var(--story) 8%, var(--card-bg));
-      stroke: color-mix(in srgb, var(--story) 55%, var(--hairline));
-    }
-    #s26e .cap--warn {
-      fill: var(--story-on-dark);
-      font-weight: 850;
-    }
-
-    /* the lens glyph (s26c vocabulary) */
-    #s26e .lens {
-      fill: none;
-      stroke: var(--theory);
-      stroke-width: 2.8;
-      stroke-linecap: round;
-    }
-    #s26e .lens-glass {
-      fill: color-mix(in srgb, var(--theory) 14%, transparent);
-    }
-
-    /* the human gate (s25 vocabulary) */
-    #s26e .exit {
+    #s25 .handoff {
       fill: none;
       stroke: var(--story);
       stroke-width: 2.2;
       stroke-dasharray: 5 5;
       stroke-linecap: round;
     }
-    #s26e .ah-new {
-      fill: var(--story);
-    }
-    #s26e .bar {
-      fill: var(--story);
-    }
-    #s26e .bar-hatch {
-      stroke: var(--navy-1);
-      stroke-width: 4;
-    }
-    #s26e .human {
-      fill: var(--story);
-    }
-    #s26e .human-t {
+    #s25 .stop-t {
       font-size: 14.5px;
       font-weight: 850;
       fill: var(--story-on-dark);
-      letter-spacing: -0.01em;
+      letter-spacing: 0.01em;
     }
-
-    /* ---- one lens, up close: the review box's glyph, zoomed ----------------- */
-    #s26e .zoom {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    #s25 .human {
+      fill: var(--story);
     }
-    #s26e .zoom h3 {
-      flex: none;
-      margin: 0 0 0 26px;
-      font-size: 30px;
+    #s25 .human-t {
+      font-size: 16px;
       font-weight: 850;
-      line-height: 1.1;
-      letter-spacing: -0.024em;
-      color: var(--white);
-    }
-    /* the glass at 80% of its iteration-4 size (470x380 -> 376x304) */
-    #s26e .zoom svg {
-      flex: none;
-      display: block;
-      width: 376px;
-      height: 304px;
-      margin-top: 12px;
-    }
-    #s26e .big-lens {
-      fill: none;
-      stroke: var(--theory);
-      stroke-width: 9;
-      stroke-linecap: round;
-    }
-    #s26e .big-lens-handle {
-      fill: none;
-      stroke: var(--theory);
-      stroke-width: 18;
-      stroke-linecap: round;
-    }
-    #s26e .big-glass {
-      fill: color-mix(in srgb, var(--theory) 9%, transparent);
-    }
-    #s26e .prop {
-      font-size: 28px;
-      font-weight: 820;
-      fill: var(--white);
-      letter-spacing: -0.016em;
-    }
-    #s26e .prop-rule {
-      stroke: color-mix(in srgb, var(--theory) 45%, transparent);
-      stroke-width: 2;
-      stroke-linecap: round;
+      fill: var(--story-on-dark);
+      letter-spacing: -0.012em;
     }
 
-    /* ==== the bottom band: one centred line ================================== */
-    #s26e .band {
+    /* ==== the bottom band (sits 20px lower than the flex flow) ============= */
+    #s25 .band {
       flex: none;
       width: fit-content;
+      min-width: 40%;
       max-width: 100%;
       margin: 0 auto;
-      padding: 15px 40px 16px;
+      position: relative;
+      top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 48px 17px;
       border-radius: var(--radius-card);
       background: var(--card-bg);
       border: 1px solid var(--hairline);
-      font-size: 21px;
-      font-weight: 680;
+    }
+    #s25 .band p {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 640;
       line-height: 1.3;
-      color: var(--muted-2);
-      letter-spacing: -0.01em;
-      text-align: center;
-      white-space: nowrap;
-    }
-    #s26e .band .band-k {
       color: var(--muted);
-      font-weight: 820;
     }
-    #s26e .band .sep {
-      padding: 0 12px;
-      color: var(--muted-3);
-    }
-    #s26e .band b {
-      font-weight: 860;
-    }
-    #s26e .band b.loop-w {
+    #s25 .band p b {
       color: var(--story-on-dark);
-    }
-    #s26e .band b.lens-w {
-      color: var(--theory-on-dark);
+      font-weight: 880;
     }
   </style>
 
   <div class="title-block">
-    <div class="kicker">Designing LLM review loops</div>
-    <h1>The (control) loop and the lens(es)</h1>
+    <h1>Claim structure supports agent autonomy</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="row">
-      <!-- ============ the ring, review on the right, running clockwise ====== -->
-      <div class="viz fade-up">
+    <div class="flow-row">
+      <!-- ============ claim triage: two lanes flow, one hits a wall ====== -->
+      <div class="flow fade-up">
         <svg
-          viewBox="0 0 888 420"
-          preserveAspectRatio="xMaxYMid meet"
+          viewBox="0 0 1110 430"
+          preserveAspectRatio="xMidYMid meet"
           role="img"
-          aria-label="A control loop drawn as a clockwise ring of four stations. On the right, next to the enlarged lens, a box labelled review contains three teal magnifying glasses representing different perspectives, with the caption one lens per agent. An arrow carrying three teal dots captioned findings plus evidence leads down and left to a box at the bottom labelled disposition, with the sub-line fix, investigate, decline. From disposition an arrow carrying two teal dots captioned accepted findings plus evidence leads left and up to a box on the left labelled apply. From apply an arrow leads up and right to a box at the top labelled next round, with a question mark, and the sub-line which lens or lenses; from its right side an arrow leads right and down back to review. Between next round and disposition, on the same vertical axis, sits one final-state symbol, a ring around a filled dot, captioned loop ends; an arrow captioned out of budget comes down into it from next round, and an arrow captioned no accepted findings comes up into it from disposition. Below disposition, a dashed amber arrow captioned needs a decision passes a short hatched amber barrier into a box labelled human decides, and a second dashed amber arrow beside the barrier carries the decision back up into disposition, a small inner loop."
+          aria-label="A left-to-right flow. On the left, a robot head above a small terminal window, labelled agent at work, sends a line labelled claims into a vertical splitter bar that fans out into three lanes. Lane one carries the claim, the timeout comes from the config contract, into a teal pill reading DECIDED in the model with a tick. Lane two carries the claim, the log format follows the existing pattern, into a lighter teal pill reading DERIVED from it, also ticked. Both teal lanes continue past their pills, merge into a single line, and end in one card reading agent proceeds. Lane three carries the claim, should failed runs auto-archive, into an amber pill reading NEW semantic decision marked with an exclamation. That lane does not continue: its arrow runs into a solid hatched amber barrier, captioned the loop stops here, and only a short dashed handoff line crosses from the barrier to a small human figure labelled human decides."
         >
           <defs>
             <marker
-              id="s26e-ah"
+              id="s25-ah-n"
+              viewBox="0 0 11 11"
+              refX="10"
+              refY="5.5"
+              markerUnits="userSpaceOnUse"
+              markerWidth="11"
+              markerHeight="11"
+              orient="auto-start-reverse"
+            >
+              <path class="ah-n" d="M0 0 L11 5.5 L0 11 Z" />
+            </marker>
+            <marker
+              id="s25-ah-ok"
               viewBox="0 0 12 12"
               refX="11"
               refY="6"
@@ -947,10 +980,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
               markerHeight="12"
               orient="auto-start-reverse"
             >
-              <path class="ah" d="M0 0 L12 6 L0 12 Z" />
+              <path class="ah-ok" d="M0 0 L12 6 L0 12 Z" />
             </marker>
             <marker
-              id="s26e-ah-new"
+              id="s25-ah-new"
               viewBox="0 0 12 12"
               refX="11"
               refY="6"
@@ -961,168 +994,173 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             >
               <path class="ah-new" d="M0 0 L12 6 L0 12 Z" />
             </marker>
-            <clipPath id="s26e-barclip">
-              <rect x="418" y="322" width="54" height="18" rx="6" />
+            <clipPath id="s25-barclip">
+              <rect x="832" y="318" width="24" height="84" rx="8" />
             </clipPath>
           </defs>
 
-          <!-- the four edges of the ring (clockwise: review, disposition, apply, next round?).
-               Each edge is a straight run with one rounded corner and ends on a straight
-               stretch, so every arrowhead sits on the line's own direction. -->
-          <path
-            class="edge"
-            d="M774 206 L774 227 Q774 263 738 263 L575 263"
-            marker-end="url(#s26e-ah)"
-          />
-          <path
-            class="edge"
-            d="M369 263 L172 263 Q136 263 136 227 L136 189"
-            marker-end="url(#s26e-ah)"
-          />
-          <circle class="finding" cx="230" cy="263" r="4.5" />
-          <circle class="finding" cx="252" cy="263" r="4.5" />
-          <text class="cap" x="190" y="289">accepted findings</text>
-          <text class="cap" x="190" y="307">
-            +
-            <tspan class="cap-ev">evidence</tspan>
-          </text>
-          <path
-            class="edge"
-            d="M136 125 L136 81 Q136 45 172 45 L363 45"
-            marker-end="url(#s26e-ah)"
-          />
-          <path
-            class="edge"
-            d="M569 45 L738 45 Q774 45 774 81 L774 96"
-            marker-end="url(#s26e-ah)"
-          />
+          <!-- ---------- stage headers ---------------------------------- -->
+          <text class="col-h" x="182" y="22">THE CLAIM</text>
+          <line class="col-rule" x1="182" y1="32" x2="510" y2="32" />
+          <text class="col-h" x="536" y="22">ITS CLASS</text>
+          <line class="col-rule" x1="536" y1="32" x2="784" y2="32" />
+          <text class="col-h" x="842" y="22">WHAT HAPPENS</text>
+          <line class="col-rule" x1="842" y1="32" x2="1078" y2="32" />
 
-          <!-- the findings travelling along the first edge, each carrying its evidence -->
-          <circle class="finding" cx="718" cy="263" r="4.5" />
-          <circle class="finding" cx="696" cy="263" r="4.5" />
-          <circle class="finding" cx="674" cy="263" r="4.5" />
-          <text class="cap" x="670" y="289">findings</text>
-          <text class="cap" x="670" y="307">
-            +
-            <tspan class="cap-ev">evidence</tspan>
+          <!-- ---------- the agent: robot head over a terminal ----------- -->
+          <circle class="bot-fill" cx="39" cy="149" r="4" />
+          <path class="bot" d="M39 153 V166" />
+          <rect class="bot" x="9" y="166" width="60" height="52" rx="14" />
+          <circle class="bot-fill" cx="27" cy="188" r="5.5" />
+          <circle class="bot-fill" cx="51" cy="188" r="5.5" />
+          <path class="bot" d="M30 205 H48" />
+          <rect class="bot-term" x="-1" y="230" width="80" height="44" rx="9" />
+          <path class="bot-mark" d="M15 243 L23 252 L15 261" />
+          <path class="bot-mark" d="M31 261 H53" />
+          <text class="cap" x="39" y="294" text-anchor="middle">
+            agent at work
           </text>
 
-          <!-- station 1 (right): review can apply several lenses, one per agent here -->
+          <!-- ---------- trunk + three-way splitter ---------------------- -->
+          <text class="cap" x="117" y="204" text-anchor="middle">claims</text>
+          <path class="stub" d="M83 215 H149" />
+          <path class="bus" d="M149 70 V360" />
+          <circle class="bus-node" cx="149" cy="215" r="4.5" />
+          <path class="stub" d="M149 70 H176" marker-end="url(#s25-ah-n)" />
+          <path class="stub" d="M149 215 H176" marker-end="url(#s25-ah-n)" />
+          <path class="stub" d="M149 360 H176" marker-end="url(#s25-ah-n)" />
+
+          <!-- ========== LANE 1: decided in the model ==================== -->
+          <rect class="chip" x="182" y="42" width="328" height="56" rx="15" />
+          <rect class="edge-ok" x="200" y="58" width="4" height="24" rx="2" />
+          <text class="chip-t" x="216" y="75">
+            timeout comes from the config contract
+          </text>
+
+          <path class="lane-ok" d="M514 70 H530" marker-end="url(#s25-ah-ok)" />
+
           <rect
-            class="st st--reviewer"
-            x="670"
-            y="102"
-            width="208"
-            height="104"
-            rx="16"
+            class="pill-ok"
+            x="536"
+            y="46"
+            width="248"
+            height="48"
+            rx="24"
           />
-          <text class="st-t" x="774" y="126" text-anchor="middle">review</text>
-          <circle class="lens lens-glass" cx="723" cy="151" r="11" />
-          <path class="lens" d="M731 159 L738 166" />
-          <circle class="lens lens-glass" cx="774" cy="151" r="11" />
-          <path class="lens" d="M782 159 L789 166" />
-          <circle class="lens lens-glass" cx="825" cy="151" r="11" />
-          <path class="lens" d="M833 159 L840 166" />
-          <text class="st-s" x="774" y="190" text-anchor="middle">
-            one lens per agent
+          <circle class="ic-ok" cx="558" cy="70" r="8.5" />
+          <path class="ic-tick" d="M553.5 70 L557 74 L563 66.5" />
+          <text class="pill-t" x="576" y="75.5">DECIDED in the model</text>
+
+          <path class="lane-ok" d="M784 70 C804 70 806 143 822 143" />
+
+          <!-- ========== LANE 2: derived from it ========================= -->
+          <rect class="chip" x="182" y="187" width="328" height="56" rx="15" />
+          <rect class="edge-ok" x="200" y="203" width="4" height="24" rx="2" />
+          <text class="chip-t" x="216" y="220">
+            log format follows the existing pattern
           </text>
 
-          <!-- station 2 (bottom): disposition -->
-          <rect class="st" x="369" y="228" width="200" height="70" rx="16" />
-          <text class="st-t" x="469" y="257" text-anchor="middle">
-            disposition
-          </text>
-          <text class="st-s" x="469" y="281" text-anchor="middle">
-            fix &middot; investigate &middot; decline
+          <path
+            class="lane-ok"
+            d="M514 215 H530"
+            marker-end="url(#s25-ah-ok)"
+          />
+
+          <rect
+            class="pill-ok pill-ok--soft"
+            x="536"
+            y="191"
+            width="248"
+            height="48"
+            rx="24"
+          />
+          <circle class="ic-ok" cx="558" cy="215" r="8.5" />
+          <path class="ic-tick" d="M553.5 215 L557 219 L563 211.5" />
+          <text class="pill-t" x="576" y="220.5">DERIVED from it</text>
+
+          <path class="lane-ok" d="M784 215 C804 215 806 143 822 143" />
+
+          <!-- ---------- the merged pass lane ends in one outcome -------- -->
+          <path
+            class="lane-ok"
+            d="M822 143 H836"
+            marker-end="url(#s25-ah-ok)"
+          />
+          <rect
+            class="out-card"
+            x="842"
+            y="113"
+            width="236"
+            height="60"
+            rx="17"
+          />
+          <circle class="ic-ok" cx="874" cy="143" r="9.5" />
+          <path class="ic-tick" d="M869 143 L873 147.5 L880 139" />
+          <text class="out-t" x="896" y="149.5">agent proceeds</text>
+
+          <!-- ========== LANE 3: a NEW decision, and the wall ============ -->
+          <rect class="chip" x="182" y="332" width="328" height="56" rx="15" />
+          <rect class="edge-new" x="200" y="348" width="4" height="24" rx="2" />
+          <text class="chip-t" x="216" y="365">
+            should failed runs auto-archive?
           </text>
 
-          <!-- station 3 (left): apply, a title-only station -->
-          <rect class="st" x="60" y="125" width="152" height="58" rx="16" />
-          <text class="st-t" x="136" y="160" text-anchor="middle">apply</text>
+          <path
+            class="lane-new"
+            d="M514 360 H530"
+            marker-end="url(#s25-ah-new)"
+          />
 
-          <!-- station 4 (top): the gate, same size and axis as disposition -->
-          <rect class="st" x="369" y="10" width="200" height="70" rx="16" />
-          <text class="st-t" x="469" y="39" text-anchor="middle">
-            next round?
-          </text>
-          <text class="st-s" x="469" y="63" text-anchor="middle">
-            which lens(es)?
+          <rect
+            class="pill-new"
+            x="536"
+            y="336"
+            width="248"
+            height="48"
+            rx="24"
+          />
+          <circle class="ic-new" cx="558" cy="360" r="8.5" />
+          <path class="ic-bang" d="M558 355 V361" />
+          <circle class="ic-bang" cx="558" cy="365.5" r="1.3" />
+          <text class="pill-t pill-t--new" x="576" y="365.5">
+            NEW semantic decision
           </text>
 
-          <!-- one end state on the axis, reached from the gate and from the disposition -->
-          <path class="edge" d="M469 80 V140" marker-end="url(#s26e-ah)" />
-          <path class="edge" d="M469 228 V168" marker-end="url(#s26e-ah)" />
-          <circle class="end-ring" cx="469" cy="154" r="12" />
-          <circle class="end-dot" cx="469" cy="154" r="6.5" />
-          <text class="cap" x="459" y="116" text-anchor="end">
-            out of budget
-          </text>
-          <text class="cap" x="459" y="202" text-anchor="end">
-            no accepted findings
-          </text>
-          <text class="cap" x="489" y="159">loop ends</text>
-
-          <!-- the human as an inner loop: the barrier stops only the way down -->
-          <path class="exit" d="M445 298 V318" marker-end="url(#s26e-ah-new)" />
-          <rect class="bar" x="418" y="322" width="54" height="18" rx="6" />
-          <g clip-path="url(#s26e-barclip)">
-            <path class="bar-hatch" d="M406 350 L428 314" />
-            <path class="bar-hatch" d="M424 350 L446 314" />
-            <path class="bar-hatch" d="M442 350 L464 314" />
-            <path class="bar-hatch" d="M460 350 L482 314" />
+          <!-- the lane visibly TERMINATES: arrow runs into a solid barrier -->
+          <path
+            class="lane-new"
+            d="M784 360 H826"
+            marker-end="url(#s25-ah-new)"
+          />
+          <rect class="bar" x="832" y="318" width="24" height="84" rx="8" />
+          <g clip-path="url(#s25-barclip)">
+            <path class="bar-hatch" d="M822 354 L870 306" />
+            <path class="bar-hatch" d="M822 380 L870 332" />
+            <path class="bar-hatch" d="M822 406 L870 358" />
+            <path class="bar-hatch" d="M822 432 L870 384" />
           </g>
-          <path class="exit" d="M445 344 V362" marker-end="url(#s26e-ah-new)" />
-          <path class="exit" d="M493 366 V302" marker-end="url(#s26e-ah-new)" />
-          <text class="cap cap--warn" x="410" y="336" text-anchor="end">
-            needs a decision
+          <text class="stop-t" x="844" y="420" text-anchor="middle">
+            the loop stops here
           </text>
-          <rect
-            class="st st--human"
-            x="385"
-            y="366"
-            width="168"
-            height="42"
-            rx="14"
+
+          <!-- only a handoff crosses the wall, and a human is on the other side -->
+          <path
+            class="handoff"
+            d="M862 360 H906"
+            marker-end="url(#s25-ah-new)"
           />
-          <circle class="human" cx="411" cy="378" r="6.5" />
-          <path class="human" d="M401 401 q0 -14 10 -14 q10 0 10 14 Z" />
-          <text class="human-t" x="427" y="392">human decides</text>
+          <circle class="human" cx="938" cy="339" r="11" />
+          <path class="human" d="M921 384 q0 -23 17 -23 q17 0 17 23 Z" />
+          <text class="human-t" x="972" y="366">human decides</text>
         </svg>
       </div>
 
-      <!-- ============ one lens, up close ===================================== -->
-      <div class="zoom fade-up">
-        <h3>A measuring instrument</h3>
-        <!-- viewBox starts at x=-52 so the glass centre sits under the heading midpoint -->
-        <svg
-          viewBox="-52 0 470 380"
-          preserveAspectRatio="xMinYMid meet"
-          role="img"
-          aria-label="One of the review lenses enlarged: a large teal magnifying glass with three words inside it, questions, sensitivity, calibration."
-        >
-          <circle class="big-lens big-glass" cx="190" cy="172" r="158" />
-          <path class="big-lens-handle" d="M305 287 L378 360" />
-          <text class="prop" x="190" y="116" text-anchor="middle">
-            questions
-          </text>
-          <line class="prop-rule" x1="150" y1="138" x2="230" y2="138" />
-          <text class="prop" x="190" y="182" text-anchor="middle">
-            sensitivity
-          </text>
-          <line class="prop-rule" x1="150" y1="204" x2="230" y2="204" />
-          <text class="prop" x="190" y="248" text-anchor="middle">
-            calibration
-          </text>
-        </svg>
-      </div>
     </div>
 
-    <!-- ============ why the split matters, in one line ======================= -->
-    <p class="band fade-up">
-      <span class="band-k">They can fail independently:</span> good lens,
-      <b class="loop-w">bad loop</b><span class="sep">&middot;</span>good loop,
-      <b class="lens-w">bad lens</b>.
-    </p>
+    <!-- ============ the payoff ========================================== -->
+    <div class="band fade-up">
+      <p>Human attention goes only where it is <b>genuinely needed</b>.</p>
+    </div>
   </div>
 </section>
 <script>

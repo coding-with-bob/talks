@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — 28-claims-agent-autonomy</title>
+<title>Iteration Without Drift — 25-one-corpus-consumers</title>
 <style>
 
 @font-face {
@@ -654,7 +654,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section
   class="slide slide--light"
   data-lane="story"
-  id="s25"
+  id="s23b"
   data-act="act8"
   data-owner="draft"
   data-minutes="1.5"
@@ -665,502 +665,584 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  A more structured, more detailed design corpus can also support **agent
-  autonomy**. When I started implementing a part of the project, I usually
-  first created a **contract document**: the important claims the given
-  implementation should deliver.
+  So I realized I needed an **onboarding document** for the architecture: the
+  same building blocks, interpreted a bit differently, so that a **business
+  person** can see how the technical capabilities relate to the product he
+  envisioned.
 
-  Each claim was classified into one of **three categories**: decided in the
-  model, directly derived from the model, or a **new semantic decision**. This
-  way the agent could work on these artifacts autonomously, until it ran into
-  a new semantic decision. There the loop stops, and a **human decides**.
+  This went quickly, because I could reuse the building blocks. We went
+  through the **scenario ledger**, picked the most important user journeys,
+  the ones that highlight different capabilities of the system, and I
+  organized the onboarding document around **these stories**.
 
-  Of course there was a feedback loop which checked whether the classification
-  was correct: it had to provide **clear evidence**, a statement in the corpus
-  that proves the claim is decided in or derived from the model.
+  For each document we defined the questions it should be able to answer. Then
+  we gave the first version and the questions to a **fresh agent**, asked it
+  to answer them, and used an **LLM as a judge** to check the answers. A
+  **quality feedback loop** for the documents.
 
-  The claim structure was useful after the implementation too: a **review
-  loop** checked whether the claims were properly implemented and properly
-  tested. It checked whether the implementation is semantically correct, and
-  whether the tests cover the aspects that matter for the given claim. And one
-  lens did **mutation testing**: it changed the code and checked that the
-  relevant tests fail; **green tests** meant the tests needed improvement.
+  Each document also lists the claims for that part of the system, each with
+  its source and the person to validate it with. And when a claim changed, we
+  could **trace back** to every part of the corpus that depended on it. In
+  prose it would be hard even to find the claims, let alone update the
+  documents when you learn something new.
 
-  I did not plan this in advance, but it was a very nice side effect: I can
-  **direct my attention** to where it is really needed. The agent runs on its
-  own as far as its assumptions can be **checked against the corpus**. Where
-  there is nothing to check against, the **loop stops**.
+  One more thing: storing the building blocks as **small linked entities**
+  lets you render the corpus differently for each use case and audience,
+  instead of the single way it was written down. **Same corpus, different
+  renders**.
   -->
 
   <style>
-    #s25 .content {
+    #s23b .content {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 16px;
       justify-content: center;
     }
-
-    /* ==== flow (full width) ============================================== */
-    /* The "Rule of thumb" card that sat to the right of the flow was removed
-       2026-11-02 (owner call): both of its lines repeated what the diagram
-       already shows (ticked lanes proceed, the NEW lane hits the barrier);
-       the generalisation now lives in the speaker note. The flow takes the
-       full width, centred by the svg's xMidYMid meet at its native 1110px
-       (a taller box scales the drawing up and overflowcheck then flags the
-       "agent at work" caption, so the height stays 430). */
-    #s25 .flow-row {
+    /* The SVG box is 1456x500 at exactly 1:1 with the viewBox, flush against
+       the viewBox top and bottom; the closing band under it was dropped on
+       2026-11-04, so the diagram is simply centred in the content area. */
+    #s23b .diagram {
       flex: none;
-      display: grid;
-      grid-template-columns: 1fr;
+      height: 500px;
     }
-    #s25 .flow {
-      height: 430px;
-      min-width: 0;
-    }
-    #s25 .flow svg {
+    #s23b .diagram svg {
       width: 100%;
       height: 100%;
       display: block;
-      overflow: visible;
     }
 
-    /* ---- column headers over the three stages ---------------------------- */
-    #s25 .col-h {
-      font-size: 14px;
-      font-weight: 850;
-      letter-spacing: 0.12em;
-      fill: var(--muted-2);
+    /* ---- mock page / panel chrome (s14 page-anatomy vocabulary) --------- */
+    #s23b .page-bg {
+      fill: var(--navy-0);
     }
-    #s25 .col-rule {
+    #s23b .page-frame {
+      fill: none;
+      stroke: var(--muted-3);
+      stroke-width: 1.6;
+    }
+    #s23b .band-fill {
+      fill: var(--navy-2);
+    }
+    #s23b .page-rule {
       stroke: var(--hairline);
       stroke-width: 1.4;
     }
-
-    /* ---- the agent glyph: robot head over a terminal ---------------------- */
-    #s25 .bot {
-      fill: none;
-      stroke: var(--story);
-      stroke-width: 2.2;
-      stroke-linejoin: round;
-      stroke-linecap: round;
+    #s23b .dot {
+      fill: var(--muted-3);
     }
-    #s25 .bot-fill {
+    #s23b .region {
+      fill: var(--navy-1);
+      stroke: var(--hairline);
+      stroke-width: 1.2;
+    }
+    #s23b .term {
+      fill: var(--card-bg);
+      stroke: var(--story);
+      stroke-width: 1.2;
+      stroke-opacity: 0.6;
+    }
+
+    /* ---- mock text: bars stand in for lines of copy --------------------- */
+    #s23b .h-bar {
+      fill: var(--muted-3);
+    }
+    #s23b .t-line {
+      fill: var(--muted-3);
+      opacity: 0.5;
+    }
+    #s23b .n-line {
+      fill: var(--muted-3);
+      opacity: 0.72;
+    }
+    #s23b .mono-bar {
+      fill: var(--muted-3);
+      opacity: 0.7;
+    }
+    #s23b .inv-bar {
+      fill: var(--muted-3);
+      opacity: 0.55;
+    }
+    #s23b .mock-id {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      fill: var(--story-on-dark);
+    }
+    #s23b .mock-url {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      fill: var(--muted-2);
+    }
+
+    /* the tour render speaks louder: bigger headings in the lane accent */
+    #s23b .hi-bar {
       fill: var(--story);
     }
-    #s25 .bot-term {
-      fill: var(--card-bg);
-      stroke: var(--muted-2);
-      stroke-width: 1.8;
-    }
-    #s25 .bot-mark {
-      fill: none;
-      stroke: var(--muted-2);
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    #s25 .cap {
-      font-size: 14px;
-      font-weight: 800;
-      fill: var(--muted-2);
-      letter-spacing: -0.004em;
+    #s23b .hi-bar--soft {
+      fill: var(--story);
+      opacity: 0.5;
     }
 
-    /* ---- the three-way splitter ------------------------------------------ */
-    #s25 .bus {
-      stroke: var(--muted-2);
-      stroke-width: 2.6;
-      stroke-linecap: round;
+    /* ---- labels --------------------------------------------------------- */
+    #s23b .token-label {
+      font-size: 17px;
+      font-weight: 850;
+      fill: var(--white);
+      letter-spacing: -0.01em;
     }
-    #s25 .bus-node {
-      fill: var(--muted-2);
+    #s23b .panel-eyebrow {
+      font-size: 15px;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      fill: var(--story-on-dark);
     }
-    #s25 .stub {
-      fill: none;
-      stroke: var(--muted-2);
-      stroke-width: 2.2;
-    }
-    #s25 .ah-n {
-      fill: var(--muted-2);
-    }
-
-    /* ---- claim chips (neutral: the raw claim, before it is classed) ------- */
-    #s25 .chip {
-      fill: var(--card-bg);
-      stroke: var(--hairline);
-      stroke-width: 1.4;
-    }
-    #s25 .chip-t {
+    #s23b .sublabel {
       font-size: 15px;
       font-weight: 700;
-      fill: var(--white);
-      letter-spacing: -0.008em;
+      fill: var(--muted-2);
     }
-    #s25 .edge-ok {
-      fill: var(--theory);
-    }
-    #s25 .edge-new {
-      fill: var(--story);
-    }
-
-    /* ---- class pills: teal = passes, amber = stops ------------------------ */
-    #s25 .pill-ok {
-      fill: color-mix(in srgb, var(--theory) 13%, var(--card-bg));
-      stroke: color-mix(in srgb, var(--theory) 45%, var(--hairline));
-      stroke-width: 1.6;
-    }
-    #s25 .pill-ok--soft {
-      fill: color-mix(in srgb, var(--theory) 7%, var(--card-bg));
-    }
-    #s25 .pill-new {
-      fill: color-mix(in srgb, var(--story) 16%, var(--card-bg));
-      stroke: color-mix(in srgb, var(--story) 55%, var(--hairline));
-      stroke-width: 1.6;
-    }
-    #s25 .pill-t {
-      font-size: 15px;
-      font-weight: 850;
-      fill: var(--theory-on-dark);
-      letter-spacing: -0.006em;
-    }
-    #s25 .pill-t--new {
-      fill: var(--story-on-dark);
-    }
-    #s25 .ic-ok {
-      fill: none;
-      stroke: var(--theory-on-dark);
-      stroke-width: 1.7;
-    }
-    #s25 .ic-tick {
-      fill: none;
-      stroke: var(--theory-on-dark);
-      stroke-width: 2.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    #s25 .ic-new {
-      fill: none;
-      stroke: var(--story-on-dark);
-      stroke-width: 1.7;
-    }
-    #s25 .ic-bang {
-      fill: var(--story-on-dark);
-      stroke: var(--story-on-dark);
-      stroke-width: 2.2;
-      stroke-linecap: round;
-    }
-
-    /* ---- the flowing (teal) lanes ---------------------------------------- */
-    #s25 .lane-ok {
-      fill: none;
-      stroke: var(--theory);
-      stroke-width: 2.4;
-    }
-    #s25 .ah-ok {
-      fill: var(--theory);
-    }
-    #s25 .out-card {
-      fill: color-mix(in srgb, var(--theory) 10%, var(--card-bg));
-      stroke: color-mix(in srgb, var(--theory) 42%, var(--hairline));
-      stroke-width: 1.6;
-    }
-    #s25 .out-t {
-      font-size: 18px;
-      font-weight: 850;
-      fill: var(--white);
-      letter-spacing: -0.018em;
-    }
-
-    /* ---- the lane that terminates (amber) -------------------------------- */
-    #s25 .lane-new {
-      fill: none;
-      stroke: var(--story);
-      stroke-width: 2.6;
-    }
-    #s25 .ah-new {
-      fill: var(--story);
-    }
-    #s25 .bar {
-      fill: var(--story);
-    }
-    #s25 .bar-hatch {
-      stroke: var(--navy-1);
-      stroke-width: 5;
-    }
-    #s25 .handoff {
-      fill: none;
-      stroke: var(--story);
-      stroke-width: 2.2;
-      stroke-dasharray: 5 5;
-      stroke-linecap: round;
-    }
-    #s25 .stop-t {
-      font-size: 14.5px;
-      font-weight: 850;
-      fill: var(--story-on-dark);
-      letter-spacing: 0.01em;
-    }
-    #s25 .human {
-      fill: var(--story);
-    }
-    #s25 .human-t {
-      font-size: 16px;
-      font-weight: 850;
-      fill: var(--story-on-dark);
-      letter-spacing: -0.012em;
-    }
-
-    /* ==== the bottom band (sits 20px lower than the flex flow) ============= */
-    #s25 .band {
-      flex: none;
-      width: fit-content;
-      min-width: 40%;
-      max-width: 100%;
-      margin: 0 auto;
-      position: relative;
-      top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px 48px 17px;
-      border-radius: var(--radius-card);
-      background: var(--card-bg);
-      border: 1px solid var(--hairline);
-    }
-    #s25 .band p {
-      margin: 0;
-      font-size: 23px;
+    /* the one tour line that is real copy instead of a gray placeholder bar */
+    #s23b .tour-line {
+      font-family: var(--font-mono);
+      font-size: 12px;
       font-weight: 640;
-      line-height: 1.3;
-      color: var(--muted);
+      fill: var(--white);
     }
-    #s25 .band p b {
-      color: var(--story-on-dark);
-      font-weight: 880;
+    /* the long tour URL needs a slightly smaller mono than the architect one */
+    #s23b .mock-url--long {
+      font-size: 10.5px;
     }
+
+    /* ---- the two render arrows ------------------------------------------ */
+    #s23b .flow {
+      fill: none;
+      stroke: var(--story);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      opacity: 0.85;
+    }
+    #s23b .flow-head {
+      fill: var(--story);
+    }
+
+    /* ---- the mini table on the tour page, and its zoom wedge ------------ */
+    #s23b .mini-tbl {
+      fill: var(--card-bg);
+      stroke: var(--story);
+      stroke-width: 1.6;
+    }
+    #s23b .mini-rule {
+      stroke: var(--story);
+      stroke-width: 1.1;
+      opacity: 0.55;
+    }
+    #s23b .zoom {
+      fill: none;
+      stroke: var(--story);
+      stroke-width: 1.6;
+      opacity: 0.38;
+    }
+
+    /* ---- the exhibit: the domain-claim table ---------------------------- */
+    #s23b .exhibit {
+      fill: var(--card-bg-strong);
+      stroke: var(--story);
+      stroke-width: 2.2;
+    }
+    #s23b .exh-eyebrow {
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: 0.1em;
+      fill: var(--story-on-dark);
+    }
+    #s23b .th {
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
+      fill: var(--muted-2);
+    }
+    #s23b .rule-line {
+      stroke: var(--muted-3);
+      stroke-width: 1.3;
+      opacity: 0.5;
+    }
+    #s23b .dc-id {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 800;
+      fill: var(--story-on-dark);
+    }
+    #s23b .da-t {
+      font-size: 15px;
+      font-weight: 620;
+      fill: var(--white);
+    }
+    #s23b .da-who {
+      font-size: 15px;
+      font-weight: 780;
+      fill: var(--white);
+    }
+    #s23b .chip {
+      fill: var(--card-bg);
+      stroke: var(--hairline);
+      stroke-width: 1.4;
+    }
+    #s23b .chip--ev {
+      stroke: var(--cyan);
+      stroke-opacity: 0.6;
+    }
+    #s23b .chip--as {
+      stroke: var(--story);
+      stroke-opacity: 0.8;
+    }
+    #s23b .chip-t {
+      font-size: 14px;
+      font-weight: 800;
+    }
+    #s23b .chip-t--ev {
+      fill: var(--cyan-on-dark);
+    }
+    #s23b .chip-t--as {
+      fill: var(--story-on-dark);
+    }
+
   </style>
 
   <div class="title-block">
-    <h1>Claim structure supports agent autonomy</h1>
+    <div class="kicker">The Swiss Army Corpus</div>
+    <h1>Same corpus, different renders</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="flow-row">
-      <!-- ============ claim triage: two lanes flow, one hits a wall ====== -->
-      <div class="flow fade-up">
-        <svg
-          viewBox="0 0 1110 430"
-          preserveAspectRatio="xMidYMid meet"
-          role="img"
-          aria-label="A left-to-right flow. On the left, a robot head above a small terminal window, labelled agent at work, sends a line labelled claims into a vertical splitter bar that fans out into three lanes. Lane one carries the claim, the timeout comes from the config contract, into a teal pill reading DECIDED in the model with a tick. Lane two carries the claim, the log format follows the existing pattern, into a lighter teal pill reading DERIVED from it, also ticked. Both teal lanes continue past their pills, merge into a single line, and end in one card reading agent proceeds. Lane three carries the claim, should failed runs auto-archive, into an amber pill reading NEW semantic decision marked with an exclamation. That lane does not continue: its arrow runs into a solid hatched amber barrier, captioned the loop stops here, and only a short dashed handoff line crosses from the barrier to a small human figure labelled human decides."
-        >
-          <defs>
-            <marker
-              id="s25-ah-n"
-              viewBox="0 0 11 11"
-              refX="10"
-              refY="5.5"
-              markerUnits="userSpaceOnUse"
-              markerWidth="11"
-              markerHeight="11"
-              orient="auto-start-reverse"
-            >
-              <path class="ah-n" d="M0 0 L11 5.5 L0 11 Z" />
-            </marker>
-            <marker
-              id="s25-ah-ok"
-              viewBox="0 0 12 12"
-              refX="11"
-              refY="6"
-              markerUnits="userSpaceOnUse"
-              markerWidth="12"
-              markerHeight="12"
-              orient="auto-start-reverse"
-            >
-              <path class="ah-ok" d="M0 0 L12 6 L0 12 Z" />
-            </marker>
-            <marker
-              id="s25-ah-new"
-              viewBox="0 0 12 12"
-              refX="11"
-              refY="6"
-              markerUnits="userSpaceOnUse"
-              markerWidth="12"
-              markerHeight="12"
-              orient="auto-start-reverse"
-            >
-              <path class="ah-new" d="M0 0 L12 6 L0 12 Z" />
-            </marker>
-            <clipPath id="s25-barclip">
-              <rect x="832" y="318" width="24" height="84" rx="8" />
-            </clipPath>
-          </defs>
+    <div class="diagram fade-up">
+      <svg
+        viewBox="0 0 1456 500"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="One source corpus on the left, drawn as a small page glyph labelled the S-project corpus. Two amber arrows fan out from it to the right into two mock render panels. The upper panel, Architect render, is dense: two tight columns of small section headings, many short body lines, a mono code block and three invariant rows, with the sublabel full depth, for the builders. The lower panel, Guided tour render, is friendlier: its address reads tour slash 02 a morning with the product dot html, and under one large amber heading bar the first line is real copy, John opens the dashboard, scenario S01, which is the morning briefing row from the scenario ledger on the previous slide. Widely spaced gray narrative lines follow, then a second smaller heading and, along its bottom edge, a small three column table glyph. Its sublabel reads the business stakeholder's view. Two faint amber lines widen from that bottom table glyph to the right, opening it into a large exhibit on the right hand side: a table headed at the bottom of every tour page, with the columns claim, source and validate with. Row one, DC-12, usage peaks follow the billing cycle, source chip interview, validate with ops lead. Row two, DC-31, partners never share accounts, source chip assumption drawn in amber, validate with partner manager. Row three, DC-47, exports must stay under 10 MB, source chip research, validate with platform team."
+      >
+        <!-- ================= the corpus token ============================= -->
+        <rect class="page-bg" x="30" y="160" width="140" height="176" rx="12" />
+        <path
+          class="band-fill"
+          d="M30 172 A12 12 0 0 1 42 160 H158 A12 12 0 0 1 170 172 V182 H30 Z"
+        />
+        <path
+          class="band-fill"
+          d="M30 316 H170 V324 A12 12 0 0 1 158 336 H42 A12 12 0 0 1 30 324 Z"
+        />
+        <rect
+          class="page-frame"
+          x="30"
+          y="160"
+          width="140"
+          height="176"
+          rx="12"
+        />
+        <line class="page-rule" x1="30" y1="182" x2="170" y2="182" />
+        <line class="page-rule" x1="30" y1="316" x2="170" y2="316" />
 
-          <!-- ---------- stage headers ---------------------------------- -->
-          <text class="col-h" x="182" y="22">THE CLAIM</text>
-          <line class="col-rule" x1="182" y1="32" x2="510" y2="32" />
-          <text class="col-h" x="536" y="22">ITS CLASS</text>
-          <line class="col-rule" x1="536" y1="32" x2="784" y2="32" />
-          <text class="col-h" x="842" y="22">WHAT HAPPENS</text>
-          <line class="col-rule" x1="842" y1="32" x2="1078" y2="32" />
+        <circle class="dot" cx="44" cy="171" r="3" />
+        <circle class="dot" cx="55" cy="171" r="3" />
+        <circle class="dot" cx="66" cy="171" r="3" />
 
-          <!-- ---------- the agent: robot head over a terminal ----------- -->
-          <circle class="bot-fill" cx="39" cy="149" r="4" />
-          <path class="bot" d="M39 153 V166" />
-          <rect class="bot" x="9" y="166" width="60" height="52" rx="14" />
-          <circle class="bot-fill" cx="27" cy="188" r="5.5" />
-          <circle class="bot-fill" cx="51" cy="188" r="5.5" />
-          <path class="bot" d="M30 205 H48" />
-          <rect class="bot-term" x="-1" y="230" width="80" height="44" rx="9" />
-          <path class="bot-mark" d="M15 243 L23 252 L15 261" />
-          <path class="bot-mark" d="M31 261 H53" />
-          <text class="cap" x="39" y="294" text-anchor="middle">
-            agent at work
-          </text>
+        <rect class="h-bar" x="44" y="194" width="78" height="7" rx="3.5" />
 
-          <!-- ---------- trunk + three-way splitter ---------------------- -->
-          <text class="cap" x="117" y="204" text-anchor="middle">claims</text>
-          <path class="stub" d="M83 215 H149" />
-          <path class="bus" d="M149 70 V360" />
-          <circle class="bus-node" cx="149" cy="215" r="4.5" />
-          <path class="stub" d="M149 70 H176" marker-end="url(#s25-ah-n)" />
-          <path class="stub" d="M149 215 H176" marker-end="url(#s25-ah-n)" />
-          <path class="stub" d="M149 360 H176" marker-end="url(#s25-ah-n)" />
+        <rect class="region" x="44" y="210" width="112" height="38" rx="6" />
+        <rect class="mono-bar" x="54" y="219" width="88" height="4" rx="2" />
+        <rect class="mono-bar" x="54" y="228" width="72" height="4" rx="2" />
+        <rect class="mono-bar" x="54" y="237" width="92" height="4" rx="2" />
 
-          <!-- ========== LANE 1: decided in the model ==================== -->
-          <rect class="chip" x="182" y="42" width="328" height="56" rx="15" />
-          <rect class="edge-ok" x="200" y="58" width="4" height="24" rx="2" />
-          <text class="chip-t" x="216" y="75">
-            timeout comes from the config contract
-          </text>
+        <rect class="term" x="44" y="256" width="38" height="15" rx="7.5" />
+        <rect class="term" x="88" y="256" width="30" height="15" rx="7.5" />
+        <rect class="term" x="124" y="256" width="26" height="15" rx="7.5" />
 
-          <path class="lane-ok" d="M514 70 H530" marker-end="url(#s25-ah-ok)" />
+        <rect class="t-line" x="44" y="280" width="104" height="5" rx="2.5" />
+        <rect class="t-line" x="44" y="292" width="88" height="5" rx="2.5" />
+        <rect class="t-line" x="44" y="304" width="98" height="5" rx="2.5" />
 
-          <rect
-            class="pill-ok"
-            x="536"
-            y="46"
-            width="248"
-            height="48"
-            rx="24"
-          />
-          <circle class="ic-ok" cx="558" cy="70" r="8.5" />
-          <path class="ic-tick" d="M553.5 70 L557 74 L563 66.5" />
-          <text class="pill-t" x="576" y="75.5">DECIDED in the model</text>
+        <rect class="inv-bar" x="44" y="322" width="60" height="5" rx="2.5" />
+        <rect class="inv-bar" x="112" y="322" width="44" height="5" rx="2.5" />
 
-          <path class="lane-ok" d="M784 70 C804 70 806 143 822 143" />
+        <text class="token-label" x="100" y="364" text-anchor="middle">
+          the S-project corpus
+        </text>
 
-          <!-- ========== LANE 2: derived from it ========================= -->
-          <rect class="chip" x="182" y="187" width="328" height="56" rx="15" />
-          <rect class="edge-ok" x="200" y="203" width="4" height="24" rx="2" />
-          <text class="chip-t" x="216" y="220">
-            log format follows the existing pattern
-          </text>
+        <!-- ================= the two render arrows ======================== -->
+        <path class="flow" d="M176 232 C212 232, 210 97, 244 97" />
+        <path class="flow-head" d="M243 90 L255 97 L243 104 Z" />
+        <path class="flow" d="M176 276 C212 276, 210 355, 244 355" />
+        <path class="flow-head" d="M243 348 L255 355 L243 362 Z" />
 
-          <path
-            class="lane-ok"
-            d="M514 215 H530"
-            marker-end="url(#s25-ah-ok)"
-          />
+        <!-- ================= render 1: the architect render =============== -->
+        <rect class="page-bg" x="254" y="4" width="500" height="186" rx="12" />
+        <path
+          class="band-fill"
+          d="M254 16 A12 12 0 0 1 266 4 H742 A12 12 0 0 1 754 16 V34 H254 Z"
+        />
+        <rect
+          class="page-frame"
+          x="254"
+          y="4"
+          width="500"
+          height="186"
+          rx="12"
+        />
+        <line class="page-rule" x1="254" y1="34" x2="754" y2="34" />
+        <text class="panel-eyebrow" x="274" y="25">ARCHITECT RENDER</text>
+        <text class="mock-url" x="734" y="25" text-anchor="end">
+          corpus/architecture.html
+        </text>
 
-          <rect
-            class="pill-ok pill-ok--soft"
-            x="536"
-            y="191"
-            width="248"
-            height="48"
-            rx="24"
-          />
-          <circle class="ic-ok" cx="558" cy="215" r="8.5" />
-          <path class="ic-tick" d="M553.5 215 L557 219 L563 211.5" />
-          <text class="pill-t" x="576" y="220.5">DERIVED from it</text>
+        <!-- left column: headings, body lines, a pseudo-code block -->
+        <rect class="h-bar" x="274" y="46" width="88" height="7" rx="3.5" />
+        <rect
+          class="t-line"
+          x="274"
+          y="62"
+          width="224"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="274"
+          y="73"
+          width="208"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="274"
+          y="84"
+          width="228"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="274"
+          y="95"
+          width="182"
+          height="4.5"
+          rx="2.25"
+        />
 
-          <path class="lane-ok" d="M784 215 C804 215 806 143 822 143" />
+        <rect class="region" x="274" y="106" width="228" height="40" rx="6" />
+        <rect class="mono-bar" x="286" y="114" width="140" height="4" rx="2" />
+        <rect class="mono-bar" x="286" y="123" width="176" height="4" rx="2" />
+        <rect class="mono-bar" x="286" y="132" width="120" height="4" rx="2" />
 
-          <!-- ---------- the merged pass lane ends in one outcome -------- -->
-          <path
-            class="lane-ok"
-            d="M822 143 H836"
-            marker-end="url(#s25-ah-ok)"
-          />
-          <rect
-            class="out-card"
-            x="842"
-            y="113"
-            width="236"
-            height="60"
-            rx="17"
-          />
-          <circle class="ic-ok" cx="874" cy="143" r="9.5" />
-          <path class="ic-tick" d="M869 143 L873 147.5 L880 139" />
-          <text class="out-t" x="896" y="149.5">agent proceeds</text>
+        <rect class="h-bar" x="274" y="156" width="64" height="7" rx="3.5" />
+        <rect
+          class="t-line"
+          x="274"
+          y="168"
+          width="220"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="274"
+          y="178"
+          width="196"
+          height="4.5"
+          rx="2.25"
+        />
 
-          <!-- ========== LANE 3: a NEW decision, and the wall ============ -->
-          <rect class="chip" x="182" y="332" width="328" height="56" rx="15" />
-          <rect class="edge-new" x="200" y="348" width="4" height="24" rx="2" />
-          <text class="chip-t" x="216" y="365">
-            should failed runs auto-archive?
-          </text>
+        <!-- right column: more headings, invariant rows, more body -->
+        <rect class="h-bar" x="520" y="46" width="76" height="7" rx="3.5" />
+        <text class="mock-id" x="520" y="68">INV-3</text>
+        <rect class="inv-bar" x="566" y="63" width="140" height="5" rx="2.5" />
+        <text class="mock-id" x="520" y="84">INV-7</text>
+        <rect class="inv-bar" x="566" y="79" width="158" height="5" rx="2.5" />
+        <text class="mock-id" x="520" y="100">INV-9</text>
+        <rect class="inv-bar" x="566" y="95" width="126" height="5" rx="2.5" />
 
-          <path
-            class="lane-new"
-            d="M514 360 H530"
-            marker-end="url(#s25-ah-new)"
-          />
+        <rect class="h-bar" x="520" y="114" width="88" height="7" rx="3.5" />
+        <rect
+          class="t-line"
+          x="520"
+          y="130"
+          width="200"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="520"
+          y="141"
+          width="186"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="520"
+          y="152"
+          width="204"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="520"
+          y="163"
+          width="170"
+          height="4.5"
+          rx="2.25"
+        />
+        <rect
+          class="t-line"
+          x="520"
+          y="174"
+          width="192"
+          height="4.5"
+          rx="2.25"
+        />
 
-          <rect
-            class="pill-new"
-            x="536"
-            y="336"
-            width="248"
-            height="48"
-            rx="24"
-          />
-          <circle class="ic-new" cx="558" cy="360" r="8.5" />
-          <path class="ic-bang" d="M558 355 V361" />
-          <circle class="ic-bang" cx="558" cy="365.5" r="1.3" />
-          <text class="pill-t pill-t--new" x="576" y="365.5">
-            NEW semantic decision
-          </text>
+        <text class="sublabel" x="274" y="210">
+          full depth, for the builders
+        </text>
 
-          <!-- the lane visibly TERMINATES: arrow runs into a solid barrier -->
-          <path
-            class="lane-new"
-            d="M784 360 H826"
-            marker-end="url(#s25-ah-new)"
-          />
-          <rect class="bar" x="832" y="318" width="24" height="84" rx="8" />
-          <g clip-path="url(#s25-barclip)">
-            <path class="bar-hatch" d="M822 354 L870 306" />
-            <path class="bar-hatch" d="M822 380 L870 332" />
-            <path class="bar-hatch" d="M822 406 L870 358" />
-            <path class="bar-hatch" d="M822 432 L870 384" />
-          </g>
-          <text class="stop-t" x="844" y="420" text-anchor="middle">
-            the loop stops here
-          </text>
+        <!-- ================= render 2: the guided tour render ============= -->
+        <rect
+          class="page-bg"
+          x="254"
+          y="258"
+          width="500"
+          height="194"
+          rx="12"
+        />
+        <path
+          class="band-fill"
+          d="M254 270 A12 12 0 0 1 266 258 H742 A12 12 0 0 1 754 270 V288 H254 Z"
+        />
+        <rect
+          class="page-frame"
+          x="254"
+          y="258"
+          width="500"
+          height="194"
+          rx="12"
+        />
+        <line class="page-rule" x1="254" y1="288" x2="754" y2="288" />
+        <text class="panel-eyebrow" x="274" y="279">GUIDED TOUR RENDER</text>
+        <text class="mock-url mock-url--long" x="734" y="279" text-anchor="end">
+          tour/02-a-morning-with-the-product.html
+        </text>
 
-          <!-- only a handoff crosses the wall, and a human is on the other side -->
-          <path
-            class="handoff"
-            d="M862 360 H906"
-            marker-end="url(#s25-ah-new)"
-          />
-          <circle class="human" cx="938" cy="339" r="11" />
-          <path class="human" d="M921 384 q0 -23 17 -23 q17 0 17 23 Z" />
-          <text class="human-t" x="972" y="366">human decides</text>
-        </svg>
-      </div>
+        <rect class="hi-bar" x="274" y="302" width="248" height="14" rx="7" />
+        <!-- the one line of real copy: it names scenario S01 from the ledger
+             on the previous fragment, so the tour reads as a user journey -->
+        <text class="tour-line" x="274" y="334">
+          John opens the dashboard (#S01)
+        </text>
+        <rect class="n-line" x="274" y="342" width="452" height="6" rx="3" />
+        <rect class="n-line" x="274" y="356" width="396" height="6" rx="3" />
 
+        <rect
+          class="hi-bar--soft"
+          x="274"
+          y="372"
+          width="168"
+          height="11"
+          rx="5.5"
+        />
+        <rect class="n-line" x="274" y="394" width="428" height="6" rx="3" />
+        <rect class="n-line" x="274" y="406" width="402" height="6" rx="3" />
+
+        <!-- the register, sitting at the bottom of the page -->
+        <rect class="mini-tbl" x="274" y="420" width="460" height="24" rx="4" />
+        <line class="mini-rule" x1="274" y1="428" x2="734" y2="428" />
+        <line class="mini-rule" x1="536" y1="420" x2="536" y2="444" />
+        <line class="mini-rule" x1="640" y1="420" x2="640" y2="444" />
+
+        <text class="sublabel" x="274" y="472">
+          the business stakeholder&rsquo;s view
+        </text>
+
+        <!-- ================= zoom wedge into the exhibit ================== -->
+        <path class="zoom" d="M754 420 L800 200" />
+        <path class="zoom" d="M754 444 L800 500" />
+
+        <!-- ================= the domain-claim table ======================= -->
+        <rect
+          class="exhibit"
+          x="800"
+          y="200"
+          width="652"
+          height="300"
+          rx="14"
+        />
+        <text class="exh-eyebrow" x="826" y="230">
+          AT THE BOTTOM OF EVERY TOUR PAGE
+        </text>
+
+        <text class="th" x="826" y="262">claim</text>
+        <text class="th" x="1188" y="262">source</text>
+        <text class="th" x="1322" y="262">validate with</text>
+        <line class="rule-line" x1="826" y1="276" x2="1426" y2="276" />
+
+        <text class="dc-id" x="826" y="316">DC-12</text>
+        <text class="da-t" x="898" y="316">
+          usage peaks follow the billing cycle
+        </text>
+        <rect
+          class="chip chip--ev"
+          x="1188"
+          y="298"
+          width="108"
+          height="28"
+          rx="14"
+        />
+        <text class="chip-t chip-t--ev" x="1242" y="317" text-anchor="middle">
+          interview
+        </text>
+        <text class="da-who" x="1322" y="316">ops lead</text>
+
+        <line class="rule-line" x1="826" y1="343" x2="1426" y2="343" />
+
+        <text class="dc-id" x="826" y="383">DC-31</text>
+        <text class="da-t" x="898" y="383">partners never share accounts</text>
+        <rect
+          class="chip chip--as"
+          x="1188"
+          y="365"
+          width="108"
+          height="28"
+          rx="14"
+        />
+        <text class="chip-t chip-t--as" x="1242" y="384" text-anchor="middle">
+          assumption
+        </text>
+        <text class="da-who" x="1322" y="383">partner manager</text>
+
+        <line class="rule-line" x1="826" y1="410" x2="1426" y2="410" />
+
+        <text class="dc-id" x="826" y="450">DC-47</text>
+        <text class="da-t" x="898" y="450">exports must stay under 10 MB</text>
+        <rect
+          class="chip chip--ev"
+          x="1188"
+          y="432"
+          width="108"
+          height="28"
+          rx="14"
+        />
+        <text class="chip-t chip-t--ev" x="1242" y="451" text-anchor="middle">
+          research
+        </text>
+        <text class="da-who" x="1322" y="450">platform team</text>
+      </svg>
     </div>
 
-    <!-- ============ the payoff ========================================== -->
-    <div class="band fade-up">
-      <p>Human attention goes only where it is <b>genuinely needed</b>.</p>
-    </div>
   </div>
 </section>
 <script>

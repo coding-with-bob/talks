@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — 26-one-corpus-consumers</title>
+<title>Iteration Without Drift — 26-implementation-mapping</title>
 <style>
 
 @font-face {
@@ -654,10 +654,10 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <section
   class="slide slide--light"
   data-lane="story"
-  id="s23b"
+  id="s24"
   data-act="act8"
   data-owner="draft"
-  data-minutes="1.5"
+  data-minutes="0.75"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,584 +665,408 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  So I realized I needed an **onboarding document** for the architecture: the
-  same building blocks, interpreted a bit differently, so that a **business
-  person** can see how the technical capabilities relate to the product he
-  envisioned.
+  Back to Pairflow v3: this structure also paid off on the implementation
+  side. The model description was the basis of the **task specifications** for
+  the implementation. The DDD terms were mapped onto the domain types, and a
+  CI script checked that every domain term exists in the code. The golden
+  traces became **executable tests**, the invariants became
+  **behavior-preservation rails**, and the absent list became the non-goals
+  section of the ADRs. So the structure also helped drive the implementation
+  itself.
 
-  This went quickly, because I could reuse the building blocks. We went
-  through the **scenario ledger**, picked the most important user journeys,
-  the ones that highlight different capabilities of the system, and I
-  organized the onboarding document around **these stories**.
-
-  For each document we defined the questions it should be able to answer. Then
-  we gave the first version and the questions to a **fresh agent**, asked it
-  to answer them, and used an **LLM as a judge** to check the answers. A
-  **quality feedback loop** for the documents.
-
-  Each document also lists the claims for that part of the system, each with
-  its source and the person to validate it with. And when a claim changed, we
-  could **trace back** to every part of the corpus that depended on it. In
-  prose it would be hard even to find the claims, let alone update the
-  documents when you learn something new.
-
-  One more thing: storing the building blocks as **small linked entities**
-  lets you render the corpus differently for each use case and audience,
-  instead of the single way it was written down. **Same corpus, different
-  renders**.
+  The implementation and the parts of the model were connected through **git
+  commit hashes**, in a **realization ledger**: which version of the model was
+  implemented by which commit. And a **CI check** flagged it when the model
+  changed but the related code did not. So this structure can be leveraged
+  from one more angle.
   -->
 
   <style>
-    #s23b .content {
+    #s24 .content {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
       justify-content: center;
+      transform: translateY(-10px);
     }
-    /* The SVG box is 1456x500 at exactly 1:1 with the viewBox, flush against
-       the viewBox top and bottom; the closing band under it was dropped on
-       2026-11-04, so the diagram is simply centred in the content area. */
-    #s23b .diagram {
+
+    /* ==== the mapping diagram =========================================== */
+    #s24 .map {
       flex: none;
-      height: 500px;
+      height: 400px;
+      transform: translateY(-20px);
     }
-    #s23b .diagram svg {
+    #s24 .map svg {
       width: 100%;
       height: 100%;
       display: block;
     }
 
-    /* ---- mock page / panel chrome (s14 page-anatomy vocabulary) --------- */
-    #s23b .page-bg {
-      fill: var(--navy-0);
+    /* ---- column headers -------------------------------------------------- */
+    #s24 .col-h {
+      font-size: 15.5px;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      fill: var(--muted-2);
     }
-    #s23b .page-frame {
-      fill: none;
-      stroke: var(--muted-3);
-      stroke-width: 1.6;
+    #s24 .col-h--story {
+      fill: var(--story-on-dark);
     }
-    #s23b .band-fill {
-      fill: var(--navy-2);
+    #s24 .col-rule {
+      stroke: var(--hairline);
+      stroke-width: 1.5;
     }
-    #s23b .page-rule {
+
+    /* ---- the paired rows -------------------------------------------------- */
+    #s24 .row-box {
+      fill: var(--card-bg);
       stroke: var(--hairline);
       stroke-width: 1.4;
     }
-    #s23b .dot {
-      fill: var(--muted-3);
-    }
-    #s23b .region {
-      fill: var(--navy-1);
-      stroke: var(--hairline);
-      stroke-width: 1.2;
-    }
-    #s23b .term {
-      fill: var(--card-bg);
-      stroke: var(--story);
-      stroke-width: 1.2;
-      stroke-opacity: 0.6;
-    }
-
-    /* ---- mock text: bars stand in for lines of copy --------------------- */
-    #s23b .h-bar {
-      fill: var(--muted-3);
-    }
-    #s23b .t-line {
-      fill: var(--muted-3);
-      opacity: 0.5;
-    }
-    #s23b .n-line {
-      fill: var(--muted-3);
-      opacity: 0.72;
-    }
-    #s23b .mono-bar {
-      fill: var(--muted-3);
-      opacity: 0.7;
-    }
-    #s23b .inv-bar {
-      fill: var(--muted-3);
-      opacity: 0.55;
-    }
-    #s23b .mock-id {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 700;
-      fill: var(--story-on-dark);
-    }
-    #s23b .mock-url {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      fill: var(--muted-2);
-    }
-
-    /* the tour render speaks louder: bigger headings in the lane accent */
-    #s23b .hi-bar {
-      fill: var(--story);
-    }
-    #s23b .hi-bar--soft {
-      fill: var(--story);
-      opacity: 0.5;
-    }
-
-    /* ---- labels --------------------------------------------------------- */
-    #s23b .token-label {
-      font-size: 17px;
-      font-weight: 850;
+    #s24 .row-t {
+      font-size: 19px;
+      font-weight: 780;
       fill: var(--white);
       letter-spacing: -0.01em;
     }
-    #s23b .panel-eyebrow {
-      font-size: 15px;
-      font-weight: 850;
-      letter-spacing: 0.1em;
-      fill: var(--story-on-dark);
+
+    /* ---- LEFT glyphs: the design entities, story accent ------------------- */
+    #s24 .g-bar {
+      fill: var(--story);
     }
-    #s23b .sublabel {
-      font-size: 15px;
-      font-weight: 700;
-      fill: var(--muted-2);
+    #s24 .g-bar--off {
+      fill: var(--muted-3);
     }
-    /* the one tour line that is real copy instead of a gray placeholder bar */
-    #s23b .tour-line {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 640;
-      fill: var(--white);
+    #s24 .g-plate {
+      fill: none;
+      stroke: var(--story);
+      stroke-width: 2;
+      stroke-linejoin: round;
     }
-    /* the long tour URL needs a slightly smaller mono than the architect one */
-    #s23b .mock-url--long {
-      font-size: 10.5px;
+    #s24 .g-strike {
+      stroke: var(--muted-2);
+      stroke-width: 1.8;
     }
 
-    /* ---- the two render arrows ------------------------------------------ */
-    #s23b .flow {
+    /* ---- RIGHT glyphs: the implementation, neutral ink -------------------- */
+    #s24 .i-plate {
+      fill: none;
+      stroke: var(--muted-2);
+      stroke-width: 1.9;
+      stroke-linejoin: round;
+    }
+    #s24 .i-mark {
+      fill: none;
+      stroke: var(--muted-2);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    #s24 .i-rule {
+      stroke: var(--muted-3);
+      stroke-width: 1.6;
+    }
+    #s24 .i-tick {
       fill: none;
       stroke: var(--story);
       stroke-width: 2.4;
       stroke-linecap: round;
-      opacity: 0.85;
-    }
-    #s23b .flow-head {
-      fill: var(--story);
+      stroke-linejoin: round;
     }
 
-    /* ---- the mini table on the tour page, and its zoom wedge ------------ */
-    #s23b .mini-tbl {
-      fill: var(--card-bg);
-      stroke: var(--story);
-      stroke-width: 1.6;
-    }
-    #s23b .mini-rule {
-      stroke: var(--story);
-      stroke-width: 1.1;
-      opacity: 0.55;
-    }
-    #s23b .zoom {
+    /* ---- the one-to-one arrows ------------------------------------------- */
+    #s24 .arw {
       fill: none;
       stroke: var(--story);
-      stroke-width: 1.6;
-      opacity: 0.38;
+      stroke-width: 2.2;
+      opacity: 0.85;
+    }
+    #s24 .ah {
+      fill: var(--story);
+      opacity: 0.85;
+    }
+    #s24 .qual {
+      font-size: 14.5px;
+      font-weight: 820;
+      fill: var(--story-on-dark);
+      letter-spacing: -0.004em;
     }
 
-    /* ---- the exhibit: the domain-claim table ---------------------------- */
-    #s23b .exhibit {
-      fill: var(--card-bg-strong);
+    /* ==== the bottom strip: two pinned hashes ============================= */
+    #s24 .chain {
+      flex: none;
+      align-self: center;
+      width: fit-content;
+      min-width: 40%;
+      max-width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 15px 44px 16px;
+      border-radius: 20px;
+      background: color-mix(in srgb, var(--story) 12%, var(--card-bg));
+      border: 1px solid var(--hairline-blue);
+    }
+    #s24 .pins {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: none;
+    }
+    #s24 .hash {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-weight: 750;
+      color: var(--white);
+      padding: 8px 16px;
+      border-radius: var(--radius-chip);
+      background: var(--navy-0);
+      border: 1px solid var(--hairline);
+      white-space: nowrap;
+    }
+    #s24 .link {
+      width: 46px;
+      height: 24px;
+      flex: none;
+      display: block;
+    }
+    #s24 .link path {
+      fill: none;
       stroke: var(--story);
       stroke-width: 2.2;
+      stroke-linecap: round;
     }
-    #s23b .exh-eyebrow {
-      font-size: 14px;
-      font-weight: 850;
-      letter-spacing: 0.1em;
-      fill: var(--story-on-dark);
+    #s24 .vrule {
+      flex: none;
+      width: 1px;
+      height: 44px;
+      background: var(--hairline);
     }
-    #s23b .th {
-      font-size: 14px;
-      font-weight: 850;
-      letter-spacing: 0.06em;
-      fill: var(--muted-2);
+    #s24 .shield {
+      width: 40px;
+      height: 44px;
+      flex: none;
+      display: block;
     }
-    #s23b .rule-line {
-      stroke: var(--muted-3);
-      stroke-width: 1.3;
-      opacity: 0.5;
-    }
-    #s23b .dc-id {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 800;
-      fill: var(--story-on-dark);
-    }
-    #s23b .da-t {
-      font-size: 15px;
-      font-weight: 620;
-      fill: var(--white);
-    }
-    #s23b .da-who {
-      font-size: 15px;
-      font-weight: 780;
-      fill: var(--white);
-    }
-    #s23b .chip {
-      fill: var(--card-bg);
-      stroke: var(--hairline);
-      stroke-width: 1.4;
-    }
-    #s23b .chip--ev {
-      stroke: var(--cyan);
-      stroke-opacity: 0.6;
-    }
-    #s23b .chip--as {
+    #s24 .shield .sh {
+      fill: none;
       stroke: var(--story);
-      stroke-opacity: 0.8;
+      stroke-width: 2;
+      stroke-linejoin: round;
     }
-    #s23b .chip-t {
+    #s24 .shield .sh-t {
+      font-size: 13px;
+      font-weight: 900;
+      fill: var(--story-on-dark);
+      letter-spacing: 0.04em;
+    }
+    #s24 .chain-txt {
+      min-width: 0;
+    }
+    #s24 .chain-txt p {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 640;
+      line-height: 1.3;
+      color: var(--muted);
+    }
+    #s24 .chain-txt p b {
+      color: var(--white);
+      font-weight: 880;
+    }
+    #s24 .chain-txt .sub {
+      margin-top: 5px;
       font-size: 14px;
       font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted-2);
     }
-    #s23b .chip-t--ev {
-      fill: var(--cyan-on-dark);
-    }
-    #s23b .chip-t--as {
-      fill: var(--story-on-dark);
-    }
-
   </style>
 
   <div class="title-block">
-    <div class="kicker">The Swiss Army Corpus</div>
-    <h1>Same corpus, different renders</h1>
+    <h1>The blocks map onto the implementation</h1>
     <div class="accent-line"></div>
   </div>
 
   <div class="content">
-    <div class="diagram fade-up">
+    <!-- ============ five pairs, five arrows ============================== -->
+    <div class="map fade-up">
       <svg
-        viewBox="0 0 1456 500"
+        viewBox="0 0 1456 400"
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="One source corpus on the left, drawn as a small page glyph labelled the S-project corpus. Two amber arrows fan out from it to the right into two mock render panels. The upper panel, Architect render, is dense: two tight columns of small section headings, many short body lines, a mono code block and three invariant rows, with the sublabel full depth, for the builders. The lower panel, Guided tour render, is friendlier: its address reads tour slash 02 a morning with the product dot html, and under one large amber heading bar the first line is real copy, John opens the dashboard, scenario S01, which is the morning briefing row from the scenario ledger on the previous slide. Widely spaced gray narrative lines follow, then a second smaller heading and, along its bottom edge, a small three column table glyph. Its sublabel reads the business stakeholder's view. Two faint amber lines widen from that bottom table glyph to the right, opening it into a large exhibit on the right hand side: a table headed at the bottom of every tour page, with the columns claim, source and validate with. Row one, DC-12, usage peaks follow the billing cycle, source chip interview, validate with ops lead. Row two, DC-31, partners never share accounts, source chip assumption drawn in amber, validate with partner manager. Row three, DC-47, exports must stay under 10 MB, source chip research, validate with platform team."
+        aria-label="Two columns of five rows each, joined by five arrows running left to right. The left column is headed design corpus and lists, from top to bottom, ledger slice drawn as three stacked bars with the middle one highlighted, DDD-lite terms drawn as a rounded pill, golden traces drawn as a receipt slip with a torn bottom edge, invariants drawn as a pointed plate, and absent list drawn as two struck-out bars. The right column is headed implementation and lists the matching rows: the task spec drawn as a document page with a folded corner, domain types drawn as a pair of code chevrons, executable tests drawn as a ticked circle, behaviour-preservation rails drawn as two parallel rails with ties, and ADR-gated non-goals drawn as a hatched barrier. Three of the five arrows carry a short label above them: projection, not invention on the ledger arrow, drift measured against the registry on the terms arrow, and run on every build on the traces arrow. The invariants and absent-list arrows are bare."
       >
-        <!-- ================= the corpus token ============================= -->
-        <rect class="page-bg" x="30" y="160" width="140" height="176" rx="12" />
+        <defs>
+          <marker
+            id="s24-arrow"
+            viewBox="0 0 12 12"
+            refX="11"
+            refY="6"
+            markerUnits="userSpaceOnUse"
+            markerWidth="12"
+            markerHeight="12"
+            orient="auto-start-reverse"
+          >
+            <path class="ah" d="M0 0 L12 6 L0 12 Z" />
+          </marker>
+        </defs>
+
+        <!-- ---------- column headers ---------------------------------- -->
+        <text class="col-h col-h--story" x="228" y="22">DESIGN CORPUS</text>
+        <line class="col-rule" x1="224" y1="34" x2="564" y2="34" />
+        <text class="col-h" x="888" y="22">IMPLEMENTATION</text>
+        <line class="col-rule" x1="884" y1="34" x2="1232" y2="34" />
+
+        <!-- ========== row 1: ledger slice -> the task spec ============= -->
+        <rect class="row-box" x="224" y="50" width="340" height="48" rx="12" />
+        <rect
+          class="g-bar g-bar--off"
+          x="250"
+          y="60"
+          width="28"
+          height="7"
+          rx="3.5"
+        />
+        <rect class="g-bar" x="250" y="70.5" width="28" height="7" rx="3.5" />
+        <rect
+          class="g-bar g-bar--off"
+          x="250"
+          y="81"
+          width="28"
+          height="7"
+          rx="3.5"
+        />
+        <text class="row-t" x="296" y="81">ledger slice</text>
+
+        <text class="qual" x="724" y="58" text-anchor="middle">
+          projection, not invention
+        </text>
+        <path class="arw" d="M576 74 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="50" width="348" height="48" rx="12" />
+        <path class="i-plate" d="M912 59 H930 L938 67 V89 H912 Z" />
+        <path class="i-plate" d="M930 59 V67 H938" />
+        <line class="i-rule" x1="917" y1="75" x2="933" y2="75" />
+        <line class="i-rule" x1="917" y1="81" x2="929" y2="81" />
+        <text class="row-t" x="956" y="81">the task spec</text>
+
+        <!-- ========== row 2: DDD-lite terms -> domain types ============ -->
+        <rect class="row-box" x="224" y="122" width="340" height="48" rx="12" />
+        <rect class="g-plate" x="246" y="135" width="36" height="22" rx="11" />
+        <text class="row-t" x="296" y="153">DDD-lite terms</text>
+
+        <text class="qual" x="724" y="130" text-anchor="middle">
+          drift measured against the registry
+        </text>
+        <path class="arw" d="M576 146 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="122" width="348" height="48" rx="12" />
+        <path class="i-mark" d="M918 137 L910 146 L918 155" />
+        <path class="i-mark" d="M930 137 L938 146 L930 155" />
+        <path class="i-rule" d="M928 136 L920 156" />
+        <text class="row-t" x="956" y="153">domain types</text>
+
+        <!-- ========== row 3: golden traces -> executable tests ========= -->
+        <rect class="row-box" x="224" y="194" width="340" height="48" rx="12" />
         <path
-          class="band-fill"
-          d="M30 172 A12 12 0 0 1 42 160 H158 A12 12 0 0 1 170 172 V182 H30 Z"
+          class="g-plate"
+          d="M250 209 q0 -4 4 -4 H274 q4 0 4 4 V222 l -7 5 l -7 -5 l -7 5 l -7 -5 Z"
         />
+        <text class="row-t" x="296" y="225">golden traces</text>
+
+        <text class="qual" x="724" y="202" text-anchor="middle">
+          run on every build
+        </text>
+        <path class="arw" d="M576 218 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="194" width="348" height="48" rx="12" />
+        <circle class="i-plate" cx="924" cy="218" r="12" />
+        <path class="i-tick" d="M918 218 L922 223 L931 212" />
+        <text class="row-t" x="956" y="225">executable tests</text>
+
+        <!-- ========== row 4: invariants -> behaviour rails ============= -->
+        <rect class="row-box" x="224" y="266" width="340" height="48" rx="12" />
         <path
-          class="band-fill"
-          d="M30 316 H170 V324 A12 12 0 0 1 158 336 H42 A12 12 0 0 1 30 324 Z"
+          class="g-plate"
+          d="M248 290 L257 278 H271 L280 290 L271 302 H257 Z"
         />
+        <text class="row-t" x="296" y="297">invariants</text>
+
+        <path class="arw" d="M576 290 H872" marker-end="url(#s24-arrow)" />
+
+        <rect class="row-box" x="884" y="266" width="348" height="48" rx="12" />
+        <line class="i-mark" x1="908" y1="283" x2="940" y2="283" />
+        <line class="i-mark" x1="908" y1="297" x2="940" y2="297" />
+        <line class="i-rule" x1="914" y1="283" x2="914" y2="297" />
+        <line class="i-rule" x1="924" y1="283" x2="924" y2="297" />
+        <line class="i-rule" x1="934" y1="283" x2="934" y2="297" />
+        <text class="row-t" x="956" y="297">behaviour-preservation rails</text>
+
+        <!-- ========== row 5: absent list -> ADR-gated non-goals ======== -->
+        <rect class="row-box" x="224" y="338" width="340" height="48" rx="12" />
         <rect
-          class="page-frame"
-          x="30"
-          y="160"
-          width="140"
-          height="176"
-          rx="12"
+          class="g-bar g-bar--off"
+          x="250"
+          y="351"
+          width="28"
+          height="6"
+          rx="3"
         />
-        <line class="page-rule" x1="30" y1="182" x2="170" y2="182" />
-        <line class="page-rule" x1="30" y1="316" x2="170" y2="316" />
-
-        <circle class="dot" cx="44" cy="171" r="3" />
-        <circle class="dot" cx="55" cy="171" r="3" />
-        <circle class="dot" cx="66" cy="171" r="3" />
-
-        <rect class="h-bar" x="44" y="194" width="78" height="7" rx="3.5" />
-
-        <rect class="region" x="44" y="210" width="112" height="38" rx="6" />
-        <rect class="mono-bar" x="54" y="219" width="88" height="4" rx="2" />
-        <rect class="mono-bar" x="54" y="228" width="72" height="4" rx="2" />
-        <rect class="mono-bar" x="54" y="237" width="92" height="4" rx="2" />
-
-        <rect class="term" x="44" y="256" width="38" height="15" rx="7.5" />
-        <rect class="term" x="88" y="256" width="30" height="15" rx="7.5" />
-        <rect class="term" x="124" y="256" width="26" height="15" rx="7.5" />
-
-        <rect class="t-line" x="44" y="280" width="104" height="5" rx="2.5" />
-        <rect class="t-line" x="44" y="292" width="88" height="5" rx="2.5" />
-        <rect class="t-line" x="44" y="304" width="98" height="5" rx="2.5" />
-
-        <rect class="inv-bar" x="44" y="322" width="60" height="5" rx="2.5" />
-        <rect class="inv-bar" x="112" y="322" width="44" height="5" rx="2.5" />
-
-        <text class="token-label" x="100" y="364" text-anchor="middle">
-          the S-project corpus
-        </text>
-
-        <!-- ================= the two render arrows ======================== -->
-        <path class="flow" d="M176 232 C212 232, 210 97, 244 97" />
-        <path class="flow-head" d="M243 90 L255 97 L243 104 Z" />
-        <path class="flow" d="M176 276 C212 276, 210 355, 244 355" />
-        <path class="flow-head" d="M243 348 L255 355 L243 362 Z" />
-
-        <!-- ================= render 1: the architect render =============== -->
-        <rect class="page-bg" x="254" y="4" width="500" height="186" rx="12" />
-        <path
-          class="band-fill"
-          d="M254 16 A12 12 0 0 1 266 4 H742 A12 12 0 0 1 754 16 V34 H254 Z"
-        />
+        <line class="g-strike" x1="247" y1="354" x2="281" y2="354" />
         <rect
-          class="page-frame"
-          x="254"
-          y="4"
-          width="500"
-          height="186"
-          rx="12"
-        />
-        <line class="page-rule" x1="254" y1="34" x2="754" y2="34" />
-        <text class="panel-eyebrow" x="274" y="25">ARCHITECT RENDER</text>
-        <text class="mock-url" x="734" y="25" text-anchor="end">
-          corpus/architecture.html
-        </text>
-
-        <!-- left column: headings, body lines, a pseudo-code block -->
-        <rect class="h-bar" x="274" y="46" width="88" height="7" rx="3.5" />
-        <rect
-          class="t-line"
-          x="274"
-          y="62"
-          width="224"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="274"
-          y="73"
-          width="208"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="274"
-          y="84"
-          width="228"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="274"
-          y="95"
-          width="182"
-          height="4.5"
-          rx="2.25"
-        />
-
-        <rect class="region" x="274" y="106" width="228" height="40" rx="6" />
-        <rect class="mono-bar" x="286" y="114" width="140" height="4" rx="2" />
-        <rect class="mono-bar" x="286" y="123" width="176" height="4" rx="2" />
-        <rect class="mono-bar" x="286" y="132" width="120" height="4" rx="2" />
-
-        <rect class="h-bar" x="274" y="156" width="64" height="7" rx="3.5" />
-        <rect
-          class="t-line"
-          x="274"
-          y="168"
-          width="220"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="274"
-          y="178"
-          width="196"
-          height="4.5"
-          rx="2.25"
-        />
-
-        <!-- right column: more headings, invariant rows, more body -->
-        <rect class="h-bar" x="520" y="46" width="76" height="7" rx="3.5" />
-        <text class="mock-id" x="520" y="68">INV-3</text>
-        <rect class="inv-bar" x="566" y="63" width="140" height="5" rx="2.5" />
-        <text class="mock-id" x="520" y="84">INV-7</text>
-        <rect class="inv-bar" x="566" y="79" width="158" height="5" rx="2.5" />
-        <text class="mock-id" x="520" y="100">INV-9</text>
-        <rect class="inv-bar" x="566" y="95" width="126" height="5" rx="2.5" />
-
-        <rect class="h-bar" x="520" y="114" width="88" height="7" rx="3.5" />
-        <rect
-          class="t-line"
-          x="520"
-          y="130"
-          width="200"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="520"
-          y="141"
-          width="186"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="520"
-          y="152"
-          width="204"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="520"
-          y="163"
-          width="170"
-          height="4.5"
-          rx="2.25"
-        />
-        <rect
-          class="t-line"
-          x="520"
-          y="174"
-          width="192"
-          height="4.5"
-          rx="2.25"
-        />
-
-        <text class="sublabel" x="274" y="210">
-          full depth, for the builders
-        </text>
-
-        <!-- ================= render 2: the guided tour render ============= -->
-        <rect
-          class="page-bg"
-          x="254"
-          y="258"
-          width="500"
-          height="194"
-          rx="12"
-        />
-        <path
-          class="band-fill"
-          d="M254 270 A12 12 0 0 1 266 258 H742 A12 12 0 0 1 754 270 V288 H254 Z"
-        />
-        <rect
-          class="page-frame"
-          x="254"
-          y="258"
-          width="500"
-          height="194"
-          rx="12"
-        />
-        <line class="page-rule" x1="254" y1="288" x2="754" y2="288" />
-        <text class="panel-eyebrow" x="274" y="279">GUIDED TOUR RENDER</text>
-        <text class="mock-url mock-url--long" x="734" y="279" text-anchor="end">
-          tour/02-a-morning-with-the-product.html
-        </text>
-
-        <rect class="hi-bar" x="274" y="302" width="248" height="14" rx="7" />
-        <!-- the one line of real copy: it names scenario S01 from the ledger
-             on the previous fragment, so the tour reads as a user journey -->
-        <text class="tour-line" x="274" y="334">
-          John opens the dashboard (#S01)
-        </text>
-        <rect class="n-line" x="274" y="342" width="452" height="6" rx="3" />
-        <rect class="n-line" x="274" y="356" width="396" height="6" rx="3" />
-
-        <rect
-          class="hi-bar--soft"
-          x="274"
-          y="372"
-          width="168"
-          height="11"
-          rx="5.5"
-        />
-        <rect class="n-line" x="274" y="394" width="428" height="6" rx="3" />
-        <rect class="n-line" x="274" y="406" width="402" height="6" rx="3" />
-
-        <!-- the register, sitting at the bottom of the page -->
-        <rect class="mini-tbl" x="274" y="420" width="460" height="24" rx="4" />
-        <line class="mini-rule" x1="274" y1="428" x2="734" y2="428" />
-        <line class="mini-rule" x1="536" y1="420" x2="536" y2="444" />
-        <line class="mini-rule" x1="640" y1="420" x2="640" y2="444" />
-
-        <text class="sublabel" x="274" y="472">
-          the business stakeholder&rsquo;s view
-        </text>
-
-        <!-- ================= zoom wedge into the exhibit ================== -->
-        <path class="zoom" d="M754 420 L800 200" />
-        <path class="zoom" d="M754 444 L800 500" />
-
-        <!-- ================= the domain-claim table ======================= -->
-        <rect
-          class="exhibit"
-          x="800"
-          y="200"
-          width="652"
-          height="300"
-          rx="14"
-        />
-        <text class="exh-eyebrow" x="826" y="230">
-          AT THE BOTTOM OF EVERY TOUR PAGE
-        </text>
-
-        <text class="th" x="826" y="262">claim</text>
-        <text class="th" x="1188" y="262">source</text>
-        <text class="th" x="1322" y="262">validate with</text>
-        <line class="rule-line" x1="826" y1="276" x2="1426" y2="276" />
-
-        <text class="dc-id" x="826" y="316">DC-12</text>
-        <text class="da-t" x="898" y="316">
-          usage peaks follow the billing cycle
-        </text>
-        <rect
-          class="chip chip--ev"
-          x="1188"
-          y="298"
-          width="108"
-          height="28"
-          rx="14"
-        />
-        <text class="chip-t chip-t--ev" x="1242" y="317" text-anchor="middle">
-          interview
-        </text>
-        <text class="da-who" x="1322" y="316">ops lead</text>
-
-        <line class="rule-line" x1="826" y1="343" x2="1426" y2="343" />
-
-        <text class="dc-id" x="826" y="383">DC-31</text>
-        <text class="da-t" x="898" y="383">partners never share accounts</text>
-        <rect
-          class="chip chip--as"
-          x="1188"
+          class="g-bar g-bar--off"
+          x="250"
           y="365"
-          width="108"
-          height="28"
-          rx="14"
+          width="20"
+          height="6"
+          rx="3"
         />
-        <text class="chip-t chip-t--as" x="1242" y="384" text-anchor="middle">
-          assumption
-        </text>
-        <text class="da-who" x="1322" y="383">partner manager</text>
+        <line class="g-strike" x1="247" y1="368" x2="273" y2="368" />
+        <text class="row-t" x="296" y="369">absent list</text>
 
-        <line class="rule-line" x1="826" y1="410" x2="1426" y2="410" />
+        <path class="arw" d="M576 362 H872" marker-end="url(#s24-arrow)" />
 
-        <text class="dc-id" x="826" y="450">DC-47</text>
-        <text class="da-t" x="898" y="450">exports must stay under 10 MB</text>
-        <rect
-          class="chip chip--ev"
-          x="1188"
-          y="432"
-          width="108"
-          height="28"
-          rx="14"
-        />
-        <text class="chip-t chip-t--ev" x="1242" y="451" text-anchor="middle">
-          research
-        </text>
-        <text class="da-who" x="1322" y="450">platform team</text>
+        <rect class="row-box" x="884" y="338" width="348" height="48" rx="12" />
+        <rect class="i-plate" x="908" y="356" width="34" height="13" rx="3" />
+        <path class="i-mark" d="M916 369 L922 356" />
+        <path class="i-mark" d="M928 369 L934 356" />
+        <text class="row-t" x="956" y="369">ADR-gated non-goals</text>
       </svg>
     </div>
 
+    <!-- ============ the pin: two hashes, one build ======================= -->
+    <div class="chain fade-up">
+      <div class="pins">
+        <span class="hash">model @ a1b2c3</span>
+        <svg class="link" viewBox="0 0 46 24" aria-hidden="true">
+          <path d="M21 6 H13 a6 6 0 0 0 0 12 H21" />
+          <path d="M25 6 H33 a6 6 0 0 1 0 12 H25" />
+          <path d="M17 12 H29" />
+        </svg>
+        <span class="hash">impl @ d4e5f6</span>
+      </div>
+
+      <span class="vrule" aria-hidden="true"></span>
+
+      <svg class="shield" viewBox="0 0 40 44" role="img" aria-label="CI badge">
+        <path
+          class="sh"
+          d="M20 3 L35 9 V21 c0 10 -7 16 -15 20 c-8 -4 -15 -10 -15 -20 V9 Z"
+        />
+        <text class="sh-t" x="20" y="26" text-anchor="middle">CI</text>
+      </svg>
+
+      <div class="chain-txt">
+        <p>
+          The model cannot silently change underneath: <b>CI enforces both</b>.
+        </p>
+        <div class="sub">realization ledger + pinned hashes</div>
+      </div>
+    </div>
   </div>
 </section>
 <script>

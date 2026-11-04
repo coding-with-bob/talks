@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iteration Without Drift — 24-irreducible-remainder</title>
+<title>Iteration Without Drift — 30-thank-you</title>
 <style>
 
 @font-face {
@@ -652,438 +652,86 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </head>
 <body class="single-mode">
 <section
-  class="slide slide--light"
-  data-lane="theory"
-  id="s22"
-  data-act="act7"
+  class="slide"
+  id="s29b"
+  data-act="act9"
   data-owner="draft"
-  data-minutes="1"
-  data-theme="light"
+  data-minutes="0.25"
+  data-theme="dark"
   data-exhibits=""
   data-tags=""
   data-evidence=""
 >
-  <!-- SPEAKER-NOTE:
+  <!-- SPEAKER-NOTE (draft):
 
-  To finish this line of thought, let's imagine we have the **perfect agent**,
-  one that can make any logical modification on the design corpus in one pass.
-  I still believe there are some aspects that need human control, a **human in
-  the loop**.
-
-  One is **entitlement**: there are still many domains and use cases where, at
-  least for now, a human has to make certain decisions, simply to carry the
-  responsibility for them.
-
-  The other is that the person driving the process still has to understand
-  **what they are saying yes to**. And this structure helps **human
-  comprehension**.
-
-  And as we discussed, in many cases the problem or the solution itself is
-  **emergent**: the information we create during the process is not something
-  we could **infer upfront**, even with a perfect model.
-
-  So we can think of this structure as the **human control interface**.
   -->
 
   <style>
-    #s22 .content {
+    /* The closing slide mirrors the title slide s01: same full-bleed flow
+       field, same hero, same left column, so the talk opens and closes on a
+       matched pair. */
+    #s29b {
+      border: 0;
+      background-color: var(--navy-ink);
+      background-image: url("../assets/img/title-flow-field.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      justify-content: center;
+    }
+
+    #s29b .content {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 22px;
       justify-content: center;
     }
 
-    /* ---- the filter: cloud -> gate -> remainder, one left-to-right read ---
-       Two explicit rows so the outer column labels sit on ONE baseline; the
-       gate column spans both rows and centres against the whole band.
-       Five explicit column tracks (content / gap / content / gap / content)
-       so the gate<->cards gap can widen independently of the cloud<->gate
-       gap; a single uniform column-gap can't do that. margin-left shifts the
-       whole composition right so the narrower cards column still balances
-       against the content area instead of leaving dead space on the right.
-       Fixed height (not flex: 1): the gate centres against the full row
-       span, so a taller box stretches row 2 and drops the gate below the
-       side columns. 509px is the box the composition was tuned in; the
-       auto block margins split any spare content height evenly above and
-       below it, and the band keeps its spot at the bottom. */
-    #s22 .filter {
-      flex: none;
-      height: 509px;
-      margin: auto 0;
-      display: grid;
-      grid-template-columns: 300px 18px 300px 46px 595px;
-      grid-template-rows: auto 1fr;
-      row-gap: 18px;
-      margin-left: 60px;
-      /* owner pass: shift the whole filter composition up, band stays put */
-      transform: translateY(-25px);
-    }
-    #s22 .col-label {
-      margin: 0;
-      grid-row: 1;
-      align-self: end;
-      font-size: 15px;
-      font-weight: 820;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      line-height: 1.2;
-      color: var(--muted-2);
-    }
-    /* padding-left matches the cloud's own 90px content inset (below) so the
-       label sits above the actual chip cluster, not above its empty margin;
-       the column span borrows room from the gap1 + gate tracks (unused in
-       row 1) so the padded label text has space to stay on one line; its
-       painted text still ends right at the cloud/gate boundary, no overlap
-       with the gate box, which occupies row 1 only as its vertical center. */
-    /* owner pass (rendered-build review): nudge each label off its grid
-       position with a plain relative offset, no track math involved. */
-    #s22 .col-label--in {
-      grid-column: 1 / 4;
-      padding-left: 90px;
-      position: relative;
-      top: 60px;
-      left: -30px;
-    }
-    #s22 .col-label--out {
-      grid-column: 5;
-      color: var(--theory-on-dark);
-      position: relative;
-      top: 60px;
-      left: 24px;
-    }
-
-    /* ---- LEFT: the loose cluster of things the machine can take ---------- */
-    #s22 .cloud {
-      grid-column: 1;
-      grid-row: 2;
-      align-self: start;
-      /* wrapper offset: pushes the whole cluster down + right, still inside
-         its 300px track; the per-chip scatter margins below are trimmed to
-         match so the widest chips don't cross into the gate's column. */
-      padding: 60px 0 0 90px;
+    /* s01's mono underline links; the talks page is the one primary link */
+    #s29b .links {
+      margin-top: 14px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      gap: 11px;
+      gap: 6px;
     }
-    #s22 .cloud .chip {
-      white-space: nowrap;
-      padding: 8px 16px;
-      border-radius: var(--radius-chip);
-      border: 1.5px solid var(--hairline);
-      background: var(--card-bg);
+    #s29b .links a {
+      font-family: var(--font-mono);
+      font-size: 19px;
       color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.25;
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
-    /* scatter via margins (not transforms) so the cluster stays inside its box */
-    #s22 .cloud .chip:nth-child(2) {
-      margin-left: 12px;
-    }
-    #s22 .cloud .chip:nth-child(3) {
-      margin-left: 24px;
-    }
-    #s22 .cloud .chip:nth-child(4) {
-      margin-left: 0;
-    }
-    #s22 .cloud .chip:nth-child(5) {
-      margin-left: 10px;
-    }
-    #s22 .cloud .chip:nth-child(6) {
-      margin-left: 18px;
-    }
-    #s22 .cloud .chip:nth-child(7) {
-      margin-left: 40px;
-    }
-
-    /* ---- CENTER: the gate ------------------------------------------------ */
-    #s22 .gate-col {
-      grid-column: 3;
-      grid-row: 1 / span 2;
-      align-self: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #s22 .gate {
-      display: block;
-      flex: none;
-      filter: drop-shadow(0 10px 24px var(--glow-cyan));
-    }
-    #s22 .funnel-fill {
-      fill: var(--theory);
-      fill-opacity: 0.07;
-    }
-    #s22 .funnel-edge {
-      fill: none;
-      stroke: var(--theory);
-      stroke-opacity: 0.55;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-    }
-    #s22 .stream {
-      fill: var(--muted-3);
-      stroke: var(--muted-3);
-      stroke-width: 2;
-    }
-    #s22 .gate-box {
-      fill: var(--navy-0);
-      stroke: var(--theory);
-      stroke-width: 2.5;
-    }
-    #s22 .gate-label {
-      fill: var(--white);
-      font-family: var(--font-sans);
-      font-size: 24px;
-      font-weight: 850;
-      letter-spacing: 1.6px;
-    }
-    #s22 .gate-rule {
-      stroke: var(--hairline);
-      stroke-width: 1.5;
-    }
-    #s22 .gate-note {
-      fill: var(--muted-2);
-      font-family: var(--font-sans);
-      font-size: 14px;
-      font-weight: 820;
-      letter-spacing: 1.4px;
-    }
-    #s22 .abs-chip {
-      fill: var(--card-bg-strong);
-      stroke: var(--hairline);
-      stroke-width: 1.5;
-    }
-    #s22 .abs-tick {
-      fill: none;
-      stroke: var(--theory);
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    #s22 .abs-text {
-      fill: var(--muted);
-      font-family: var(--font-sans);
-      font-size: 14px;
-      font-weight: 700;
-    }
-    #s22 .absorbed--1 {
-      opacity: 0.9;
-    }
-    #s22 .absorbed--2 {
-      opacity: 0.68;
-    }
-    #s22 .absorbed--3 {
-      opacity: 0.48;
-    }
-    #s22 .absorbed--4 {
-      opacity: 0.32;
-    }
-
-    /* ---- RIGHT: what passes through untouched ---------------------------- */
-    #s22 .remainder {
-      grid-column: 5;
-      grid-row: 2;
-      align-self: start;
-      padding-top: 60px;
-      /* owner pass: nudge the whole card stack right of its grid track and
-         narrow it so it reads as its own column, not a stretch of the track */
-      position: relative;
-      left: 9px;
-      width: 575px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    /* established .card vocabulary (theme/components.css, see s20): plain
-       white/hairline card, standard radius, no tint, no left accent bar. */
-    #s22 .rcard {
-      padding: 22px 30px;
-    }
-    #s22 .rcard h3 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      font-weight: 850;
-      letter-spacing: -0.015em;
-      line-height: 1.2;
-      color: var(--white);
-    }
-    #s22 .rcard p {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 620;
-      line-height: 1.4;
-      color: var(--muted);
-    }
-
-    /* ---- closing band (s11 / s12 / s21 pattern) --------------------------- */
-    #s22 .band {
-      flex: none;
-      align-self: center;
-      width: fit-content;
-      min-width: 40%;
-      max-width: 100%;
-      padding: 16px 48px;
-      text-align: center;
-      position: relative;
-      top: -20px;
-    }
-    #s22 .band p {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 660;
-      line-height: 1.4;
-      color: var(--muted);
-    }
-    #s22 .band p b {
-      font-weight: 870;
-      color: var(--theory);
+    #s29b .links a.link--primary {
+      font-size: 28px;
+      text-underline-offset: 6px;
+      margin-bottom: 10px;
     }
   </style>
 
-  <div class="title-block">
-    <h1>The irreducible remainder</h1>
-    <div class="accent-line"></div>
-  </div>
-
   <div class="content">
-    <div class="filter fade-up">
-      <p class="col-label col-label--in">Work we can hand over</p>
-      <p class="col-label col-label--out">Passes through untouched</p>
-
-      <!-- ============ LEFT: everything we can hand over ================== -->
-      <div class="cloud">
-        <span class="chip">editing</span>
-        <span class="chip">keeping coherence</span>
-        <span class="chip">propagation</span>
-        <span class="chip">verification runs</span>
-        <span class="chip">cross-references</span>
-        <span class="chip">formatting</span>
-        <span class="chip">renaming</span>
-      </div>
-
-      <!-- ============ CENTER: the perfect agent absorbs it ================ -->
-      <div class="gate-col">
-        <svg
-          class="gate"
-          width="300"
-          height="430"
-          viewBox="0 0 300 430"
-          role="img"
-          aria-label="A funnel feeding a gate labelled PERFECT AGENT, which absorbs the handed-over work"
-        >
-          <!-- the funnel mouth: everything on the left streams in -->
-          <polygon class="funnel-fill" points="2,4 100,48 100,382 2,426" />
-          <path class="funnel-edge" d="M2 4 L100 48" />
-          <path class="funnel-edge" d="M2 426 L100 382" />
-
-          <!-- three converging streams -->
-          <g class="stream" aria-hidden="true">
-            <path d="M16 120 L79.22 188.64" />
-            <polygon points="86,196 75.54,192.03 82.90,185.25" stroke="none" />
-            <path d="M16 215 L76 215" />
-            <polygon points="86,215 76,220 76,210" stroke="none" />
-            <path d="M16 310 L79.22 241.36" />
-            <polygon points="86,234 82.90,244.75 75.54,237.97" stroke="none" />
-          </g>
-
-          <!-- the gate itself -->
-          <rect
-            class="gate-box"
-            x="100"
-            y="48"
-            width="196"
-            height="334"
-            rx="26"
-          />
-          <text class="gate-label" x="198" y="114" text-anchor="middle">
-            PERFECT
-          </text>
-          <text class="gate-label" x="198" y="144" text-anchor="middle">
-            AGENT
-          </text>
-          <line class="gate-rule" x1="132" y1="164" x2="264" y2="164" />
-          <text class="gate-note" x="198" y="186" text-anchor="middle">
-            HANDLED
-          </text>
-
-          <!-- absorbed work, fading out inside the gate -->
-          <g class="absorbed--1">
-            <rect
-              class="abs-chip"
-              x="120"
-              y="202"
-              width="156"
-              height="26"
-              rx="13"
-            />
-            <polyline class="abs-tick" points="134,215 138.5,219.5 146,210.5" />
-            <text class="abs-text" x="154" y="220">editing</text>
-          </g>
-          <g class="absorbed--2">
-            <rect
-              class="abs-chip"
-              x="120"
-              y="236"
-              width="156"
-              height="26"
-              rx="13"
-            />
-            <polyline class="abs-tick" points="134,249 138.5,253.5 146,244.5" />
-            <text class="abs-text" x="154" y="254">coherence</text>
-          </g>
-          <g class="absorbed--3">
-            <rect
-              class="abs-chip"
-              x="120"
-              y="270"
-              width="156"
-              height="26"
-              rx="13"
-            />
-            <polyline class="abs-tick" points="134,283 138.5,287.5 146,278.5" />
-            <text class="abs-text" x="154" y="288">propagation</text>
-          </g>
-          <g class="absorbed--4">
-            <rect
-              class="abs-chip"
-              x="120"
-              y="304"
-              width="156"
-              height="26"
-              rx="13"
-            />
-            <polyline class="abs-tick" points="134,317 138.5,321.5 146,312.5" />
-            <text class="abs-text" x="154" y="322">verification</text>
-          </g>
-        </svg>
-      </div>
-
-      <!-- ============ RIGHT: the irreducible remainder =================== -->
-      <div class="remainder">
-        <div class="card rcard">
-          <h3>Entitlement</h3>
-          <p>Some decisions have to be made by a human in a given context.</p>
-        </div>
-        <div class="card rcard">
-          <h3>Comprehension</h3>
-          <p>The human must see what they are saying yes to.</p>
-        </div>
-        <div class="card rcard">
-          <h3>Problem emergence</h3>
-          <p>
-            Information created by the process cannot be inferred up front, not
-            even by a perfect model.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card band fade-up">
-      <p>Structure is the <b>human control interface</b>.</p>
+    <!-- data-overflow-ok: descender overhang of the display-size hero - talk-1 precedent (s01) -->
+    <h1 class="hero fade-up" data-overflow-ok>
+      Thank <span class="accent">you</span>
+    </h1>
+    <div class="accent-line accent-line--wide fade-up"></div>
+    <div class="links fade-up">
+      <a
+        class="link--primary"
+        href="https://coding-with-bob.github.io/talks/"
+        target="_blank"
+        rel="noopener"
+        >coding-with-bob.github.io/talks</a
+      >
+      <a
+        href="https://github.com/coding-with-bob"
+        target="_blank"
+        rel="noopener"
+        >github.com/coding-with-bob</a
+      >
+      <a href="https://github.com/felho" target="_blank" rel="noopener"
+        >github.com/felho</a
+      >
     </div>
   </div>
 </section>
