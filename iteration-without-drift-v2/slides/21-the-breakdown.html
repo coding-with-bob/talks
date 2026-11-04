@@ -665,26 +665,21 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  This structure provides a lot of benefits. Just a small interesting example:
-  if you want to find which layers introduced or changed a specific function,
-  then you can **query the file system**, which means that you don't need to
-  use an LLM to try to infer that from a huge chunk of text, but you can
-  simply query it and you can use **deterministic tools** to get that piece of
-  information.
+  This structure provides a lot of benefits. One small but telling example: if
+  you want to know which layers introduced or changed a specific function, you
+  can **query the file system**. No LLM has to infer that from a huge chunk of
+  text; a **deterministic tool** answers it.
 
-  And now, let's imagine that I want to edit this function, the original
-  version in layer 2. Then I know that **only layer 5** might be impacted by
-  this change; the layers in between just inherit it and **rebuild
-  automatically**, with no review. So this is very useful information for the
-  LLM, because now the LLM knows that if I'm changing that pseudocode unit,
-  then I only need to check layer 5 to see whether it has an impact on that
-  layer. So this way, for example, for the specific change the LLM doesn't
-  need to check a huge bunch of text again, but it can do the check on a much
-  smaller, much more focused context, which means that the result will be much
-  more accurate: **smaller context**, fewer errors, cheaper.
+  Now imagine I want to edit this function, the original version in layer 2.
+  Then I know that **only layer 5** might be impacted; the layers in between
+  just inherit it and **rebuild automatically**, with no review. This is very
+  useful information for the LLM as well: it does not need to re-check a huge
+  amount of text, it can do the check on a much smaller, much more focused
+  context, and the result is more accurate: **smaller context**, fewer errors,
+  cheaper.
 
-  So then I'm able to do much more effective work, and the chance that this
-  work is **fully effective** increases a lot.
+  So I can work much more effectively, and the chance that the work is **fully
+  correct** increases a lot.
   -->
 
   <style>

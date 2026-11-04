@@ -666,38 +666,26 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   <!-- SPEAKER-NOTE:
 
   So with this physical breakdown, what we actually created is a **knowledge
-  graph**. Which means that all of these small entities might be connected in
-  different ways. And what is very important to understand and realize is that
-  this way the **structure itself is information**. So we don't just have the
-  small puzzle pieces of a big picture, but the actual metadata and how they
-  are connected with each other enables many different ways to traverse that
-  information graph.
+  graph**: all of these small entities are connected in different ways. And
+  what is very important to realize is that this way the **structure itself is
+  information**. We don't just have the puzzle pieces of a big picture: the
+  metadata and the connections between the pieces enable many different ways
+  to traverse that graph.
 
-  One example you have just seen: if I'm changing a function, then I can
-  clearly see how that function, or that unit of information, is connected
-  with some other information. So if I want to check whether the change
-  induces some other changes in the corpus, then now I can create a much more
-  **focused, smaller context** for an LLM to check whether my modification has
-  some impact on other parts of the knowledge graph. Or another example is
-  that right now I can clearly see which parts of the design corpus depend,
-  for example, on **an invariant**. So if I'm thinking of changing that
-  invariant, it gives me a much better and very clear understanding of which
-  items might be impacted. **Change becomes traceable**. So even I as a human
-  can better think through whether my change is correct or not.
+  If I change a function, I know exactly what it is connected to, so the LLM
+  gets a much more **focused, smaller context** to check the impact. Or if I
+  am thinking of changing **an invariant**, I can see exactly which parts of
+  the corpus depend on it. **Change becomes traceable**, and even I as a human
+  can think the change through better.
 
-  And another very interesting benefit is that this way I can even **iterate
-  on the structure** itself. And I can have a **CI/CD pipeline** on the design
-  model as well, because there are many, many checks I can do. I can check the
-  dependencies between the parts, so this enables a lot of innovation on the
-  design layer as well.
+  Another very interesting benefit is that I can **iterate on the structure**
+  itself. And I can have a **CI/CD pipeline** on the design model as well,
+  with many checks, for example on the dependencies between the parts. So this
+  enables a lot of innovation on the design layer too.
 
-  And you might think that this whole structure needed a lot of time to figure
-  out, but actually this was quite a quick, organic process, so the whole
-  journey until this point took about **seven days**, starting from a blank
-  page to having this working structure. And this structure enabled me to move
-  forward. So after this point, I introduced about **10 more layers**, and
-  from that point working with the design corpus became a very fluent
-  experience again, so usually I only had very **few review cycles**.
+  Once this structure was in place, I introduced about **15 more layers**, and
+  working with the design corpus became a fluent experience again, usually
+  with very **few review cycles**.
   -->
 
   <style>
@@ -912,7 +900,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <h1>What the physical breakdown added</h1>
+    <h1>Benefits of the physical breakdown</h1>
     <div class="accent-line"></div>
   </div>
 

@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s26e"
   data-act="act8"
   data-owner="draft"
-  data-minutes="0.5"
+  data-minutes="1.25"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,33 +665,26 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  I already mentioned that I'm using **LLM review loops** frequently, and I
-  want to share a few learnings about them because I learned a lot. Sometimes
-  I learned a lot about how they can **fail miserably**. So I believe this
-  part can be very handy for you.
+  I mentioned that I use **LLM review loops** a lot, and I want to share a few
+  learnings about them, including how they can **fail miserably**.
 
-  When we are talking about an LLM review loop, we need to think about **two
-  major perspectives**. One is the **control loop** itself, and the other is
-  the **lenses** that we use for the actual review.
+  An LLM review loop has **two major perspectives**: the **control loop**
+  itself, and the **lenses** we use for the actual review.
 
-  In the case of the loop, you need to consider how to deal with the findings.
-  The reviewer returns findings with evidence, and a **disposition step**
-  decides what happens with each one. And you need to consider how and when a
-  **human in the loop** might be needed. Then the accepted findings are
-  applied, and you decide the next round: for example, in the first round you
-  run all the lenses and then, based on the findings, in the next round you
-  only run a few of them, the ones which seem meaningful. There are many
-  options here. What is important is that you need to be very careful about
-  how you design this loop, and the loop needs **an end, a budget**. I will go
-  deeper into these on the next slide.
+  For the loop, you need to decide how to deal with the findings. The reviewer
+  returns findings with evidence, and a **disposition step** decides what
+  happens with each one. You also need to decide how and when a **human in the
+  loop** is needed. Then the accepted findings are applied, and you decide the
+  next round: for example, the first round runs all the lenses, and the next
+  round only the few that seem meaningful based on the findings. There are
+  many options here. What matters is that you design this loop carefully, and
+  the loop needs **an end, a budget**.
 
-  And then you think about the lenses. **One lens is one perspective**, which
-  includes the questions that you want to use for the measurement. You need to
-  think about the **sensitivity**. For example, if you are looking for
-  findings, you can classify them into P1, P2, P3, whatever severity level
-  makes sense to you, and you may say that by default I'm interested only in
-  P1 and P2 level findings. And a lens needs **calibration**, which I will
-  come back to.
+  Then the lenses. **One lens is one perspective**, with the questions you use
+  for the measurement. You need to think about the **sensitivity**: for
+  example, you classify the findings into P1, P2, P3, whatever severity levels
+  make sense to you, and say that by default you are interested only in P1 and
+  P2. And a lens needs **calibration**.
   -->
 
   <style>
@@ -1126,7 +1119,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 
     <!-- ============ why the split matters, in one line ======================= -->
     <p class="band fade-up">
-      <span class="band-k">They fail independently:</span> good lens,
+      <span class="band-k">They can fail independently:</span> good lens,
       <b class="loop-w">bad loop</b><span class="sep">&middot;</span>good loop,
       <b class="lens-w">bad lens</b>.
     </p>

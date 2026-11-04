@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s23b"
   data-act="act8"
   data-owner="draft"
-  data-minutes="0.75"
+  data-minutes="1.5"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,45 +665,31 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  So I realized that I needed to create an **onboarding document** for the
-  architecture plan, which uses the same building blocks, but interprets them
-  in a bit of a different way, which can help a **business person** understand
-  how these technical capabilities are related to the product that he
+  So I realized I needed an **onboarding document** for the architecture: the
+  same building blocks, interpreted a bit differently, so that a **business
+  person** can see how the technical capabilities relate to the product he
   envisioned.
 
-  And I was able to do this pretty quickly because I was able to leverage the
-  same building blocks. First we went through the **scenario ledger** and we
-  identified which were the most important user journeys. And then I organized
-  the onboarding document according to **these stories** and we selected
-  stories which highlight different capabilities of the system.
+  This went quickly, because I could reuse the building blocks. We went
+  through the **scenario ledger**, picked the most important user journeys,
+  the ones that highlight different capabilities of the system, and I
+  organized the onboarding document around **these stories**.
 
-  For each onboarding document, we defined those questions that the onboarding
-  document should be able to answer. Then when the first version of an
-  onboarding document was created, we passed that document and the questions
-  to a **fresh agent** and we asked the agent to answer the questions. And
-  then based on the answer, we used an **LLM as a judge** to see whether the
-  agent was able to answer the questions. This was a **quality feedback loop**
-  for the documents.
+  For each document we defined the questions it should be able to answer. Then
+  we gave the first version and the questions to a **fresh agent**, asked it
+  to answer them, and used an **LLM as a judge** to check the answers. A
+  **quality feedback loop** for the documents.
 
-  And for each of the onboarding documents, I included those claims which were
-  related to that part of the system. And then I was able to discuss with the
-  business owner whether those claims were correct or not. The claim register
-  is **not paperwork**: it is the list of **conversations still to be had**,
-  each claim with its source and the person to validate it with. And when we
-  changed one of those claims, then we were able to **trace back** to all the
-  other parts of the design corpus which were related to that claim. Compare
-  this with prose: if you have the same information in prose, then it would be
-  very hard to go back even just to identify those claims, and when you
-  learned something about those claims, to change the already existing
-  documents based on that new learning.
+  Each document also lists the claims for that part of the system, each with
+  its source and the person to validate it with. And when a claim changed, we
+  could **trace back** to every part of the corpus that depended on it. In
+  prose it would be hard even to find the claims, let alone update the
+  documents when you learn something new.
 
-  And what's also very cool in this example is that if your design corpus is
-  pure text, then the way those building blocks are combined is fixed. It's
-  just the way it was written down. But if you store those smaller building
-  blocks, **small entities**, and you have the links between the building
-  blocks, then you can render them in many different ways based on what your
-  use case is or for what type of customers you want to show that information.
-  **Same corpus, different renders**.
+  One more thing: storing the building blocks as **small linked entities**
+  lets you render the corpus differently for each use case and audience,
+  instead of the single way it was written down. **Same corpus, different
+  renders**.
   -->
 
   <style>
@@ -715,18 +701,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       gap: 16px;
       justify-content: center;
     }
-    /* The SVG box is 1456x500 at exactly 1:1 with the viewBox, so the
-       composition is already flush against the viewBox top and bottom and
-       cannot be nudged in SVG coordinates without clipping. The 15px lift of
-       the whole composition and the 15px drop of the band are therefore done
-       on the flex boxes: -15 top / +30 bottom on the diagram lifts the SVG by
-       15 and pushes the band down by 15, and the -15 bottom margin on the band
-       keeps the column's total height unchanged so the centering does not
-       drift. */
+    /* The SVG box is 1456x500 at exactly 1:1 with the viewBox, flush against
+       the viewBox top and bottom; the closing band under it was dropped on
+       2026-11-04, so the diagram is simply centred in the content area. */
     #s23b .diagram {
       flex: none;
       height: 500px;
-      margin: -15px 0 30px;
     }
     #s23b .diagram svg {
       width: 100%;
@@ -929,31 +909,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       fill: var(--story-on-dark);
     }
 
-    /* ---- closing band (s11 / s12 / s21 / s22 pattern) -------------------- */
-    /* The band had only 9px of slack under it, so 6 of the 15px drop is paid
-       for by 3px less vertical padding; its border box then lands flush with
-       the bottom of .content instead of spilling into the slide padding. */
-    #s23b .band {
-      flex: none;
-      align-self: center;
-      width: fit-content;
-      min-width: 40%;
-      max-width: 100%;
-      padding: 12px 48px;
-      text-align: center;
-      margin-bottom: -9px;
-    }
-    #s23b .band p {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 660;
-      line-height: 1.35;
-      color: var(--muted);
-    }
-    #s23b .band p b {
-      font-weight: 870;
-      color: var(--story-on-dark);
-    }
   </style>
 
   <div class="title-block">
@@ -1288,12 +1243,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       </svg>
     </div>
 
-    <div class="card band fade-up">
-      <p>
-        The register is not paperwork: it is the
-        <b>list of conversations still to be had</b>.
-      </p>
-    </div>
   </div>
 </section>
 <script>

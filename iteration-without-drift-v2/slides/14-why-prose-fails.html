@@ -663,59 +663,46 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   data-tags=""
   data-evidence=""
 >
-  <!-- POSITION (board pass 2026-10-28): this slide now follows s08 (the
-  layers) directly; s09 and s11 are no longer between them. The turn that
-  connects the two, spoken as the first line here, is the one the kicker
-  asks: "Layers help the head: reason one, handled. But every round had to
-  leave all of them coherent: that is the load from the opening. Who
-  carries it? The substrate does. And this is what the substrate was." Then
-  the page and the four groups. Without that opening line the jump from
-  the layer diagram to a prose page is not evident.
+  <!-- POSITION (board pass 2026-10-28, bridge reworded 2026-11-02): this
+  slide follows s08 (the layers) directly; s09 and s11 are no longer between
+  them. Slide 13 now ends on the coherency load showing up at the first
+  layer, so the first line here answers the kicker instead of restating it:
+  the load lands on the substrate, and the substrate was prose. Then the
+  page and the four groups.
   -->
 
   <!-- SPEAKER-NOTE:
-  Layers help the head: reason one, handled. But every round had to leave all
-  of them coherent, and that is the load from the opening. **Who carries it?**
-  The **substrate** does. And this is what the substrate was.
 
-  The problem was that if you mainly use **prose** to describe your design, it
-  is not an ideal substrate for an LLM to deal with the **coherency load**.
+  And this was **not a coincidence**. **Prose** is not a good substrate for
+  holding **structured information**, and this is a key reason why it is hard
+  for an LLM to make coherent changes to it.
 
-  With this image I tried to explain some of the issues that we can run into
-  when we use just prose.
+  This image shows some of the issues we run into when we use just prose.
 
-  One issue is around how easy it is to **understand** something. Here the
-  problem could be that there might be some underlying decisions that are not
-  highlighted in the text. Some **concepts might overlap**, this is also an
-  issue, and this can overwhelm both a human and an LLM as well.
+  One issue is how easy it is to **understand**. Some underlying decisions
+  might not be highlighted in the text, and some **concepts might overlap**.
+  This can overwhelm both a human and an LLM.
 
-  It is **not easy to change** such a document, because now imagine that we
-  have this document and I realize that I don't need the concept of blue. And
-  I ask the LLM, okay, let's remove blue, then finding blue usually works, but
-  even in this case the non-determinism can kick in. But it's much harder when
-  you have some **derived concepts** like green. And it's not necessarily easy
-  to remove blue from green. And this is where you might run into some
-  problems.
+  It is **not easy to change** such a document. Imagine I realize that I don't
+  need the concept of blue, and I ask the LLM to remove it. Finding blue
+  usually works, though even here non-determinism can kick in. But it's much
+  harder with **derived concepts** like green: it's not easy to remove blue
+  from green.
 
-  Another issue is that some concepts are not clearly defined, so it's much
-  **harder to address** them if they are hidden inside the text. Which also
-  means that, for example, if I want to list those concepts, then I need to
-  rely on an LLM to infer those from the text, which again, as LLMs are
-  non-deterministic, means that I can't fully rely on an LLM to do that. So
-  again, this is a limitation. Another related issue is that if you keep those
-  concepts in prose, then the way they are visually displayed is **frozen**.
-  It's just the markdown, and if you need to generate a different view, then
-  you don't really have much support to do that. Prose is **one
-  linearization**.
+  Some concepts are not clearly defined, so they are much **harder to
+  address** when they are hidden inside the text. If I want to list those
+  concepts, I need an LLM to infer them from the text, and as LLMs are
+  non-deterministic, I can't fully rely on that.
 
-  And the last issue is that it's quite **hard to validate** whether a
-  document is correct or not. Generation became **nearly free**, verification
-  did not. And even from this perspective, just one markdown file is not super
-  easy to deal with.
+  And it's quite **hard to validate** whether a document is correct. Here we
+  have a very strong **economic asymmetry**: generation became **nearly
+  free**, verification did not, and plain prose does not make verification any
+  easier.
 
-  So all of these issues are related to the **substrate itself**, because a
-  markdown file is limited in **providing structure**, which could help with
-  all of these issues.
+  So all of these issues come from the **substrate itself**: prose is limited
+  in **providing structure**, which could help with all of them.
+
+  Prose can describe the design. It cannot **carry the load** of changing it.
   -->
 
   <style>
@@ -1177,8 +1164,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
               <span class="num" aria-hidden="true">2</span>Harder to change
             </h3>
             <p>
-              Iteration, dependencies, a shifting landscape: unstructured data
-              is hard to keep coherent.
+              Hidden dependencies, implicit structure, one idea in many
+              sentences: no edit stays local.
             </p>
           </div>
 

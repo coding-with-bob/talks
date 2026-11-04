@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s15"
   data-act="act4"
   data-owner="draft"
-  data-minutes="1.5"
+  data-minutes="1.75"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,41 +665,38 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  So what did this structure buy? For one, the domain space itself was cut up
-  into more concrete things, named, typed entities, and these gave me a
-  **mental map** and handholds for how it is worth thinking things through.
-  For example, I could go through just the invariants. Is something missing
-  from there? Yes or no? Again, just reading through a big text, it is not
-  certain that it comes to mind. This is **working-set relief**: I could make
-  better use of my own working memory, and not overload it.
+  So what are the benefits of this logical structure? First, the domain space
+  was cut up into named, typed entities, and these gave me a **mental map**:
+  handholds for thinking things through. For example, I could go through just
+  the invariants and ask: is something missing? Reading through a big text,
+  that question may not even come up. This is **working-set relief**: I could
+  use my own working memory better, without overloading it.
 
-  As I said, it was already there that the individual entities are
-  **addressable**, and that alone already meant, for example, that I cannot
-  refer to, say, an invariant that does not exist or is not defined. So at
-  this point a **small CI script** already came into being, which, obviously
-  not very deeply, started running checks on the doc, and it did produce hits,
-  so it helped in the building.
+  The entities were also **addressable**: every concept has a name you can
+  point at. That makes references checkable, so a **small CI script** could
+  verify them, for example that every invariant I refer to actually exists.
+  The checks were shallow, but they found real issues.
 
-  The structure is also much more **compact token-wise** than if I had wanted
-  to write all of that down.
+  The structure is also much more **compact token-wise** than writing all of
+  it down in prose.
 
-  And this is something that can really help. Even outside of this context, I
-  had many examples when I was working on a design document and I just kept
-  finding some issues that we fixed, but then we found some other issues, and
-  when I tried to understand why this was happening, why we couldn't just
-  create a coherent document, the issue was that we wanted to describe a
-  **state machine in prose**, and this was very fragile for LLM-based editing.
-  So then we decided, okay, let's put the state machine **into a table**, and
-  after we did it, in one or two rounds we were able to make it coherent.
+  And this is not specific to my project. I have often worked on design
+  documents where we fixed issues and kept finding new ones. When I tried to
+  understand why we couldn't get to a coherent document, the issue was that we
+  described a **state machine in prose**, which was very fragile for LLM-based
+  editing. Once we put the state machine **into a table**, we made it coherent
+  in one or two rounds.
 
-  So this is something that you need to remember: it really matters in **which
-  format** you store a given piece of information, because it impacts a lot
-  how easy it is for an LLM to work with that information.
+  So remember: it really matters in **which format** you store a given piece
+  of information, because it decides how easy it is for an LLM to work with
+  it.
 
-  And my original thesis that **HTML might help** worked out pretty well. And
-  it also enabled some document-related innovation. For example, I built a
-  **diff view** into the pseudocode, and this helped me better understand how
-  the kernel code is changing from capability layer to capability layer.
+  Having an **abstraction for the structure** itself also opens up the
+  possibility of iterating on it and innovating.
+
+  Similarly, my original thesis that **HTML might help** worked out pretty
+  well. For example, I built a **diff view** into the pseudocode, which showed
+  me how the kernel code changes from capability layer to capability layer.
   -->
 
   <style>
@@ -994,7 +991,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   </style>
 
   <div class="title-block">
-    <h1>What the logical structure buys</h1>
+    <h1>Benefits of the logical structure</h1>
     <div class="accent-line"></div>
   </div>
 

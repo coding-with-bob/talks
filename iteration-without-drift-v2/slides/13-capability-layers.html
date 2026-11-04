@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s08"
   data-act="act2"
   data-owner="draft"
-  data-minutes="1.25"
+  data-minutes="1"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,25 +665,25 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  The solution was not super revolutionary. I split the system into different
-  **capability layers**, and then I started to work out each layer one by one.
-  One layer is **one working set**: small enough to fit into one head, mine or
-  the LLM's. And I decided to use **HTML** as the format of the document,
-  because this way I can leverage the greater visual expressiveness of HTML.
+  The solution was not super revolutionary. I split the system into
+  **capability layers** and worked them out one by one. One layer is **one
+  working set**: small enough to fit into one head, mine or the LLM's. And I
+  chose **HTML** as the document format, for its visual expressiveness.
 
-  And even inside the design of one capability layer, I had an iterative
-  structure. First we worked out what we called the **small spec**. This was
-  more like a high-level perspective: the boundary contracts of that
-  capability layer and the most important aspects, domain terms, and when we
-  agreed on those terms, I also ran a **v1 reality check**, which meant that
-  the agent checked whether what we planned is capable of supporting all the
-  related features of v1. And only after that did we create the **draft** for
-  that specific layer.
+  Even inside one layer the work was iterative. First the **small spec**: the
+  boundary contracts of the layer, the key aspects and domain terms. Once we
+  agreed on those, a **v1 reality check**: the agent checked whether the plan
+  could support all the related v1 features. Only then came the **draft** of
+  the layer.
 
-  This **partially solved** some of my problems. But as we discussed regarding
-  the price of iteration, this opened up the issue of **coherency load**, and
-  the stack kept growing, up to **L4**. And this is something that I needed to
-  deal with.
+  This **partially solved** my problem: I could progress with the planning
+  again. But already on the **first layer**, coherent changes with an LLM were
+  painful because of the **interconnectedness** inside the prose. After each
+  change I needed several **review cycles** to make sure the document was
+  still coherent.
+
+  This is the **coherency load** we discussed as the price of iteration, just
+  showing up immediately.
   -->
 
   <style>

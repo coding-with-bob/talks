@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s18"
   data-act="act6"
   data-owner="draft"
-  data-minutes="1.5"
+  data-minutes="1.75"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -666,25 +666,34 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   <!-- SPEAKER-NOTE:
 
   I was thinking: what if the HTML weren't the final artifact for storing the
-  information, but only the **presentation layer**? And based on this idea I
-  realized that I just need to break out all of the building blocks and put
-  them into their own location, and then I just need a **ledger** which
-  describes how they are related, and how the overall model should be
-  constructed from these small building blocks.
+  information, but only the **presentation layer**? So I broke out all of the
+  building blocks into their own files, so that the model can be **assembled**
+  from them.
 
-  So based on this concept, I started to refactor the model. I started to
-  factor out the building blocks from the HTML, type by type, and I started to
-  create a **build process** which can build the HTML view based on the
-  ledger. And what was really cool is that the original HTML became the actual
-  **acceptance criterion**, because I only needed to check that after each of
-  these refactoring steps I still had the **same original HTML** output.
+  The base is the **section**, one per capability layer: it holds the text,
+  and it refers to its own building blocks, the pseudocode units and the
+  records. I factored those out of the HTML, type by type: invariants,
+  rejections, absent items, golden traces, each as an **addressable** file.
 
-  The ledger itself is **generated, never hand-edited**. And the build comes
-  with checks: every reference resolves, the invariants are intact, the ledger
-  is regenerated, the output is rebuilt. These are **new feedback loops** that
-  the monolith never had.
+  And on top of all this sits a **ledger**, the index of the whole corpus. The
+  ledger is **generated, never hand-edited**: a script derives it from the
+  sections and their records, so it cannot drift from them. The ledger is the
+  **deterministic answer** to how the different pieces of the model fit
+  together.
 
-  Physically breaking down the monolith **creates new information**.
+  There is a **build process** that assembles the HTML from the building
+  blocks. It also includes some basic checks, for example it fails if a
+  reference points to a missing file. This way we have a few **new feedback
+  loops** that the monolith never had.
+
+  During the refactoring, the original HTML was **THE acceptance test**: after
+  each refactoring step I only had to check that the build still produced the
+  **same bytes**.
+
+  And what is really important to take away from this slide is that we did not
+  just break the monolith down into pieces: we actually created **new
+  information**, how the pieces are connected with each other. And as you will
+  see, this information can be leveraged in many different ways.
   -->
 
   <style>
@@ -1066,8 +1075,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <div class="trow">
             <span class="t">&#9492;&#9472; records/</span>
             <span class="ann"
-              >invariants, rejections, deferrals, per-level golden traces
-              (addressable entities)</span
+              >addressable entities: invariants, rejections, absent items,
+              golden traces</span
             >
           </div>
         </div>
@@ -1102,16 +1111,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           <ul class="checks">
             <li>
               <span class="tick">&#10003;</span
-              ><span>all references resolve</span>
+              ><span>every reference resolves</span>
             </li>
             <li>
-              <span class="tick">&#10003;</span><span>invariants intact</span>
+              <span class="tick">&#10003;</span
+              ><span>ledger regenerated, no drift</span>
             </li>
             <li>
-              <span class="tick">&#10003;</span><span>ledger regenerated</span>
-            </li>
-            <li>
-              <span class="tick">&#10003;</span><span>output rebuilt</span>
+              <span class="tick">&#10003;</span
+              ><span>output byte-identical</span>
             </li>
           </ul>
         </div>

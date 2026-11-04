@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s24"
   data-act="act8"
   data-owner="draft"
-  data-minutes="1.0"
+  data-minutes="0.75"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,22 +665,20 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  And if we go back to Pairflow v3, I was able to leverage this design corpus
-  structure even from the perspective of the implementation. The model
-  description was the basis when I started to create the **task
-  specification** for implementation. The DDD terms were mapped into the
-  domain types, and this is something where I had an actual CI script which
-  checked whether all the domain terms exist in the code. The golden traces
-  became **executable tests**, the invariants became **behavior-preservation
-  rails**, the absent list became part of the ADRs, in the non-goals section.
-  So the structure actually helped drive the implementation itself.
+  Back to Pairflow v3: this structure also paid off on the implementation
+  side. The model description was the basis of the **task specifications** for
+  the implementation. The DDD terms were mapped onto the domain types, and a
+  CI script checked that every domain term exists in the code. The golden
+  traces became **executable tests**, the invariants became
+  **behavior-preservation rails**, and the absent list became the non-goals
+  section of the ADRs. So the structure also helped drive the implementation
+  itself.
 
-  The actual implementation and the parts of the model were connected through
-  **git commit hashes**, in a **realization ledger**: which version of the
-  model was implemented by which commit. And based on this, I had a **CI
-  check** which checked that if the model is changing and the related code is
-  not changing, then this is probably an issue. So even from this perspective,
-  this structure provides many different ways you can leverage it.
+  The implementation and the parts of the model were connected through **git
+  commit hashes**, in a **realization ledger**: which version of the model was
+  implemented by which commit. And a **CI check** flagged it when the model
+  changed but the related code did not. So this structure can be leveraged
+  from one more angle.
   -->
 
   <style>

@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s25"
   data-act="act8"
   data-owner="draft"
-  data-minutes="1.0"
+  data-minutes="1.5"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,40 +665,31 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  Having a more structured, more detailed design corpus can also support
-  **agent autonomy**. Because when I started the implementation, when I was
-  working on a portion of the project, usually I first created what we called
-  a **contract document**, which contained all the important claims that the
-  given implementation should deliver.
+  A more structured, more detailed design corpus can also support **agent
+  autonomy**. When I started implementing a part of the project, I usually
+  first created a **contract document**: the important claims the given
+  implementation should deliver.
 
-  These claims were classified into **three categories**. One was decided in
-  the model, one was that the claim is directly derived from the model, and
-  the third was that this is a **new semantic decision**. And what was really
-  cool is that this way I was able to let the agent work autonomously on these
-  artifacts, and until it ran into a claim which was a new semantic decision,
-  it was able to work autonomously. At a new semantic decision the loop stops,
-  and a **human decides**.
+  Each claim was classified into one of **three categories**: decided in the
+  model, directly derived from the model, or a **new semantic decision**. This
+  way the agent could work on these artifacts autonomously, until it ran into
+  a new semantic decision. There the loop stops, and a **human decides**.
 
-  Of course I had a feedback loop. We checked whether the classification was
-  correct, and that feedback loop was required to provide **clear evidence**
-  that there is a statement in the corpus which proves that the claim is
-  coming from the model or is derived from the model.
+  Of course there was a feedback loop which checked whether the classification
+  was correct: it had to provide **clear evidence**, a statement in the corpus
+  that proves the claim is decided in or derived from the model.
 
-  And this claim structure was useful even after the implementation, because
-  then I had a **review loop** which checked whether those claims were
-  properly implemented and properly tested. First, this review loop was
-  checking whether the implementation is correct from a semantic perspective.
-  It checked whether the tests are covering those aspects which are important
-  from the perspective of the given claim. And one lens did **mutation
-  testing**: it changed the code and checked that the relevant tests fail;
-  **green tests** were a sign that the tests needed improvement.
+  The claim structure was useful after the implementation too: a **review
+  loop** checked whether the claims were properly implemented and properly
+  tested. It checked whether the implementation is semantically correct, and
+  whether the tests cover the aspects that matter for the given claim. And one
+  lens did **mutation testing**: it changed the code and checked that the
+  relevant tests fail; **green tests** meant the tests needed improvement.
 
-  And this is something that I didn't plan in advance, but it was a very nice
-  side effect that I can **direct my attention** to where it is really needed,
-  and when the agent can make confident decisions, then it can work
-  autonomously. The agent runs on its own as far as its assumptions can be
-  **checked against the corpus**. Where there is nothing to check against, the
-  **loop stops**.
+  I did not plan this in advance, but it was a very nice side effect: I can
+  **direct my attention** to where it is really needed. The agent runs on its
+  own as far as its assumptions can be **checked against the corpus**. Where
+  there is nothing to check against, the **loop stops**.
   -->
 
   <style>

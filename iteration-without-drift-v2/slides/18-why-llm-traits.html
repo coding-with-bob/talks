@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s17"
   data-act="act5"
   data-owner="draft"
-  data-minutes="1.5"
+  data-minutes="1.25"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,26 +665,25 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  And what I experienced is grounded in theory as well, at least there is a
-  very good reason for it. What we need to understand in this case is that
-  even if you are working with a smaller document, we still have this
-  phenomenon that LLMs are **non-deterministic**, which means that even though
-  LLMs are amazing at finding issues, usually we can't rely on them finding
-  all of them. So in any case, when we are working with documents, we really
-  need to understand that we need to work in **multiple rounds**.
+  And what I experienced is grounded in theory as well. It is **important to
+  understand** that even with a smaller document, LLMs are
+  **non-deterministic**: they are amazing at finding issues, but we can't rely
+  on them finding all of them in one pass. So when we work with documents, we
+  need to work in **multiple rounds**.
 
-  And there is another perspective that we need to keep in mind: as we already
-  discussed, LLMs have a **limited attention budget**. And that means that if
-  we are working with a bunch of text, and we can turn that text into a more
-  structured, more **condensed format**, then usually LLMs can be much more
-  effective with this more structured data.
+  And there is another perspective: as we already discussed, LLMs have a
+  **limited attention budget**. Look at the two pictures on the left. The same
+  four facts are there in both, but on top they are **scattered** across a
+  wall of prose, at the bottom they are **extracted** into a table. The LLM
+  spends attention on every token, so the scattered version costs more budget
+  for the same facts, and the result is worse. That is why I said structure
+  matters.
 
-  How many review runs do we usually need for a change? It depends, of course,
-  on the nature of the change. It's a bit different when we want to make a
-  bigger logical change on the overall corpus, but still it pretty much
-  depends on the **size and the structure** of the document. So even though I
-  had a good structure which supported an effective way of working with an
-  LLM, the **overall size** of the corpus started to be an issue.
+  So how many review rounds does a change need? It depends on the change, but
+  mostly on **two things**: the **structure** of the document and its
+  **size**. Structure I had by then, and it did help: editing one layer worked
+  well. But the second lever was still open. The corpus as a whole had **grown
+  too big**, and this is exactly the pain from the previous slide.
   -->
 
   <style>
@@ -1144,7 +1143,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <div class="card trait fade-up">
           <p>
             Super capable at finding issues in context, but usually
-            <b>not all of them</b>.
+            <b>not all of them</b> in <b>one pass</b>.
           </p>
         </div>
 
@@ -1158,14 +1157,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         </div>
 
         <div class="card trait fade-up">
-          <p>The <b>tighter</b> the context, the better the result.</p>
+          <p>
+            The same facts cost less attention <b>extracted</b> than
+            <b>scattered</b> in prose.
+          </p>
         </div>
 
         <!-- closing statement -->
         <div class="card trait trait--key trait--group-start fade-up">
           <p>
-            The <b>round count depends</b> on the <b>size</b> and
-            <b>structure</b> of the document.
+            The <b>round count depends</b> on <b>size</b> and
+            <b>structure</b>. Structure I had. <b>Size</b> was still open.
           </p>
         </div>
       </div>

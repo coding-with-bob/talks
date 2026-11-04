@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s21"
   data-act="act7"
   data-owner="draft"
-  data-minutes="2.0"
+  data-minutes="1.5"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,55 +665,33 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  Nowadays there are many cases where people build a structure or a tool
-  around the model, and then after a few months the **frontier labs** just add
-  that functionality to the **core harness**, and we don't need that structure
-  or functionality or tool anymore. And even in this case, I think it is a
-  very valid question: do we really need this structure if we assume that the
-  models will just be **better and better**?
+  Nowadays we see it a lot: people build a structure or a tool around the
+  model, and after a few months the **frontier labs** add the same thing to
+  the **core harness**, and the tool is not needed anymore. So it is a very
+  valid question here as well: do we really need this structure if the models
+  just get **better and better**?
 
-  And I was thinking about this topic a bit, and to me it seems that we have
-  two major categories of this type of structure. One is what I call
-  **compensational**, when we try to overcome a current limitation or weakness
-  or missing functionality of a model: **context chunking**, grinding review
-  rounds, manual workflow steering. And this is a category where I would be
-  very careful how much effort I invest, because usually this is where there
-  is a high chance that the frontier labs will just **remove that bottleneck**
-  from the base model or from the core harness.
+  To me it seems there are two major categories of structure. One I call
+  **compensational**: it works around current limitations of the model. Here I
+  would be very careful how much effort I invest, because there is a high
+  chance that the frontier labs will **remove that bottleneck** from the model
+  or the harness.
 
-  But as you see, there are some parts of this structure that I call
-  **information-carrying structure**: **decisions and intent**, what we are
-  not building, the structure itself. The test is the question on the scale:
-  could a better model infer this? It is important to highlight here that some
-  of this information is not something that you could infer from the base text
-  with a better model, because the issue is that the way it was originally
-  defined, or how you would define it in prose or in a normal document without
-  the structure, would introduce some ambiguity. So creating this structure is
-  actually a very active aspect of creating the design corpus. This is active
-  work, this is not something where you just ask the LLM, okay, try to figure
-  out something. This is where we are actually creating **additional
-  information** compared to that initial text we started with.
+  The other category I call **information-carrying structure**: **decisions
+  and intent**, what we are not building, the structure itself. The important
+  point is that some of this information cannot be inferred from the base text
+  with any model, because the prose version is ambiguous. Creating this
+  structure is active work: it is not asking the LLM to figure something out,
+  it is where we create **additional information** compared to the text we
+  started with.
 
-  And another issue might be that if you are not very specific that, okay,
-  these are **my invariants**, then you always rely on whether the model can
-  infer the same invariants from the text. And of course, I'm not 100% sure
-  how the models will change, but still LLMs are **non-deterministic** and I
-  think we shouldn't rely on the LLMs to infer this information from a text.
-  And of course, even just from a **cost perspective**, if we always need to
-  figure this out from the base text, it is probably not the best way to spend
-  our tokens.
+  I actually think better models will **better leverage** these structures.
+  The more capable the models, the more we delegate, so the **coherency load**
+  on the model grows while the **cost of the structure** goes down. So this
+  structure stays useful for future models as well.
 
-  And I think actually better models will be able to **better leverage** these
-  types of structures. And if I consider that probably the more capable models
-  we have, the more we will delegate, which means that the **coherency load**
-  on the model will be bigger while the **cost of the structure** goes down, I
-  think this structure will be very useful even for future models as well.
-
-  Another interesting thought is that probably for smarter models maintaining
-  these structures will be just **much easier**. So I can imagine that right
-  now we might need more **deterministic guardrails** around dealing with the
-  structure, and maybe that part will disappear at some point, but still the
-  structure itself will be useful even in the future.
+  And for smarter models, maintaining these structures will be **much
+  easier**.
   -->
 
   <style>
@@ -735,7 +713,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 18px;
+      gap: 36px;
     }
 
     /* ---- the unsorted cluster arriving from the top ---------------------- */
@@ -749,7 +727,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       gap: 8px;
     }
     #s21 .feed-label {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.07em;
       text-transform: uppercase;
@@ -796,12 +774,12 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s21 .plate {
       flex: none;
       white-space: nowrap;
-      padding: 9px 20px;
+      padding: 11px 24px;
       border-radius: var(--radius-chip);
       background: var(--navy-0);
       border: 2px solid var(--theory);
       box-shadow: 0 10px 26px var(--glow-cyan);
-      font-size: 19px;
+      font-size: 22px;
       font-weight: 820;
       letter-spacing: -0.01em;
       line-height: 1.2;
@@ -814,18 +792,16 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
        and the group's horizontal centre lands on the balance because both
        outer columns are the same width. The wide column gap is what gives
        the scale its breathing room. */
-    /* the group grows into the free vertical space so the two boxes carry
-       the slide, capped so they never turn into mostly empty frames */
+    /* the group is sized to its content: the two boxes wrap their four
+       chips and sit centred against the taller centre column (the closing
+       band and the fifth right-hand chip were dropped 2026-11-04, so the
+       boxes no longer need to fill the free height) */
     #s21 .sort-group {
-      flex: 1;
-      min-height: 0;
-      max-height: 430px;
+      flex: none;
       display: grid;
-      grid-template-columns: 310px 380px 310px;
-      column-gap: 44px;
-      align-items: stretch;
-      /* nudge the whole composition up, clear of the title block */
-      transform: translateY(-15px);
+      grid-template-columns: 360px 460px 360px;
+      column-gap: 52px;
+      align-items: center;
     }
 
     /* the centre column: the intake stack sits directly on top of the scale
@@ -896,20 +872,20 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     /* ---- the two piles ---------------------------------------------------- */
     #s21 .zone {
       min-width: 0;
-      padding: 16px 20px 18px;
+      padding: 22px 26px 24px;
       display: flex;
       flex-direction: column;
     }
     #s21 .zone h3 {
       margin: 0;
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 850;
       letter-spacing: -0.015em;
       line-height: 1.2;
     }
     #s21 .verdict {
-      margin: 5px 0 0;
-      font-size: 15px;
+      margin: 6px 0 0;
+      font-size: 17px;
       font-weight: 700;
       line-height: 1.3;
     }
@@ -918,17 +894,17 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     #s21 .chips {
       flex: 1;
       min-height: 0;
-      margin-top: 12px;
+      margin-top: 16px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 7px;
+      gap: 9px;
     }
     #s21 .chip {
       max-width: 100%;
-      padding: 7px 16px;
+      padding: 9px 20px;
       border-radius: var(--radius-chip);
-      font-size: 16px;
+      font-size: 19px;
       font-weight: 720;
       line-height: 1.2;
       white-space: nowrap;
@@ -961,8 +937,8 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       color: var(--muted);
       background: transparent;
       border: 1.5px dashed var(--muted-3);
-      font-size: 15px;
-      padding: 7px 14px;
+      font-size: 18px;
+      padding: 9px 18px;
     }
     #s21 .zone--left .chip:nth-child(1) {
       opacity: 0.92;
@@ -970,15 +946,15 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
     #s21 .zone--left .chip:nth-child(2) {
       opacity: 0.74;
-      margin-right: 12px;
+      margin-right: 14px;
     }
     #s21 .zone--left .chip:nth-child(3) {
       opacity: 0.56;
-      margin-right: 24px;
+      margin-right: 28px;
     }
     #s21 .zone--left .chip:nth-child(4) {
       opacity: 0.4;
-      margin-right: 34px;
+      margin-right: 40px;
     }
 
     /* RIGHT pile: information-carrying, solid and stacked */
@@ -1009,16 +985,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       font-weight: 880;
       color: var(--theory-on-dark);
     }
-    /* narrower box: the longest chip wraps to two lines instead of
-       overflowing, and drops a size for a tighter fit */
-    #s21 .zone--right .chip--long {
-      font-size: 14px;
-      white-space: normal;
-      text-align: left;
-    }
 
     /* ---- the trend pair: what falls, what grows, side by side under the
-       whole composition and above the closing band ------------------------ */
+       whole composition (the closing band was dropped 2026-11-04) ---------- */
     #s21 .trends {
       flex: none;
       align-self: center;
@@ -1045,7 +1014,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       stroke-linejoin: round;
     }
     #s21 .trend-label {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 760;
       line-height: 1.2;
       white-space: nowrap;
@@ -1071,31 +1040,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       background: var(--hairline);
     }
 
-    /* ---- closing band (s11 / s12 pattern) --------------------------------- */
-    #s21 .band {
-      flex: none;
-      align-self: center;
-      width: fit-content;
-      min-width: 40%;
-      max-width: 100%;
-      padding: 14px 48px;
-      text-align: center;
-    }
-    #s21 .band p {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 640;
-      line-height: 1.4;
-      color: var(--muted);
-    }
-    #s21 .band p b {
-      font-weight: 860;
-      color: var(--white);
-    }
-    #s21 .band p b.lead {
-      color: var(--theory-on-dark);
-      letter-spacing: 0.01em;
-    }
   </style>
 
   <div class="title-block">
@@ -1180,9 +1124,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <span class="chip">what we are <b>NOT</b> building</span>
             <span class="chip">semantic verification</span>
             <span class="chip">the structure itself</span>
-            <span class="chip chip--long"
-              >dynamic intake: new learning, new decision, new requirement</span
-            >
           </div>
         </div>
       </div>
@@ -1208,12 +1149,6 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       </div>
     </div>
 
-    <div class="card band fade-up">
-      <p>
-        <b class="lead">Rule of thumb:</b> build the structure that encodes
-        <b>decisions and intent</b>; skip what merely works around mechanics.
-      </p>
-    </div>
   </div>
 </section>
 <script>

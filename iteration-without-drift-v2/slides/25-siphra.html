@@ -657,7 +657,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   id="s23"
   data-act="act8"
   data-owner="draft"
-  data-minutes="1.25"
+  data-minutes="1.75"
   data-theme="light"
   data-exhibits=""
   data-tags=""
@@ -665,48 +665,34 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 >
   <!-- SPEAKER-NOTE:
 
-  A few weeks after I created this structure, a friend of mine reached out to
-  me and asked for my help to design the architecture of a system which
-  supports the work of **oil engineers**, which was kind of funny because I
-  had not much clue about that domain, and this was a heavy data engineering
-  project. I had a somewhat limited understanding of how that should work. But
-  I had some transcripts from customer discussions and I had a basic
-  understanding of how this system should work. So based on this information I
-  sat down and literally had a **20-hour-long discussion** with Fable, and it
-  was very intensive brainstorming, and based on that we identified the **key
-  capabilities** of the system.
+  A friend asked me to help design the architecture of a system for **oil
+  engineers**: a heavy data engineering project in a domain I knew very little
+  about. I had some transcripts of customer discussions and a basic idea of
+  the system, and from those I had a **20-hour-long brainstorming** with
+  Fable, where we identified the **key capabilities**.
 
-  And then I needed to create the architecture, and it was very much the same
-  experience or the same feeling that I had when I realized that okay, I just
-  need to create that Pairflow config. But then it was super overwhelming. I
-  had **30 or 40 pages** of brainstorming. It was absolutely not clear how to
-  turn that into an architecture. And then it clicked that, okay, this is
-  pretty much the same situation. So probably I can use the **same concept**.
-  So I was thinking a bit, okay, what could be these building blocks in this
-  case? And I came up with a structure that you can see in the image.
+  Then I had to turn **30 or 40 pages** of brainstorming into an architecture,
+  and it was the same overwhelming feeling as with the Pairflow config. So I
+  used the **same concept**, and this is the structure I came up with.
 
-  It was very similar to the previous concept: I created these **capability
-  layers**, called levels in this case, again as **working-set containers**.
-  And inside each level I worked in **depth passes**: concept, contract,
-  protocol, going deeper only as my understanding became more certain.
+  Most of it is familiar: **capability layers**, called levels here, as
+  **working-set containers**, and the same iterative design inside each level,
+  in **depth passes**: concept, contract, protocol, going deeper only as my
+  understanding became more certain. The foundations are the same as well:
+  invariants, the absent list, the vocabulary.
 
-  An interesting perspective was that as I was not sure about the domain, I
-  captured all of my claims related to the domain in this **domain claim
-  register**. We created something called the **scenario ledger**, which were
-  the user journeys that the customers of this system might have. And then I
-  mapped those to the key concepts, and there were some other **foundational
-  building blocks** like the invariants, the absent list, the vocabulary. So
-  pretty much the same, and actually I was able to work with this structure in
-  a very effective way. I was able to turn that brainstorming into a very nice
-  architecture. To be honest, I was kind of proud, especially since, as I
-  mentioned, I'm not an expert in creating very data-intensive applications.
+  Two elements are new. Because I was not sure about the domain, I captured
+  every assumption I made about it in a **domain claim register**, each with
+  the expert who should validate it. And the **scenario ledger** holds the
+  user journeys the customers of this system might have, each mapped to the
+  concepts and levels it needs. So the structure also tells me what I do not
+  know yet, and which parts of the model a scenario exercises.
 
-  There was only one small issue: when I showed the architecture to my friend,
-  he told me, hey, I **don't understand it**. Of course: he was a **business
-  person**, he understood the big high-level capabilities of the system, but
-  these lower-level capabilities, and the system on this level, were much more
-  complex than how he imagined the architecture. So he simply didn't
-  understand it.
+  It worked: the brainstorming turned into an architecture I was quite proud
+  of. There was only one small issue. When I showed it to my friend, he said:
+  I **don't understand it**. He is a **business person**: he knew the
+  high-level capabilities, but the system at this level was far more complex
+  than he had imagined.
   -->
 
   <style>
