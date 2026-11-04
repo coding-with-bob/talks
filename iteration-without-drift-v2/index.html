@@ -695,13 +695,38 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   body[data-active-theme="light"] .notes-head .budget { color: rgba(7,21,47,0.85); }
   body[data-active-theme="light"] .notes-head .over { color: #b3261e; }
   /* close button: back to the normal view without typing idkfa again */
-  .notes-close {
+  .notes-close, .notes-collapse {
     flex: none; width: 30px; height: 30px; padding: 0;
     border-radius: 50%; border: 1px solid rgba(247,251,255,0.22);
     background: transparent; color: rgba(247,251,255,0.70);
     font: 400 20px/1 Inter, sans-serif; cursor: pointer;
   }
-  .notes-close:hover { background: rgba(247,251,255,0.10); color: rgba(247,251,255,0.95); }
+  .notes-close:hover, .notes-collapse:hover { background: rgba(247,251,255,0.10); color: rgba(247,251,255,0.95); }
+  /* collapse (owner request, 2026-11-04): tuck the panel away without leaving
+     notes mode, so it can be flipped back open in one click during a run.
+     body.notes-collapsed keeps notes-mode on but gives the slide the whole
+     viewport; the only thing left on screen is a thin tab on the right edge
+     (bottom edge in portrait) that expands the panel again. Remembered in
+     localStorage like the mode itself; closing the panel clears it. */
+  .notes-collapse { font-size: 18px; }
+  body.notes-mode.notes-collapsed { --notes-w: 0px; --notes-h: 0px; }
+  body.notes-mode.notes-collapsed .notes-panel { display: none; }
+  .notes-tab { display: none; }
+  body.notes-mode.notes-collapsed .notes-tab {
+    display: block; position: fixed; z-index: 60;
+    right: 0; top: 50%; transform: translateY(-50%);
+    padding: 10px 6px 10px 8px; border: 1px solid rgba(247,251,255,0.22); border-right: 0;
+    border-radius: 8px 0 0 8px;
+    background: rgba(11,18,32,0.85); color: rgba(247,251,255,0.70);
+    font: 650 12px/1 Inter, sans-serif; letter-spacing: 0.08em;
+    writing-mode: vertical-rl; text-orientation: mixed;
+    cursor: pointer;
+  }
+  body.notes-mode.notes-collapsed .notes-tab:hover { background: #0b1220; color: rgba(247,251,255,0.95); }
+  body[data-active-theme="light"].notes-mode.notes-collapsed .notes-tab {
+    background: rgba(244,247,251,0.92); border-color: rgba(7,21,47,0.22); color: rgba(7,21,47,0.65);
+  }
+  body[data-active-theme="light"].notes-mode.notes-collapsed .notes-tab:hover { background: #f4f7fb; color: #07152f; }
   /* small link back to the first slide, whose panel holds the timing
      overview chart (owner request, 2026-11-03); hidden on the first slide */
   .notes-home {
@@ -738,12 +763,14 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   }
   body[data-active-theme="light"] .notes-head,
   body[data-active-theme="light"] .notes-text:empty::before { color: rgba(7,21,47,0.50); }
-  body[data-active-theme="light"] .notes-close { border-color: rgba(7,21,47,0.22); color: rgba(7,21,47,0.65); }
+  body[data-active-theme="light"] .notes-close,
+  body[data-active-theme="light"] .notes-collapse { border-color: rgba(7,21,47,0.22); color: rgba(7,21,47,0.65); }
   /* light panel: the deck's small-text teal ink (#087580 is 4.6:1 on #f4f7fb)
      is too close to body text at a glance; a darker teal plus a faint tint
      makes the keyword pop (owner feedback, 2026-11-02) */
   body[data-active-theme="light"] .notes-text .kw { color: #044c52; background: rgba(10,153,170,0.16); }
-  body[data-active-theme="light"] .notes-close:hover { background: rgba(7,21,47,0.08); color: #07152f; }
+  body[data-active-theme="light"] .notes-close:hover,
+  body[data-active-theme="light"] .notes-collapse:hover { background: rgba(7,21,47,0.08); color: #07152f; }
   body[data-active-theme="light"] .notes-home { color: rgba(7,21,47,0.55); }
   body[data-active-theme="light"] .notes-home:hover { color: #07152f; }
   body[data-active-theme="light"] .notes-chart { border-top-color: rgba(7,21,47,0.14); }
@@ -764,6 +791,11 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     padding: 16px 18px 22px;
   }
   body[data-active-theme="light"].notes-mode .notes-panel { border-top-color: rgba(7,21,47,0.14); }
+  body.notes-mode.notes-collapsed .notes-tab {
+    top: auto; right: 12px; bottom: 0; transform: none;
+    padding: 6px 10px 8px; border-right: 1px solid rgba(247,251,255,0.22); border-bottom: 0;
+    border-radius: 8px 8px 0 0; writing-mode: horizontal-tb;
+  }
 }
 
 </style>
@@ -7169,7 +7201,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <!-- closing statement -->
         <div class="card trait trait--key trait--group-start fade-up">
           <p>
-            The <b>round count depends</b> on <b>size</b> and
+            The <b>number of review rounds</b> depends on <b>size</b> and
             <b>structure</b>. Structure I had. <b>Size</b> was still open.
           </p>
         </div>
@@ -13009,7 +13041,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 </section>
 </main>
 <div class="deck-counter"></div>
-<aside class="notes-panel" aria-label="Speaker notes"><div class="notes-bar"><p class="notes-head"></p><a class="notes-home" href="#s01" title="First slide: timing overview" aria-label="First slide">&#8676; 01</a><button type="button" class="notes-close" aria-label="Close speaker notes" title="Close speaker notes">&times;</button></div><p class="notes-text"></p><figure class="notes-chart" hidden>
+<aside class="notes-panel" aria-label="Speaker notes"><div class="notes-bar"><p class="notes-head"></p><a class="notes-home" href="#s01" title="First slide: timing overview" aria-label="First slide">&#8676; 01</a><button type="button" class="notes-collapse" aria-label="Collapse speaker notes" title="Collapse speaker notes (the tab on the edge brings them back)">&rsaquo;</button><button type="button" class="notes-close" aria-label="Close speaker notes" title="Close speaker notes">&times;</button></div><p class="notes-text"></p><figure class="notes-chart" hidden>
 <figcaption><span class="nc-key nc-key-bar"></span> note at 160 wpm, 32.5 min (solid: over budget) · <span class="nc-key nc-key-tick"></span> budget, 32.3 min</figcaption>
 <svg viewBox="0 0 480 642" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Note length against budget, per slide">
 <line class="nc-grid" x1="200" y1="28" x2="200" y2="634"/>
@@ -13136,6 +13168,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
 <line class="nc-tick" x1="229.8" y1="615" x2="229.8" y2="633"/>
 </svg>
 </figure></aside>
+<button type="button" class="notes-tab" aria-label="Expand speaker notes" title="Expand speaker notes">notes</button>
 <script>
 (() => {
   document.body.classList.add("js");
@@ -13161,7 +13194,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   // or the close button); "?idkfa" in the URL turns it on and is then removed
   // from the URL so a later close is not undone by the next reload
   const NOTES_KEY = "codetalks-notes-mode";
+  const COLLAPSED_KEY = "codetalks-notes-collapsed";
   const params = new URLSearchParams(location.search);
+  try { if (localStorage.getItem(COLLAPSED_KEY) === "1") document.body.classList.add("notes-collapsed"); } catch (e) {}
   let remembered = false;
   try { remembered = localStorage.getItem(NOTES_KEY) === "1"; } catch (e) {}
   if (params.has("idkfa") || remembered) {
@@ -13174,7 +13209,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
     }
   }
   const reserve = () => {
-    if (!document.body.classList.contains("notes-mode")) return { w: 0, h: 0 };
+    if (!document.body.classList.contains("notes-mode") || document.body.classList.contains("notes-collapsed")) return { w: 0, h: 0 };
     const box = notesPanel.getBoundingClientRect();
     return matchMedia("(orientation: portrait)").matches ? { w: 0, h: box.height } : { w: box.width, h: 0 };
   };
@@ -13270,11 +13305,20 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
   // typing "idkfa" toggles the notes panel: a rolling buffer of the last five
   // single-character keys (no Ctrl/Meta/Alt), cleared after a match
   let typed = "";
+  // collapsed is a sub-state of notes mode (see the CSS note); closing the
+  // panel forgets it so the next open shows the panel again
+  const setCollapsed = (on) => {
+    document.body.classList.toggle("notes-collapsed", on);
+    try { on ? localStorage.setItem(COLLAPSED_KEY, "1") : localStorage.removeItem(COLLAPSED_KEY); } catch (e) {}
+    fit();
+  };
   const toggleNotes = () => {
     const on = document.body.classList.toggle("notes-mode");
     try { on ? localStorage.setItem(NOTES_KEY, "1") : localStorage.removeItem(NOTES_KEY); } catch (e) {}
-    fit();
+    if (!on) setCollapsed(false); else fit();
   };
+  notesPanel.querySelector(".notes-collapse").addEventListener("click", (e) => { e.currentTarget.blur(); setCollapsed(true); });
+  document.querySelector(".notes-tab").addEventListener("click", (e) => { e.currentTarget.blur(); setCollapsed(false); });
   // the panel's close button; blur so a later Space/Enter advances the deck
   // instead of re-clicking the button
   notesPanel.querySelector(".notes-close").addEventListener("click", (e) => {
