@@ -4377,7 +4377,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         <li>
           <span class="mark" aria-hidden="true">&#215;</span
           ><span
-            >Even LLMs fail with giant, semantically unstructured docs</span
+            >Even LLMs struggle with giant, semantically unstructured docs</span
           >
         </li>
       </ul>
@@ -8553,7 +8553,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             viewBox="0 0 812 406"
             preserveAspectRatio="xMidYMid meet"
             role="img"
-            aria-label="One pseudocode unit, gate check, tracked up a column of layers from L2 at the bottom to L7 at the top. L2 introduces it and L5 overrides it: both are drawn as solid amber blocks. L3, L4, L6 and L7 are dashed teal ghosts that only inherit. An edit badge sits on L2; the four inheriting layers are ticked with a shared note saying they rebuild automatically with no review, while L5 alone carries an amber callout saying it needs review."
+            aria-label="One pseudocode unit, gate check, tracked up a column of layers from L2 at the bottom to L7 at the top. L2 introduces it and L5 overrides it: both are drawn as solid amber blocks. L3, L4, L6 and L7 are dashed teal ghosts that only inherit, labelled with the layer they inherit from: L2 below the override, L5 above it. An edit badge sits on L2; the four inheriting layers are ticked with a shared note saying they rebuild automatically with no review, while L5 alone carries an amber callout saying it needs review."
           >
             <!-- header: which unit is being tracked, boxed as a bordered pill so it
                  reads as the header the structure below belongs to; baseline moved
@@ -8631,7 +8631,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
               rx="10"
             />
             <text class="blk-label blk-label--ghost" x="78" y="248">
-              inherited
+              inherited from L2
             </text>
 
             <!-- L3: pure inheritor -->
@@ -8645,7 +8645,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
               rx="10"
             />
             <text class="blk-label blk-label--ghost" x="78" y="306">
-              inherited
+              inherited from L2
             </text>
 
             <!-- L2: where the unit is introduced, and where the edit lands -->
@@ -13057,6 +13057,23 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       text-underline-offset: 6px;
       margin-bottom: 10px;
     }
+
+    /* how to reach the speaker notes in the published deck (owner request
+       2026-11-05); the same hint sits on the talks index page */
+    #s29b .notes-hint {
+      margin: 18px 0 0;
+      font-size: 19px;
+      color: var(--muted);
+    }
+    #s29b .notes-hint kbd {
+      font-family: var(--font-mono);
+      font-size: 19px;
+      color: var(--white);
+      background: color-mix(in srgb, var(--white) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--white) 30%, transparent);
+      border-radius: 6px;
+      padding: 1px 8px;
+    }
   </style>
 
   <div class="content">
@@ -13083,6 +13100,9 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
         >github.com/felho</a
       >
     </div>
+    <p class="notes-hint fade-up">
+      Speaker notes: type <kbd>idkfa</kbd> while viewing the deck.
+    </p>
   </div>
 </section>
 </main>
