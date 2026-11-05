@@ -2386,6 +2386,27 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
       letter-spacing: 0.04em;
       fill: var(--theory-on-dark);
     }
+    /* transition arrows between versions, each with a link-count badge */
+    #s02b .hop-shaft {
+      stroke: var(--chart-axis);
+      stroke-width: 2;
+    }
+    #s02b .hop-head {
+      fill: var(--chart-axis);
+    }
+    /* light chip like the theory chips in components.css: tinted fill,
+       theory outline, dark theory text */
+    #s02b .hop-badge {
+      fill: color-mix(in srgb, var(--theory) 14%, var(--card-bg-strong));
+      stroke: var(--theory);
+      stroke-width: 1.6;
+    }
+    #s02b .hop-text {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      fill: var(--theory-on-dark);
+    }
     #s02b .part {
       font-size: 16px;
       font-weight: 700;
@@ -2488,7 +2509,7 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
           viewBox="0 0 1456 400"
           preserveAspectRatio="xMidYMid meet"
           role="img"
-          aria-label="A grid of corpus versions v1 to v4 across the horizontal axis labelled iterate in time, and parts level A, level B, level C, component D, component E along the vertical axis labelled iterate in space, whose arrow points upward. Each version is a column of blocks; the columns grow both in block count, from two to five, and in width, so v4 is the widest. Links join each block to its predecessor in the previous version and to its neighbour in the same version. One horizontal link is broken and marked integrity drift, one vertical link is broken and marked contract drift."
+          aria-label="A grid of corpus versions v1 to v4 across the horizontal axis labelled iterate in time, and parts level A, level B, level C, component D, component E along the vertical axis labelled iterate in space, whose arrow points upward. Each version is a column of blocks; the columns grow both in block count, from two to five, and in width, so v4 is the widest. Links join each block to its predecessor in the previous version and to its neighbour in the same version; between the version labels an arrow points to the next version with a badge counting the links that version has to keep: 4, 6 and 8. One horizontal link is broken and marked integrity drift, one vertical link is broken and marked contract drift."
         >
           <!-- version labels, centered on their (widening) columns -->
           <g transform="translate(35 0)">
@@ -2496,6 +2517,31 @@ body[data-active-theme="light"] .deck-counter { color: rgba(7,21,47,0.50); }
             <text class="round" x="584" y="28" text-anchor="middle">v2</text>
             <text class="round" x="872" y="28" text-anchor="middle">v3</text>
             <text class="round" x="1200" y="28" text-anchor="middle">v4</text>
+
+            <!-- transition arrows between the version labels, each carrying
+                 the links the next version has to keep: the horizontal ones
+                 back to the previous version plus the vertical ones within
+                 it, broken ones included. 4, 6, 8 against 3, 4, 5 parts
+                 (owner request 2026-11-05). Badge centered on the gap between
+                 the two columns of blocks, like the horizontal links below it. -->
+            <g class="hop">
+              <line class="hop-shaft" x1="360" y1="22" x2="550" y2="22" />
+              <path class="hop-head" d="M548 16 L560 22 L548 28 Z" />
+              <rect class="hop-badge" x="418" y="10" width="64" height="24" rx="12" />
+              <text class="hop-text" x="450" y="27" text-anchor="middle">4 links</text>
+            </g>
+            <g class="hop">
+              <line class="hop-shaft" x1="608" y1="22" x2="838" y2="22" />
+              <path class="hop-head" d="M836 16 L848 22 L836 28 Z" />
+              <rect class="hop-badge" x="686" y="10" width="64" height="24" rx="12" />
+              <text class="hop-text" x="718" y="27" text-anchor="middle">6 links</text>
+            </g>
+            <g class="hop">
+              <line class="hop-shaft" x1="896" y1="22" x2="1166" y2="22" />
+              <path class="hop-head" d="M1164 16 L1176 22 L1164 28 Z" />
+              <rect class="hop-badge" x="994" y="10" width="64" height="24" rx="12" />
+              <text class="hop-text" x="1026" y="27" text-anchor="middle">8 links</text>
+            </g>
           </g>
 
           <!-- the space axis: arrow points UP (stays put, not shifted) -->
