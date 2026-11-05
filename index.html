@@ -64,6 +64,7 @@
   a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .talk-title { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.35rem; }
   .talk-sub { margin: 0 0 0.6rem; color: var(--ink-dim); font-size: 0.95rem; }
+  .talk-sub code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink); }
   .talk-meta {
     margin: 0;
     font-size: 0.8rem;
@@ -95,11 +96,15 @@
   <ul class="talks">
     <li class="talk">
       <a class="card" href="iteration-without-drift-v2/">
-        <p class="talk-title">Iteration Without Drift (v2)</p>
-        <p class="talk-sub">Keeping a Growing Design Corpus Coherent. The
-          code.talks edition, with expanded guidance on designing review loops,
-          defining review lenses, and validating their findings.</p>
-        <p class="talk-meta">code.talks 2026 &middot; 32 slides</p>
+        <p class="talk-title">Iteration Without Drift (code.talks version)</p>
+        <p class="talk-sub">Keeping a Growing Design Corpus Coherent. Why
+          coherency load is the price of iteration, how a logical and then a
+          physical breakdown into small linked entities kept a growing design
+          corpus coherent while an LLM worked on it, and what that structure
+          buys once the corpus has more than one consumer.</p>
+        <p class="talk-sub">Speaker notes: type <code>idkfa</code> while
+          viewing the deck.</p>
+        <p class="talk-meta">code.talks 2026</p>
       </a>
     </li>
     <li class="talk">
@@ -109,7 +114,7 @@
           design corpus survives heavy iteration: capability layers, a logical
           then physical breakdown into units with a ledger, review loops, and
           what stays irreducible.</p>
-        <p class="talk-meta">Claude Code Meetup, Budapest 2026 &middot; 31 slides</p>
+        <p class="talk-meta">Claude Code Meetup, Budapest 2026</p>
       </a>
     </li>
     <li class="talk">
@@ -119,7 +124,7 @@
           one-shot prompting to agentic workflows that converge: bounded work,
           review roles, a deterministic workflow around a nondeterministic core,
           and fitness functions instead of impressions.</p>
-        <p class="talk-meta">Craft Conference 2026 &middot; 47 slides</p>
+        <p class="talk-meta">Craft Conference 2026</p>
       </a>
     </li>
   </ul>
